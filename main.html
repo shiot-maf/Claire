@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <title>학생 관찰 기록</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #f5f8ff;
+      margin: 0;
+      padding: 30px;
+    }
+    h2 {
+      text-align: center;
+      color: #167a1b;
+    }
+    label {
+      font-weight: bold;
+    }
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      background: #fff;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    }
+    button {
+      width: 150px;
+      padding: 10px 16px;
+      margin: 5px;
+      border-radius: 6px;
+      border: none;
+      background-color: #64b668;
+      color: white;
+      cursor: pointer;
+      box-sizing: border-box;
+      text-align: center;
+      transition: background-color 0.2s ease;
+    }
+.logout-button {
+  width: 60px;
+  padding: 6px 12px;
+  font-size: 9px;
+  background-color: #ccc;
+  color: #333;
+  border: 1px solid #999;
+  margin-bottom: 10px;
+}
+
+.logout-button:hover {
+  background-color: #bbb;
+}
+
+
+button:hover {
+  background-color: #4c9e52; /* hover 시 좀 더 짙은 초록 */
+}
+
+    button.active {
+      background-color: #125c17 !important;
+      font-weight: bold;
+      color: white;
+      border: 2px solid #0d4712;
+    }
+    #commentInput {
+      font-size: 16px;
+      margin: 5px 0;
+      padding: 10px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      width: 100%;
+      box-sizing: border-box;
+    }
+    .comment {
+      border-bottom: 1px solid #ccc;
+      padding: 8px 0;
+      white-space: pre-wrap;
+    }
+    .centered-buttons {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 10px;
+      margin-bottom: 15px;
+    }
+    #commentHistory {
+      margin-top: 15px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>학생 관찰 기록 페이지</h2>
+    <p>선생님: <strong id="teacherName"></strong></p>
+    <button class="logout-button" onclick="logout()">로그아웃</button>
+    <hr>
+
+    <div class="centered-buttons">
+      <button class="day-group-button" data-group="월수금" onclick="selectDayGroup('월수금')">월수금</button>
+      <button class="day-group-button" data-group="화목" onclick="selectDayGroup('화목')">화목</button>
+    </div>
+
+    <div id="classButtonsContainer" class="centered-buttons"></div>
+    <hr class="section-divider">
+    <div id="studentButtonsContainer" class="centered-buttons"></div>
+    <div id="commentSection"></div>
+  </div>
+
+  <script>
+    if (!localStorage.getItem("teacherId")) {
+      alert("로그인이 필요합니다.");
+      location.href = "ObS.html";
+    }
+    document.getElementById("teacherName").innerText = localStorage.getItem("teacherId") || "알 수 없음";
+
+    const classGroups = {
+      "월수금": {
+        "Intro": ["곽이나", "최가림", "황도윤", "김시연"],
+        "HighUP(LG2)": ["성예원", "조윤찬", "강유준", "진수혁", "정민서", "김태윤", "이지몽"],
+        "FlyUP(LG3)": ["박신우", "김태윤(KTY)", "이채은", "이채율", "양인영", "최소은", "양지윤"],
+        "Journeys2": ["임시윤", "조은정", "조혜인", "조은호", "오서원", "유은우"],
+        "Phonics1": ["서주원", "김윤설", "변은찬"],
+        "IAS": ["김채안", "최원홍"],
+        "M1": ["이서현", "이시우", "이규성"],
+        "M2": ["박태윤", "서완희", "김민주", "추선우"]
+      },
+      "화목": {
+        "Phonics2": ["이재백", "김시윤", "조윤서", "박설민", "김리온"],
+        "JumpUP(LG1)": ["김여원"],
+        "Arete": ["홍지훈"],
+        "M1": ["이현찬", "김진서", "정의윤", "정의담", "추선우"],
+        "M3": ["유시영"]
+      }
+    };
+
+    let selectedGroup = "";
+    let selectedClass = "";
+    let currentClassData = {};
+
+    function logout() {
+      localStorage.removeItem("teacherId");
+      location.href = "ObS.html";
+    }
+
+    function selectDayGroup(group) {
+      selectedGroup = group;
+      updateClassButtons(classGroups[group]);
+      document.getElementById("studentButtonsContainer").innerHTML = "";
+      document.getElementById("commentSection").innerHTML = "";
+    }
+
+    function updateClassButtons(classGroupData) {
+      const container = document.getElementById("classButtonsContainer");
+      container.innerHTML = "";
+      currentClassData = classGroupData;
+      for (const cls in classGroupData) {
+        const btn = document.createElement("button");
+        btn.innerText = cls;
+        btn.onclick = () => renderStudents(cls);
+        container.appendChild(btn);
+      }
+    }
+
+    function renderStudents(className) {
+      const container = document.getElementById("studentButtonsContainer");
+      container.innerHTML = "";
+      selectedClass = className;
+      document.getElementById("commentSection").innerHTML = "";
+      const students = currentClassData[className] || [];
+      students.forEach(name => {
+        const btn = document.createElement("button");
+        btn.innerText = name;
+        btn.onclick = () => openCommentBox(name);
+        container.appendChild(btn);
+      });
+    }
+
+    function openCommentBox(name) {
+  const section = document.getElementById("commentSection");
+  const currentMonth = new Date().toISOString().slice(0, 7); // YYYY-MM
+  const currentTeacher = localStorage.getItem("teacherId") || "";
+  const isAdmin = currentTeacher === "admin";
+
+  section.innerHTML = `
+    <h3>${name} 학생 평가</h3>
+    ${isAdmin ? `
+      <label>월 선택:</label>
+      <select id="monthSelect" onchange="renderStudentComments('${name}')"></select><br>
+    ` : ``}
+    <textarea id="commentInput" rows="3" cols="50" placeholder="오늘의 평가를 입력하세요."></textarea><br>
+    <button onclick="submitComment('${name}')">등록</button>
+    ${isAdmin ? `<button onclick="downloadCSV('${name}')">CSV로 저장</button>` : ``}
+    <div id="commentHistory"></div>
+  `;
+
+  if (isAdmin) {
+    populateMonthSelect(name);
+  }
+  renderStudentComments(name); // 항상 평가 목록은 보여줘야 하니까
+      const textarea = document.getElementById("commentInput");
+      textarea.focus();
+      textarea.addEventListener("keydown", function(e) {
+        if (e.ctrlKey && e.key === "Enter") submitComment(name);
+      });
+    }
+
+    function submitComment(studentName) {
+      const text = document.getElementById("commentInput").value.trim();
+      if (!text) return;
+      const now = new Date().toLocaleDateString('ko-KR');
+      const teacherId = localStorage.getItem("teacherId") || "unknown";
+      const allLogs = JSON.parse(localStorage.getItem("studentLogs") || "{}");
+      if (!allLogs[studentName]) allLogs[studentName] = [];
+      allLogs[studentName].unshift({ date: now, teacher: teacherId, comment: text });
+      localStorage.setItem("studentLogs", JSON.stringify(allLogs));
+      populateMonthSelect(studentName);
+      renderStudentComments(studentName);
+      document.getElementById("commentInput").value = "";
+    }
+
+    function renderStudentComments(studentName) {
+  const allLogs = JSON.parse(localStorage.getItem("studentLogs") || "{}");
+  const logs = allLogs[studentName] || [];
+  const currentTeacher = localStorage.getItem("teacherId") || "";
+  const isAdmin = currentTeacher === "admin";
+
+  const monthSelect = document.getElementById("monthSelect");
+  const selectedMonth = isAdmin && monthSelect ? monthSelect.value : "";
+
+  const filteredLogs = selectedMonth
+    ? logs.filter(log => log.date.startsWith(selectedMonth))
+    : logs;
+
+  const historyDiv = document.getElementById("commentHistory");
+  historyDiv.innerHTML = "";
+
+  filteredLogs.forEach((log, i) => {
+    const entry = document.createElement("div");
+    entry.className = "comment";
+    const logKey = encodeURIComponent(JSON.stringify(log));
+
+    entry.innerHTML = `
+      <strong>${log.date} - ${log.teacher}:</strong>
+      <div style="white-space: pre-wrap;">${log.comment}</div>
+      ${
+        isAdmin || log.teacher === currentTeacher
+          ? `<button onclick="deleteComment('${studentName}', '${logKey}')">삭제</button>`
+          : ""
+      }
+    `;
+    historyDiv.appendChild(entry);
+  });
+}
+
+
+
+   function populateMonthSelect(studentName) {
+  const monthSelect = document.getElementById("monthSelect");
+  if (!monthSelect) return; // 없으면 그냥 함수 종료
+
+  const allLogs = JSON.parse(localStorage.getItem("studentLogs") || "{}");
+  const logs = allLogs[studentName] || [];
+  const months = [...new Set(
+    logs.map(log => log.date.split(".").slice(0, 2).join("."))
+  )];
+  months.sort((a, b) => b.localeCompare(a)); // 최신순 정렬
+
+  monthSelect.innerHTML = months.map(month => {
+    return `<option value="${month}">${month}</option>`;
+  }).join("");
+
+  if (!months.length) {
+    const now = new Date();
+    const thisMonth = `${now.getFullYear()}.${String(now.getMonth() + 1).padStart(2, "0")}`;
+    monthSelect.innerHTML = `<option value="${thisMonth}">${thisMonth}</option>`;
+  }
+}
+
+
+    function deleteComment(studentName, logKey) {
+      const allLogs = JSON.parse(localStorage.getItem("studentLogs") || "{}");
+      const logs = allLogs[studentName] || [];
+      const target = JSON.parse(decodeURIComponent(logKey));
+      const index = logs.findIndex(log => log.date === target.date && log.teacher === target.teacher && log.comment === target.comment);
+      if (index !== -1) {
+        if (confirm("정말 이 평가를 삭제하시겠습니까?")) {
+          logs.splice(index, 1);
+          localStorage.setItem("studentLogs", JSON.stringify(allLogs));
+          populateMonthSelect(studentName);
+          renderStudentComments(studentName);
+        }
+      } else {
+        alert("삭제할 항목을 찾을 수 없습니다.");
+      }
+    }
+  </script>
+</body>
+</html>
