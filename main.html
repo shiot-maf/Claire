@@ -29,9 +29,9 @@
     }
     .sidebar button {
       display: block;
-      width: auto;
+      width: 100%;
       margin: 5px 0;
-      padding: 8px 12px;
+      padding: 10px;
       background-color: #34495e;
       border: none;
       color: white;
@@ -39,9 +39,22 @@
       text-align: left;
       border-radius: 4px;
       font-size: 14px;
+      transition: background-color 0.2s ease;
     }
     .sidebar button:hover {
       background-color: #3d566e;
+    }
+    .sidebar button.active {
+      background-color: #1abc9c;
+      font-weight: bold;
+    }
+    .submenu {
+      padding-left: 10px;
+    }
+    .submenu button {
+      background-color: #3e556f;
+      font-size: 13px;
+      padding: 8px;
     }
     .main {
       flex: 1;
