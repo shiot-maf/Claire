@@ -213,18 +213,31 @@ document.getElementById("commentDate").value = new Date().toISOString().split("T
     }
 
     function submitComment(studentName) {
-      const text = document.getElementById("commentInput").value.trim();
-      if (!text) return;
-      const now = new Date().toLocaleDateString('ko-KR');
-      const teacherId = localStorage.getItem("teacherId") || "unknown";
-      const allLogs = JSON.parse(localStorage.getItem("studentLogs") || "{}");
-      if (!allLogs[studentName]) allLogs[studentName] = [];
-      allLogs[studentName].unshift({ date: now, teacher: teacherId, comment: text });
-      localStorage.setItem("studentLogs", JSON.stringify(allLogs));
-      populateMonthSelect(studentName);
-      renderStudentComments(studentName);
-      document.getElementById("commentInput").value = "";
-    }
+  const text = document.getElementById("commentInput").value.trim();
+  if (!text) return;
+
+  // 날짜 가져오기
+  let selectedDate = document.getElementById("commentDate")?.value;
+  if (!selectedDate) {
+    const now = new Date();
+    selectedDate = `${now.getFullYear()}.${String(now.getMonth() + 1).padStart(2, "0")}.${String(now.getDate()).padStart(2, "0")}`;
+  } else {
+    selectedDate = selectedDate.replace(/-/g, '.');
+  }
+
+  const teacherId = localStorage.getItem("teacherId") || "unknown";
+  const allLogs = JSON.parse(localStorage.getItem("studentLogs") || "{}");
+  if (!allLogs[studentName]) allLogs[studentName] = [];
+  allLogs[studentName].unshift({ date: selectedDate, teacher: teacherId, comment: text });
+  localStorage.setItem("studentLogs", JSON.stringify(allLogs));
+
+  populateMonthSelect(studentName);
+  renderStudentComments(studentName);
+
+  document.getElementById("commentInput").value = "";
+  document.getElementById("commentDate").value = "";  // 선택한 날짜 초기화
+}
+
 
     function renderStudentComments(studentName) {
   const allLogs = JSON.parse(localStorage.getItem("studentLogs") || "{}");
