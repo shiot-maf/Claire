@@ -96,31 +96,25 @@
   <div class="dashboard">
     <div class="sidebar">
       <h2>요일 선택</h2>
-      <button onclick="selectDayGroup('월수금')">월수금</button>
-      <button onclick="selectDayGroup('화목')">화목</button>
+      <button id="btnMonWedFri" onclick="selectDayGroup('월수금', this)">월수금</button>
+      <button id="btnTueThu" onclick="selectDayGroup('화목', this)">화목</button>
 
       <h2>반 선택</h2>
       <div id="classButtonsContainer"></div>
-
-      <h2>학생 목록</h2>
-      <div id="studentButtonsContainer"></div>
     </div>
     <div class="main">
       <h3 id="selectedStudentTitle">학생을 선택해주세요</h3>
+      <div id="studentButtonsContainer"></div>
       <div id="commentSection"></div>
     </div>
   </div>
 
   <script>
-    if (!localStorage.getItem("teacherId")) {
-      alert("로그인이 필요합니다.");
-      location.href = "index.html";
-    }
-
     const classGroups = {
       "월수금": {
         "Intro": ["곽이나", "최가림", "황도윤", "김시연"],
         "HighUP(LG2)": ["성예원", "조윤찬", "강유준"],
+        "FlyUP": ["신입", "테스트"],
       },
       "화목": {
         "Phonics2": ["이재백", "김시윤"],
@@ -132,24 +126,25 @@
     let selectedClass = "";
     let currentClassData = {};
 
-    function selectDayGroup(group) {
+    function selectDayGroup(group, btnElement) {
       selectedGroup = group;
-      updateClassButtons(classGroups[group]);
-      document.getElementById("studentButtonsContainer").innerHTML = "";
-      document.getElementById("commentSection").innerHTML = "";
-      document.getElementById("selectedStudentTitle").innerText = "학생을 선택해주세요";
-    }
+      currentClassData = classGroups[group];
 
-    function updateClassButtons(classGroupData) {
+      document.querySelectorAll('.sidebar button').forEach(btn => btn.classList.remove('active'));
+      if (btnElement) btnElement.classList.add('active');
+
       const container = document.getElementById("classButtonsContainer");
       container.innerHTML = "";
-      currentClassData = classGroupData;
-      for (const cls in classGroupData) {
+      for (const cls in currentClassData) {
         const btn = document.createElement("button");
         btn.innerText = cls;
         btn.onclick = () => renderStudents(cls);
         container.appendChild(btn);
       }
+
+      document.getElementById("studentButtonsContainer").innerHTML = "";
+      document.getElementById("commentSection").innerHTML = "";
+      document.getElementById("selectedStudentTitle").innerText = "학생을 선택해주세요";
     }
 
     function renderStudents(className) {
@@ -224,7 +219,7 @@
       });
     }
 
-    selectDayGroup("월수금");
+    selectDayGroup("월수금", document.getElementById("btnMonWedFri"));
   </script>
 </body>
 </html>
