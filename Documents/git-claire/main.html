@@ -4,89 +4,129 @@
   <meta charset="UTF-8" />
   <title>학생 관찰 기록</title>
   <style>
-    body {
-      font-family: 'Segoe UI', sans-serif;
-      background: #f5f8ff;
-      margin: 0;
-      padding: 30px;
-    }
-    h2 {
-      text-align: center;
-      color: #167a1b;
-    }
-    label {
-      font-weight: bold;
-    }
-    .container {
-      max-width: 800px;
-      margin: 0 auto;
-      background: #fff;
-      padding: 20px;
-      border-radius: 12px;
-      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-    }
-    button {
-      width: 150px;
-      padding: 10px 16px;
-      margin: 5px;
-      border-radius: 6px;
-      border: none;
-      background-color: #64b668;
-      color: white;
-      cursor: pointer;
-      box-sizing: border-box;
-      text-align: center;
-      transition: background-color 0.2s ease;
-    }
+   body {
+  font-family: 'Noto Sans KR', 'Segoe UI', sans-serif;
+  background: #f0f4f8;
+  margin: 0;
+  padding: 20px;
+  color: #333;
+}
+
+h2 {
+  text-align: center;
+  color: #2a7b54;
+  font-size: 28px;
+  margin-bottom: 20px;
+}
+
+.container {
+  max-width: 900px;
+  margin: 0 auto;
+  background: #ffffff;
+  padding: 30px;
+  border-radius: 16px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+}
+
+button {
+  padding: 10px 20px;
+  margin: 5px;
+  border-radius: 8px;
+  border: none;
+  background-color: #4caf50;
+  color: white;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+}
+
+button:hover {
+  background-color: #3e8e41;
+  transform: scale(1.03);
+}
+
+button.active {
+  background-color: #2a7b54 !important;
+  font-weight: bold;
+  border: 2px solid #1b5c3c;
+}
+
 .logout-button {
-  width: 60px;
   padding: 6px 12px;
-  font-size: 9px;
+  font-size: 12px;
   background-color: #ccc;
   color: #333;
   border: 1px solid #999;
-  margin-bottom: 10px;
+  border-radius: 6px;
+  float: right;
+  margin-top: -40px;
 }
 
 .logout-button:hover {
   background-color: #bbb;
 }
 
-
-button:hover {
-  background-color: #4c9e52; /* hover 시 좀 더 짙은 초록 */
+.centered-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 12px;
+  margin-bottom: 20px;
 }
 
-    button.active {
-      background-color: #125c17 !important;
-      font-weight: bold;
-      color: white;
-      border: 2px solid #0d4712;
-    }
-    #commentInput {
-      font-size: 16px;
-      margin: 5px 0;
-      padding: 10px;
-      border-radius: 6px;
-      border: 1px solid #ccc;
-      width: 100%;
-      box-sizing: border-box;
-    }
-    .comment {
-      border-bottom: 1px solid #ccc;
-      padding: 8px 0;
-      white-space: pre-wrap;
-    }
-    .centered-buttons {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 10px;
-      margin-bottom: 15px;
-    }
-    #commentHistory {
-      margin-top: 15px;
-    }
+#commentInput {
+  width: 100%;
+  padding: 12px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  resize: vertical;
+  margin: 10px 0;
+  box-sizing: border-box;
+}
+
+#commentDate {
+  margin: 10px 0;
+  padding: 8px;
+  border: 1px solid #bbb;
+  border-radius: 6px;
+  font-size: 14px;
+}
+
+select#monthSelect {
+  margin: 10px 0;
+  padding: 8px;
+  border: 1px solid #bbb;
+  border-radius: 6px;
+  font-size: 14px;
+}
+
+.comment {
+  background-color: #f9f9f9;
+  border-left: 4px solid #4caf50;
+  padding: 10px 15px;
+  margin: 8px 0;
+  border-radius: 6px;
+  white-space: pre-wrap;
+}
+
+.comment button {
+  margin-top: 6px;
+  background-color: #e74c3c;
+  font-size: 12px;
+  padding: 4px 8px;
+}
+
+.comment button:hover {
+  background-color: #c0392b;
+}
+
+.section-divider {
+  margin: 30px 0;
+  border: none;
+  border-top: 1px solid #ddd;
+}
+
   </style>
 </head>
 <body>
