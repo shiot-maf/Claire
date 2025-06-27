@@ -62,8 +62,27 @@
       background-color: #fff;
       overflow-y: auto;
     }
+    .main-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
     .main h3 {
       margin-top: 0;
+    }
+    .userinfo {
+      font-size: 14px;
+    }
+    .logout-button {
+      background-color: #ccc;
+      color: #333;
+      border: 1px solid #999;
+      border-radius: 4px;
+      padding: 4px 8px;
+      font-size: 12px;
+      margin-left: 10px;
+      cursor: pointer;
     }
     textarea, select, input[type="date"] {
       width: 100%;
@@ -103,6 +122,12 @@
       <div id="classButtonsContainer"></div>
     </div>
     <div class="main">
+      <div class="main-header">
+        <div class="userinfo">
+          선생님: <strong id="teacherName">알 수 없음</strong>
+          <button class="logout-button" onclick="logout()">로그아웃</button>
+        </div>
+      </div>
       <h3 id="selectedStudentTitle">학생을 선택해주세요</h3>
       <div id="studentButtonsContainer"></div>
       <div id="commentSection"></div>
@@ -125,6 +150,11 @@
     let selectedGroup = "";
     let selectedClass = "";
     let currentClassData = {};
+
+    function logout() {
+      localStorage.removeItem("teacherId");
+      location.href = "index.html";
+    }
 
     function selectDayGroup(group, btnElement) {
       selectedGroup = group;
@@ -219,6 +249,7 @@
       });
     }
 
+    document.getElementById("teacherName").innerText = localStorage.getItem("teacherId") || "알 수 없음";
     selectDayGroup("월수금", document.getElementById("btnMonWedFri"));
   </script>
 </body>
