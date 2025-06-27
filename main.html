@@ -297,6 +297,29 @@ document.getElementById("commentDate").value = new Date().toISOString().split("T
     monthSelect.innerHTML = `<option value="${thisMonth}">${thisMonth}</option>`;
   }
 }
+  function downloadCSV(studentName) {
+    const allLogs = JSON.parse(localStorage.getItem("studentLogs") || "{}");
+    const logs = allLogs[studentName] || [];
+  
+    const selectedMonth = document.getElementById("monthSelect")?.value || "";
+  
+    const filteredLogs = selectedMonth
+      ? logs.filter(log => log.date.startsWith(selectedMonth))
+      : logs;
+  
+    const rows = [["날짜", "선생님", "내용"]];
+    filteredLogs.forEach(log => {
+      rows.push([log.date, log.teacher, log.comment]);
+    });
+  
+    const csvContent = rows.map(e => e.map(cell => `"${cell}"`).join(",")).join("\n");
+    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+  
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.download = `${studentName}_${selectedMonth || "전체"}.csv`;
+    link.click();
+  }
 
 
     function deleteComment(studentName, logKey) {
