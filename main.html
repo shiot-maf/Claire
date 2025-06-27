@@ -118,6 +118,113 @@
       margin-top: 5px;
     }
   </style>
+  <script>
+    const classGroups = {
+      "월수금": {
+        "Intro": ["곽이나", "최가림", "황도윤", "김시연"],
+        "HighUP(LG2)": ["성예원", "조윤찬", "강유준", "진수혁", "정민서", "김태윤", "이지몽"],
+        "FlyUP(LG3)": ["박신우", "김태윤(KTY)", "이채은", "이채율", "양인영", "최소은", "양지윤"],
+        "Journeys2": ["임시윤", "조은정", "조혜인", "조은호", "오서원", "유은우"],
+        "Phonics1": ["서주원", "김윤설", "변은찬"],
+        "IAS": ["김채안", "최원홍"],
+        "M1": ["이서현", "이시우", "이규성"],
+        "M2": ["박태윤", "서완희", "김민주", "추선우"]
+      },
+      "화목": {
+        "Phonics2": ["이재백", "김시윤", "조윤서", "박설민", "김리온"],
+        "JumpUP(LG1)": ["김여원"],
+        "Arete": ["홍지훈"],
+        "M1": ["이현찬", "김진서", "정의윤", "정의담", "추선우"],
+        "M3": ["유시영"]
+      }
+    };
+
+    function logout() {
+      localStorage.removeItem("teacherId");
+      location.href = "index.html";
+    }
+
+    function selectDayGroup(group, btn) {
+      document.querySelectorAll('.sidebar button').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+
+      const classButtonsContainer = document.getElementById("classButtonsContainer");
+      classButtonsContainer.innerHTML = "";
+      for (const cls in classGroups[group]) {
+        const button = document.createElement("button");
+        button.textContent = cls;
+        button.onclick = () => renderStudents(group, cls);
+        classButtonsContainer.appendChild(button);
+      }
+    }
+
+    function renderStudents(group, cls) {
+      const students = classGroups[group][cls];
+      const container = document.getElementById("studentButtonsContainer");
+      const title = document.getElementById("selectedStudentTitle");
+      container.innerHTML = "";
+      title.textContent = `${group} - ${cls} 학생 목록`;
+
+      students.forEach(name => {
+        const btn = document.createElement("button");
+        btn.className = "student-button";
+        btn.textContent = name;
+        btn.onclick = () => openCommentBox(name);
+        container.appendChild(btn);
+      });
+    }
+
+    function openCommentBox(name) {
+      const section = document.getElementById("commentSection");
+      section.innerHTML = `
+        <h3>${name} 학생 평가</h3>
+        <label>날짜 선택:</label>
+        <input type="date" id="commentDate"><br>
+        <textarea id="commentInput" rows="4" placeholder="오늘의 평가를 입력하세요."></textarea>
+        <button class="action" onclick="submitComment('${name}')">등록</button>
+        <div id="commentHistory"></div>
+      `;
+      document.getElementById("commentDate").value = new Date().toISOString().split("T")[0];
+      renderStudentComments(name);
+    }
+
+    function submitComment(studentName) {
+      const text = document.getElementById("commentInput").value.trim();
+      if (!text) return;
+      let selectedDate = document.getElementById("commentDate").value;
+      selectedDate = selectedDate.replace(/-/g, ".");
+      const teacherId = localStorage.getItem("teacherId") || "unknown";
+      const allLogs = JSON.parse(localStorage.getItem("studentLogs") || "{}");
+      if (!allLogs[studentName]) allLogs[studentName] = [];
+      allLogs[studentName].unshift({ date: selectedDate, teacher: teacherId, comment: text });
+      localStorage.setItem("studentLogs", JSON.stringify(allLogs));
+      renderStudentComments(studentName);
+      document.getElementById("commentInput").value = "";
+    }
+
+    function renderStudentComments(studentName) {
+      const allLogs = JSON.parse(localStorage.getItem("studentLogs") || "{}");
+      const logs = allLogs[studentName] || [];
+      const historyDiv = document.getElementById("commentHistory");
+      historyDiv.innerHTML = "";
+      logs.forEach(log => {
+        const entry = document.createElement("div");
+        entry.className = "comment";
+        entry.innerHTML = `<strong>${log.date} - ${log.teacher}:</strong><div>${log.comment}</div>`;
+        historyDiv.appendChild(entry);
+      });
+    }
+
+    window.onload = () => {
+      const teacherId = localStorage.getItem("teacherId") || "";
+      if (!teacherId) {
+        alert("로그인이 필요합니다.");
+        location.href = "index.html";
+        return;
+      }
+      document.getElementById("teacherName").textContent = teacherId;
+    };
+  </script>
 </head>
 <body>
   <div class="dashboard">
@@ -139,7 +246,5 @@
       <div id="commentSection"></div>
     </div>
   </div>
-
-  <!-- script 생략 -->
 </body>
 </html>
