@@ -43,7 +43,7 @@
       gap: 10px;
       flex-wrap: wrap;
     }
-    button.action, .student-button, .tab-button, .class-button {
+    button.action, .tab-button, .class-button {
       background-color: #15803d;
       color: white;
       padding: 10px 15px;
@@ -52,7 +52,7 @@
       cursor: pointer;
       font-size: 14px;
     }
-    button.action:hover, .student-button:hover, .tab-button:hover, .class-button:hover {
+    button.action:hover, .tab-button:hover, .class-button:hover {
       background-color: #14532d;
     }
     .logout-button {
@@ -80,14 +80,24 @@
       background-color: #14532d;
     }
     .panel {
-      padding-left: 15px;
       display: none;
       flex-direction: column;
       gap: 6px;
       margin-bottom: 10px;
+      padding-left: 10px;
     }
     .panel .student-button {
-      width: 100%;
+      background-color: #e6f4ea;
+      color: #14532d;
+      border: 1px solid #15803d;
+      font-size: 13px;
+      padding: 6px 10px;
+      text-align: left;
+      width: 90%;
+      border-radius: 4px;
+    }
+    .panel .student-button:hover {
+      background-color: #d3ead8;
     }
     .comment-entry {
       border-bottom: 1px solid #ccc;
