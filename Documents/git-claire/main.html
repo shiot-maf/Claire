@@ -22,20 +22,23 @@
       overflow-y: auto;
     }
     .sidebar h2 {
-      font-size: 20px;
-      margin-bottom: 10px;
+      font-size: 16px;
+      margin: 20px 0 8px;
+      padding-bottom: 4px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.3);
     }
     .sidebar button {
       display: block;
-      width: 100%;
+      width: auto;
       margin: 5px 0;
-      padding: 10px;
+      padding: 8px 12px;
       background-color: #34495e;
       border: none;
       color: white;
       cursor: pointer;
       text-align: left;
       border-radius: 4px;
+      font-size: 14px;
     }
     .sidebar button:hover {
       background-color: #3d566e;
@@ -96,7 +99,6 @@
   </div>
 
   <script>
-    // JavaScript 통합 스크립트 시작
     if (!localStorage.getItem("teacherId")) {
       alert("로그인이 필요합니다.");
       location.href = "index.html";
@@ -209,7 +211,6 @@
       });
     }
 
-    // 초기 로딩 시 기본 선택 적용
     selectDayGroup("월수금");
   </script>
 </body>
