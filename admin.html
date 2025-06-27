@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>관리자 페이지</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: #f4f6f9;
+    }
+    .container {
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 30px;
+      background: #fff;
+    }
+    h1 {
+      color: #14532d;
+      font-size: 24px;
+    }
+    button.action {
+      background-color: #15803d;
+      color: white;
+      padding: 10px 15px;
+      margin-top: 10px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    button.action:hover {
+      background-color: #14532d;
+    }
+    select, input[type="month"] {
+      padding: 6px;
+      font-size: 14px;
+      margin: 10px 10px 10px 0;
+    }
+    .logout-button {
+      background-color: #991b1b;
+      color: white;
+      border: none;
+      padding: 6px 12px;
+      border-radius: 4px;
+      float: right;
+      cursor: pointer;
+    }
+    .comment-entry {
+      border-bottom: 1px solid #ccc;
+      padding: 8px 0;
+      white-space: pre-wrap;
+    }
+    .comment-entry button {
+      background-color: #991b1b;
+      color: white;
+      border: none;
+      padding: 4px 8px;
+      border-radius: 4px;
+      margin-top: 4px;
+      cursor: pointer;
+    }
+  </style>
+  <script>
+    window.onload = () => {
+      const teacherId = localStorage.getItem("teacherId") || "";
+      if (teacherId !== "admin") {
+        alert("접근 권한이 없습니다.");
+        location.href = "index.html";
+        return;
+      }
+      document.getElementById("teacherName").textContent = teacherId;
+      populateStudentFilter();
+      renderFilteredLogs();
+    };
+
+    function logout() {
+      localStorage.removeItem("teacherId");
+      location.href = "index.html";
+    }
+
+    function populateStudentFilter() {
+      const allLogs = JSON.parse(localStorage.getItem("studentLogs") || "{}");
+      const studentSelect = document.getElementById("studentFilter");
+      studentSelect.innerHTML = '<option value="">전체</option>';
+      for (const student in allLogs) {
+        const option = document.createElement("option");
+        option.value = student;
+        option.textContent = student;
+        studentSelect.appendChild(option);
+      }
+    }
+
+    function renderFilteredLogs() {
+      const allLogs = JSON.parse(localStorage.getItem("studentLogs") || "{}");
+      const selectedMonth = document.getElementById("monthSelect").value;
+      const selectedStudent = document.getElementById("studentFilter").value;
+      const history = document.getElementById("commentHistory");
+      history.innerHTML = "";
+
+      for (const student in allLogs) {
+        if (selectedStudent && student !== selectedStudent) continue;
+        const logs = allLogs[student];
+        logs.forEach((log, index) => {
+          if (!selectedMonth || log.date.startsWith(selectedMonth.replace(/-/g, "."))) {
+            const entry = document.createElement("div");
+            entry.className = "comment-entry";
+            entry.innerHTML = `<strong>${student} | ${log.date} - ${log.teacher}</strong><div>${log.comment}</div>`;
+            const deleteBtn = document.createElement("button");
+            deleteBtn.textContent = "삭제";
+            deleteBtn.onclick = () => deleteComment(student, log, index);
+            entry.appendChild(deleteBtn);
+            history.appendChild(entry);
+          }
+        });
+      }
+    }
+
+    function deleteComment(student, log, index) {
+      const allLogs = JSON.parse(localStorage.getItem("studentLogs") || "{}");
+      const logs = allLogs[student];
+      const targetIndex = logs.findIndex(l => l.date === log.date && l.teacher === log.teacher && l.comment === log.comment);
+      if (targetIndex !== -1) {
+        if (confirm("정말 이 항목을 삭제하시겠습니까?")) {
+          logs.splice(targetIndex, 1);
+          localStorage.setItem("studentLogs", JSON.stringify(allLogs));
+          renderFilteredLogs();
+        }
+      }
+    }
+
+    function downloadAllCSV() {
+      const allLogs = JSON.parse(localStorage.getItem("studentLogs") || "{}");
+      const selectedMonth = document.getElementById("monthSelect").value;
+      const selectedStudent = document.getElementById("studentFilter").value;
+      const rows = [["학생명", "날짜", "선생님", "내용"]];
+      for (const student in allLogs) {
+        if (selectedStudent && student !== selectedStudent) continue;
+        const logs = allLogs[student];
+        logs.forEach(log => {
+          if (!selectedMonth || log.date.startsWith(selectedMonth.replace(/-/g, "."))) {
+            rows.push([student, log.date, log.teacher, log.comment]);
+          }
+        });
+      }
+      const csvContent = rows.map(e => e.map(cell => `"${cell}"`).join(",")).join("\n");
+      const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+      const link = document.createElement("a");
+      link.href = URL.createObjectURL(blob);
+      link.download = `전체_학생_평가(${selectedMonth || '전체'}).csv`;
+      link.click();
+    }
+  </script>
+</head>
+<body>
+  <div class="container">
+    <button class="logout-button" onclick="logout()">로그아웃</button>
+    <h1>관리자 페이지</h1>
+    <p>관리자 ID: <strong id="teacherName"></strong></p>
+
+    <label for="monthSelect">월별 필터:</label>
+    <input type="month" id="monthSelect" onchange="renderFilteredLogs()">
+
+    <label for="studentFilter">학생 필터:</label>
+    <select id="studentFilter" onchange="renderFilteredLogs()"></select>
+
+    <button class="action" onclick="downloadAllCSV()">CSV로 전체 평가 다운로드</button>
+
+    <div id="commentHistory"></div>
+  </div>
+</body>
+</html>
