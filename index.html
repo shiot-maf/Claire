@@ -65,14 +65,19 @@
     const validIds = ['Nagyeong', 'Eun', 'Sunny', 'admin'];
 
     function login() {
-      const id = document.getElementById('teacherId').value.trim();
-      if (validIds.includes(id)) {
-        localStorage.setItem("teacherId", id);
-        window.location.href = "main.html";
-      } else {
-        document.getElementById('message').innerText = "등록되지 않은 아이디입니다.";
-      }
-    }
+  const inputId = document.getElementById("teacherIdInput").value.trim();
+  if (!inputId) {
+    alert("아이디를 입력하세요.");
+    return;
+  }
+  localStorage.setItem("teacherId", inputId);
+  if (inputId === "admin") {
+    location.href = "admin.html";  // 어드민이면 어드민 페이지로
+  } else {
+    location.href = "main.html";   // 일반 선생님이면 메인 페이지로
+  }
+}
+
   </script>
 </body>
 </html>
