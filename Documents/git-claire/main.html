@@ -179,8 +179,9 @@ button:hover {
     function openCommentBox(name) {
   const section = document.getElementById("commentSection");
   const currentMonth = new Date().toISOString().slice(0, 7); // YYYY-MM
-  const currentTeacher = localStorage.getItem("teacherId") || "";
+  const currentTeacher = (localStorage.getItem("teacherId") || "").trim();
   const isAdmin = currentTeacher === "admin";
+
 
   section.innerHTML = `
     <h3>${name} 학생 평가</h3>
