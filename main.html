@@ -5,146 +5,92 @@
   <title>학생 관찰 기록</title>
   <style>
     body {
-  font-family: 'Noto Sans KR', 'Segoe UI', sans-serif;
-  background: #f0f4f8;
-  margin: 0;
-  padding: 20px;
-  color: #333;
-}
-
-h2 {
-  text-align: center;
-  color: #2a7b54;
-  font-size: 28px;
-  margin-bottom: 20px;
-}
-
-.container {
-  max-width: 900px;
-  margin: 0 auto;
-  background: #ffffff;
-  padding: 30px;
-  border-radius: 16px;
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
-}
-
-button {
-  padding: 10px 20px;
-  margin: 5px;
-  border-radius: 8px;
-  border: none;
-  background-color: #4caf50;
-  color: white;
-  font-size: 14px;
-  cursor: pointer;
-  transition: all 0.2s ease-in-out;
-}
-
-button:hover {
-  background-color: #3e8e41;
-  transform: scale(1.03);
-}
-
-button.active {
-  background-color: #2a7b54 !important;
-  font-weight: bold;
-  border: 2px solid #1b5c3c;
-}
-
-.logout-button {
-  padding: 6px 12px;
-  font-size: 12px;
-  background-color: #ccc;
-  color: #333;
-  border: 1px solid #999;
-  border-radius: 6px;
-  float: right;
-  margin-top: -40px;
-}
-
-.logout-button:hover {
-  background-color: #bbb;
-}
-
-.centered-buttons {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 12px;
-  margin-bottom: 20px;
-}
-
-#commentInput {
-  width: 100%;
-  padding: 12px;
-  font-size: 16px;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  resize: vertical;
-  margin: 10px 0;
-  box-sizing: border-box;
-}
-
-#commentDate {
-  margin: 10px 0;
-  padding: 8px;
-  border: 1px solid #bbb;
-  border-radius: 6px;
-  font-size: 14px;
-}
-
-select#monthSelect {
-  margin: 10px 0;
-  padding: 8px;
-  border: 1px solid #bbb;
-  border-radius: 6px;
-  font-size: 14px;
-}
-
-.comment {
-  background-color: #f9f9f9;
-  border-left: 4px solid #4caf50;
-  padding: 10px 15px;
-  margin: 8px 0;
-  border-radius: 6px;
-  white-space: pre-wrap;
-}
-
-.comment button {
-  margin-top: 6px;
-  background-color: #e74c3c;
-  font-size: 12px;
-  padding: 4px 8px;
-}
-
-.comment button:hover {
-  background-color: #c0392b;
-}
-
-.section-divider {
-  margin: 30px 0;
-  border: none;
-  border-top: 1px solid #ddd;
-}
-
+      font-family: 'Segoe UI', sans-serif;
+      background: #eef2f7;
+      margin: 0;
+      padding: 30px;
+    }
+    h2 {
+      text-align: center;
+      color: #167a1b;
+    }
+    .main-layout {
+      display: flex;
+      gap: 30px;
+      margin-top: 20px;
+    }
+    .left-panel {
+      width: 30%;
+      background: #f5f8ff;
+      padding: 20px;
+      border-radius: 10px;
+    }
+    .right-panel {
+      flex: 1;
+      background: #ffffff;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    }
+    .day-buttons button,
+    #classButtonsContainer button,
+    #studentButtonsContainer button {
+      width: 100%;
+      margin: 5px 0;
+      padding: 10px;
+      border-radius: 6px;
+      background-color: #64b668;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+    #commentInput {
+      font-size: 16px;
+      margin: 10px 0;
+      padding: 10px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      width: 100%;
+      box-sizing: border-box;
+    }
+    .comment {
+      border-bottom: 1px solid #ccc;
+      padding: 8px 0;
+      white-space: pre-wrap;
+    }
+    .logout-button {
+      width: 60px;
+      padding: 6px 12px;
+      font-size: 9px;
+      background-color: #ccc;
+      color: #333;
+      border: 1px solid #999;
+      margin-bottom: 10px;
+    }
+    .logout-button:hover {
+      background-color: #bbb;
+    }
   </style>
 </head>
 <body>
-  <div class="container">
-    <h2>학생 관찰 기록 페이지</h2>
-    <p>선생님: <strong id="teacherName"></strong></p>
+  <h2>학생 관찰 기록 페이지</h2>
+  <p>선생님: <strong id="teacherName"></strong>
     <button class="logout-button" onclick="logout()">로그아웃</button>
-    <hr>
+  </p>
 
-    <div class="centered-buttons">
-      <button class="day-group-button" data-group="월수금" onclick="selectDayGroup('월수금')">월수금</button>
-      <button class="day-group-button" data-group="화목" onclick="selectDayGroup('화목')">화목</button>
+  <div class="main-layout">
+    <div class="left-panel">
+      <div class="day-buttons">
+        <button onclick="selectDayGroup('월수금')">월수금</button>
+        <button onclick="selectDayGroup('화목')">화목</button>
+      </div>
+      <div id="classButtonsContainer"></div>
+      <div id="studentButtonsContainer"></div>
     </div>
 
-    <div id="classButtonsContainer" class="centered-buttons"></div>
-    <hr class="section-divider">
-    <div id="studentButtonsContainer" class="centered-buttons"></div>
-    <div id="commentSection"></div>
+    <div class="right-panel">
+      <div id="commentSection"></div>
+    </div>
   </div>
 
   <script>
@@ -300,7 +246,7 @@ select#monthSelect {
   <label>날짜 선택:</label>
   <input type="date" id="commentDate" /><br>
 
-  <textarea id="commentInput" rows="3" cols="50" placeholder="오늘의 평가를 입력하세요.<br>ex)Quizlet 속도가 상대적으로 빨랐다/느렸다 등."></textarea><br>
+  <textarea id="commentInput" rows="3" cols="50" placeholder="오늘의 평가를 입력하세요. ex)Quizlet 속도가 상대적으로 빨랐다/느렸다 등."></textarea><br>
   <button onclick="submitComment('${name}')">등록</button>
 
   ${isAdmin ? `
