@@ -34,7 +34,7 @@
       gap: 10px;
       flex-wrap: wrap;
     }
-    button.action, .student-button, .tab-button {
+    button.action, .student-button, .tab-button, .class-button {
       background-color: #15803d;
       color: white;
       padding: 10px 15px;
@@ -43,7 +43,7 @@
       cursor: pointer;
       font-size: 14px;
     }
-    button.action:hover, .student-button:hover, .tab-button:hover {
+    button.action:hover, .student-button:hover, .tab-button:hover, .class-button:hover {
       background-color: #14532d;
     }
     .logout-button {
@@ -161,21 +161,29 @@
           const groupHeader = document.createElement("h3");
           groupHeader.textContent = `${group} 요일`;
           studentList.appendChild(groupHeader);
+
           for (const cls in classGroups[group]) {
-            const clsHeader = document.createElement("h4");
-            clsHeader.textContent = `📘 ${cls}`;
-            studentList.appendChild(clsHeader);
-            classGroups[group][cls].forEach(name => {
-              const btn = document.createElement("button");
-              btn.className = "student-button";
-              btn.textContent = name;
-              btn.onclick = () => filterByStudent(name);
-              studentList.appendChild(btn);
-            });
+            const clsBtn = document.createElement("button");
+            clsBtn.className = "class-button";
+            clsBtn.textContent = `📘 ${cls}`;
+            clsBtn.onclick = () => showStudentsInClass(classGroups[group][cls]);
+            studentList.appendChild(clsBtn);
           }
         }
       }
       renderFilteredLogs();
+    }
+
+    function showStudentsInClass(studentArray) {
+      const studentList = document.getElementById("studentList");
+      studentList.innerHTML = '';
+      studentArray.forEach(name => {
+        const btn = document.createElement("button");
+        btn.className = "student-button";
+        btn.textContent = name;
+        btn.onclick = () => filterByStudent(name);
+        studentList.appendChild(btn);
+      });
     }
 
     function filterByStudent(name) {
