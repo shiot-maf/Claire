@@ -65,16 +65,16 @@
     const validIds = ['Nagyeong', 'Eun', 'Sunny', 'admin'];
 
     function login() {
-  const inputId = document.getElementById("teacherIdInput").value.trim();
+  const inputId = document.getElementById("teacherId").value.trim(); 
   if (!inputId) {
     alert("아이디를 입력하세요.");
     return;
   }
   localStorage.setItem("teacherId", inputId);
   if (inputId === "admin") {
-    location.href = "admin.html";  // 어드민이면 어드민 페이지로
+    location.href = "admin.html";
   } else {
-    location.href = "main.html";   // 일반 선생님이면 메인 페이지로
+    location.href = "main.html";
   }
 }
 
