@@ -163,31 +163,104 @@ button:hover {
     }
 
     function renderStudents(className) {
-      const container = document.getElementById("studentButtonsContainer");
-      container.innerHTML = "";
-      selectedClass = className;
-      document.getElementById("commentSection").innerHTML = "";
-      const students = currentClassData[className] || [];
-      students.forEach(name => {
-        const btn = document.createElement("button");
-        btn.innerText = name;
-        btn.onclick = () => openCommentBox(name);
-        container.appendChild(btn);
-      });
-    }
+  const container = document.getElementById("studentButtonsContainer");
+  container.innerHTML = "";
+  selectedClass = className;
+  document.getElementById("commentSection").innerHTML = "";
 
+  const students = currentClassData[className] || [];
+  students.forEach(name => {
+    const btn = document.createElement("button");
+    btn.innerText = name;
+    btn.onclick = () => openCommentBox(name);
+    container.appendChild(btn);
+  });
+
+  // 월 선택 드롭다운 생성
+  const monthSelect = document.createElement("select");
+  monthSelect.id = "classMonthSelect";
+
+  // 모든 학생 로그 기준으로 월 목록 생성
+  const allLogs = JSON.parse(localStorage.getItem("studentLogs") || "{}");
+  const classLogs = students.flatMap(student => allLogs[student] || []);
+  const months = [...new Set(
+    classLogs.map(log => log.date.split(".").slice(0, 2).join("."))
+  )].sort((a, b) => b.localeCompare(a)); // 최신순
+
+  months.forEach(month => {
+    const option = document.createElement("option");
+    option.value = month;
+    option.textContent = month;
+    monthSelect.appendChild(option);
+  });
+
+  // 월 선택 없으면 기본 현재 월 추가
+  if (!months.length) {
+    const now = new Date();
+    const defaultMonth = `${now.getFullYear()}.${String(now.getMonth() + 1).padStart(2, "0")}`;
+    const option = document.createElement("option");
+    option.value = defaultMonth;
+    option.textContent = defaultMonth;
+    monthSelect.appendChild(option);
+  }
+
+  container.appendChild(monthSelect);
+
+  // 반별 CSV 저장 버튼
+  const downloadButton = document.createElement("button");
+  downloadButton.innerText = `${className} CSV 저장`;
+  downloadButton.onclick = () => {
+    const selectedMonth = document.getElementById("classMonthSelect").value;
+    downloadClassCSV(className, selectedMonth);
+  };
+  container.appendChild(downloadButton);
+}
+
+
+      function downloadClassCSV(className, selectedMonth = "") {
+  const allLogs = JSON.parse(localStorage.getItem("studentLogs") || "{}");
+  const students = currentClassData[className] || [];
+
+  const rows = [["이름", "날짜", "선생님", "내용"]];
+
+  students.forEach(student => {
+    const logs = allLogs[student] || [];
+    logs
+      .filter(log => log.date.startsWith(selectedMonth)) // 월별 필터링
+      .forEach(log => {
+        rows.push([student, log.date, log.teacher, log.comment]);
+      });
+  });
+
+  if (rows.length === 1) {
+    alert("해당 월에 저장된 평가가 없습니다.");
+    return;
+  }
+
+  const csvContent = rows.map(r => r.map(cell => `"${cell}"`).join(",")).join("\n");
+  const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+  const link = document.createElement("a");
+  link.href = URL.createObjectURL(blob);
+  link.download = `${className}_${selectedMonth}_평가.csv`;
+  link.click();
+}
+
+
+
+    
     function openCommentBox(name) {
   const section = document.getElementById("commentSection");
   const currentMonth = new Date().toISOString().slice(0, 7); // YYYY-MM
-  const currentTeacher = localStorage.getItem("teacherId") || "";
+  const currentTeacher = (localStorage.getItem("teacherId") || "").trim();
   const isAdmin = currentTeacher === "admin";
+
 
   section.innerHTML = `
   <h3>${name} 학생 평가</h3>
   <label>날짜 선택:</label>
   <input type="date" id="commentDate" /><br>
 
-  <textarea id="commentInput" rows="3" cols="50" placeholder="오늘의 평가를 입력하세요."></textarea><br>
+  <textarea id="commentInput" rows="3" cols="50" placeholder="오늘의 평가를 입력하세요.<br>ex)Quizlet 속도가 상대적으로 빨랐다/느렸다 등."></textarea><br>
   <button onclick="submitComment('${name}')">등록</button>
 
   ${isAdmin ? `
@@ -216,12 +289,14 @@ document.getElementById("commentDate").value = new Date().toISOString().split("T
   const text = document.getElementById("commentInput").value.trim();
   if (!text) return;
 
-  // 날짜 가져오기
-  let selectedDate = document.getElementById("commentDate")?.value;
+  // 날짜 입력 필드에서 선택된 값을 가져오기
+  let selectedDate = document.getElementById("commentDate").value;
   if (!selectedDate) {
+    // 선택하지 않은 경우 오늘 날짜를 기본값으로 사용
     const now = new Date();
     selectedDate = `${now.getFullYear()}.${String(now.getMonth() + 1).padStart(2, "0")}.${String(now.getDate()).padStart(2, "0")}`;
   } else {
+    // yyyy-mm-dd → yyyy.mm.dd 로 포맷 변경
     selectedDate = selectedDate.replace(/-/g, '.');
   }
 
@@ -233,11 +308,9 @@ document.getElementById("commentDate").value = new Date().toISOString().split("T
 
   populateMonthSelect(studentName);
   renderStudentComments(studentName);
-
   document.getElementById("commentInput").value = "";
-  document.getElementById("commentDate").value = "";  // 선택한 날짜 초기화
+  document.getElementById("commentDate").value = ""; // 입력창 초기화
 }
-
 
 
     function renderStudentComments(studentName) {
@@ -297,29 +370,6 @@ document.getElementById("commentDate").value = new Date().toISOString().split("T
     monthSelect.innerHTML = `<option value="${thisMonth}">${thisMonth}</option>`;
   }
 }
-  function downloadCSV(studentName) {
-    const allLogs = JSON.parse(localStorage.getItem("studentLogs") || "{}");
-    const logs = allLogs[studentName] || [];
-  
-    const selectedMonth = document.getElementById("monthSelect")?.value || "";
-  
-    const filteredLogs = selectedMonth
-      ? logs.filter(log => log.date.startsWith(selectedMonth))
-      : logs;
-  
-    const rows = [["날짜", "선생님", "내용"]];
-    filteredLogs.forEach(log => {
-      rows.push([log.date, log.teacher, log.comment]);
-    });
-  
-    const csvContent = rows.map(e => e.map(cell => `"${cell}"`).join(",")).join("\n");
-    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
-  
-    const link = document.createElement("a");
-    link.href = URL.createObjectURL(blob);
-    link.download = `${studentName}_${selectedMonth || "전체"}.csv`;
-    link.click();
-  }
 
 
     function deleteComment(studentName, logKey) {
