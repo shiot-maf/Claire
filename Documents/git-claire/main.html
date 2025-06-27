@@ -191,8 +191,9 @@ button:hover {
   <button onclick="submitComment('${name}')">등록</button>
   ${isAdmin ? `<button onclick="downloadCSV('${name}')">CSV로 저장</button>` : ``}
   <div id="commentHistory"></div>
-`;
   document.getElementById("commentDate").value = new Date().toISOString().split("T")[0];
+`;
+  
 
 
   if (isAdmin) {
