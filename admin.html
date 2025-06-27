@@ -14,8 +14,17 @@
       margin: 0 auto;
       padding: 30px;
       background: #fff;
+    }
+    .layout {
       display: flex;
-      flex-direction: column;
+      gap: 30px;
+    }
+    .left-column {
+      flex: 1;
+      min-width: 250px;
+    }
+    .right-column {
+      flex: 3;
     }
     h1 {
       color: #14532d;
@@ -54,11 +63,31 @@
       border-radius: 4px;
       cursor: pointer;
     }
-    .student-list {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-      margin-bottom: 20px;
+    .accordion {
+      background-color: #15803d;
+      color: white;
+      cursor: pointer;
+      padding: 10px;
+      width: 100%;
+      text-align: left;
+      border: none;
+      outline: none;
+      transition: background-color 0.2s ease;
+      border-radius: 4px;
+      margin-bottom: 5px;
+    }
+    .accordion:hover {
+      background-color: #14532d;
+    }
+    .panel {
+      padding-left: 15px;
+      display: none;
+      flex-direction: column;
+      gap: 6px;
+      margin-bottom: 10px;
+    }
+    .panel .student-button {
+      width: 100%;
     }
     .comment-entry {
       border-bottom: 1px solid #ccc;
@@ -79,183 +108,74 @@
     }
   </style>
   <script>
-    const classGroups = {
-      "월수금": {
-        "Intro": ["곽이나", "최가림", "황도윤", "김시연"],
-        "HighUP(LG2)": ["성예원", "조윤찬", "강유준", "진수혁", "정민서", "김태윤", "이지몽"],
-        "FlyUP(LG3)": ["박신우", "김태윤(KTY)", "이채은", "이채율", "양인영", "최소은", "양지윤"],
-        "Journeys2": ["임시윤", "조은정", "조혜인", "조은호", "오서원", "유은우"],
-        "Phonics1": ["서주원", "김윤설", "변은찬"],
-        "IAS": ["김채안", "최원홍"],
-        "M1": ["이서현", "이시우", "이규성"],
-        "M2": ["박태윤", "서완희", "김민주", "추선우"]
-      },
-      "화목": {
-        "Phonics2": ["이재백", "김시윤", "조윤서", "박설민", "김리온"],
-        "JumpUP(LG1)": ["김여원"],
-        "Arete": ["홍지훈"],
-        "M1": ["이현찬", "김진서", "정의윤", "정의담", "추선우"],
-        "M3": ["유시영"]
-      }
-    };
+    function toggleAccordion(e) {
+      const panel = e.nextElementSibling;
+      panel.style.display = panel.style.display === "flex" ? "none" : "flex";
+    }
 
-    let allStudents = [];
-    for (const days in classGroups) {
-      for (const cls in classGroups[days]) {
-        allStudents.push(...classGroups[days][cls]);
+    function renderClassAccordion(data) {
+      const studentList = document.getElementById("studentList");
+      studentList.innerHTML = "";
+
+      for (const className in data) {
+        const accordion = document.createElement("button");
+        accordion.className = "accordion";
+        accordion.innerText = className;
+        accordion.onclick = function() { toggleAccordion(this); };
+
+        const panel = document.createElement("div");
+        panel.className = "panel";
+
+        data[className].forEach(student => {
+          const btn = document.createElement("button");
+          btn.className = "student-button";
+          btn.innerText = student;
+          btn.onclick = function() { renderCommentsForStudent(student); };
+          panel.appendChild(btn);
+        });
+
+        studentList.appendChild(accordion);
+        studentList.appendChild(panel);
       }
     }
-    allStudents = [...new Set(allStudents)].sort();
-
-    let currentView = 'student';
-
-    window.onload = () => {
-      const teacherId = localStorage.getItem("teacherId") || "";
-      if (teacherId !== "admin") {
-        alert("접근 권한이 없습니다.");
-        location.href = "index.html";
-        return;
-      }
-      document.getElementById("teacherName").textContent = teacherId;
-      renderTabs();
-      renderContent();
-    };
 
     function logout() {
       localStorage.removeItem("teacherId");
       location.href = "index.html";
     }
 
-    function renderTabs() {
-      const tabs = document.getElementById("viewTabs");
-      tabs.innerHTML = '';
-      [
-        { id: 'student', label: '학생별 보기' },
-        { id: 'class', label: '반별 보기' }
-      ].forEach(tab => {
-        const btn = document.createElement("button");
-        btn.textContent = tab.label;
-        btn.className = "tab-button" + (currentView === tab.id ? " active" : "");
-        btn.onclick = () => {
-          currentView = tab.id;
-          renderTabs();
-          renderContent();
-        };
-        tabs.appendChild(btn);
-      });
-    }
+    document.addEventListener("DOMContentLoaded", () => {
+      document.getElementById("teacherName").innerText = localStorage.getItem("teacherId") || "admin";
 
-    function renderContent() {
-      const studentList = document.getElementById("studentList");
-      studentList.innerHTML = '';
-      if (currentView === 'student') {
-        allStudents.forEach(name => {
-          const btn = document.createElement("button");
-          btn.className = "student-button";
-          btn.textContent = name;
-          btn.onclick = () => filterByStudent(name);
-          studentList.appendChild(btn);
-        });
-      } else if (currentView === 'class') {
-        for (const group in classGroups) {
-          const groupHeader = document.createElement("h3");
-          groupHeader.textContent = `${group} 요일`;
-          studentList.appendChild(groupHeader);
+      const classGroups = {
+        "Intro": ["곽이나", "최가림", "황도윤", "김시연"],
+        "HighUP(LG2)": ["성예원", "조윤찬", "강유준", "진수혁", "정민서", "김태윤", "이지몽"],
+        "FlyUP(LG3)": ["박신우", "김태윤(KTY)", "이채은", "이채율", "양인영", "최소은", "양지윤"],
+        "Journeys2": ["임시윤", "조은정", "조혜인", "조은호", "오서원", "유은우"],
+        "Phonics1": ["서주원", "김윤설", "변은찬"],
+        "IAS": ["김채안", "최원홍"],
+        "M1": ["이서현", "이시우", "이규성", "이현찬", "김진서", "정의윤", "정의담"],
+        "M2": ["박태윤", "서완희", "김민주", "추선우"],
+        "M3": ["유시영"],
+        "Phonics2": ["이재백", "김시윤", "조윤서", "박설민", "김리온"],
+        "JumpUP(LG1)": ["김여원"],
+        "Arete": ["홍지훈"]
+      };
 
-          for (const cls in classGroups[group]) {
-            const clsBtn = document.createElement("button");
-            clsBtn.className = "class-button";
-            clsBtn.textContent = `${cls}`;
-            clsBtn.onclick = () => showStudentsInClass(classGroups[group][cls]);
-            studentList.appendChild(clsBtn);
-          }
-        }
-      }
-      renderFilteredLogs();
-    }
+      renderClassAccordion(classGroups);
+    });
 
-    function showStudentsInClass(studentArray) {
-      const studentList = document.getElementById("studentList");
-      studentList.innerHTML = '';
-      studentArray.forEach(name => {
-        const btn = document.createElement("button");
-        btn.className = "student-button";
-        btn.textContent = name;
-        btn.onclick = () => filterByStudent(name);
-        studentList.appendChild(btn);
-      });
-    }
-
-    function filterByStudent(name) {
-      document.getElementById("selectedStudent").value = name;
-      renderFilteredLogs();
+    function renderCommentsForStudent(studentName) {
+      const historyDiv = document.getElementById("commentHistory");
+      historyDiv.innerHTML = `<h3>${studentName} 평가 내역</h3><p>이곳에 평가 데이터 출력 예정</p>`;
     }
 
     function renderFilteredLogs() {
-      const allLogs = JSON.parse(localStorage.getItem("studentLogs") || "{}");
-      const selectedMonth = document.getElementById("monthSelect").value;
-      const selectedStudent = document.getElementById("selectedStudent").value;
-      const history = document.getElementById("commentHistory");
-      history.innerHTML = "";
-
-      allStudents.forEach(student => {
-        if (selectedStudent && student !== selectedStudent) return;
-        const logs = allLogs[student] || [];
-        if (logs.length === 0) {
-          const emptyEntry = document.createElement("div");
-          emptyEntry.className = "comment-entry";
-          emptyEntry.innerHTML = `<strong>${student}</strong> - 평가 기록 없음`;
-          history.appendChild(emptyEntry);
-        } else {
-          logs.forEach((log, index) => {
-            if (!selectedMonth || log.date.startsWith(selectedMonth.replace(/-/g, "."))) {
-              const entry = document.createElement("div");
-              entry.className = "comment-entry";
-              entry.innerHTML = `<strong>${student} | ${log.date} - ${log.teacher}</strong><div>${log.comment}</div>`;
-              const deleteBtn = document.createElement("button");
-              deleteBtn.textContent = "삭제";
-              deleteBtn.onclick = () => deleteComment(student, log, index);
-              entry.appendChild(deleteBtn);
-              history.appendChild(entry);
-            }
-          });
-        }
-      });
-    }
-
-    function deleteComment(student, log, index) {
-      const allLogs = JSON.parse(localStorage.getItem("studentLogs") || "{}");
-      const logs = allLogs[student];
-      const targetIndex = logs.findIndex(l => l.date === log.date && l.teacher === log.teacher && l.comment === log.comment);
-      if (targetIndex !== -1) {
-        if (confirm("정말 이 항목을 삭제하시겠습니까?")) {
-          logs.splice(targetIndex, 1);
-          localStorage.setItem("studentLogs", JSON.stringify(allLogs));
-          renderFilteredLogs();
-        }
-      }
+      // 필터링 로직 향후 구현 예정
     }
 
     function downloadAllCSV() {
-      const allLogs = JSON.parse(localStorage.getItem("studentLogs") || "{}");
-      const selectedMonth = document.getElementById("monthSelect").value;
-      const selectedStudent = document.getElementById("selectedStudent").value;
-      const rows = [["학생명", "날짜", "선생님", "내용"]];
-      for (const student of allStudents) {
-        if (selectedStudent && student !== selectedStudent) continue;
-        const logs = allLogs[student] || [];
-        logs.forEach(log => {
-          if (!selectedMonth || log.date.startsWith(selectedMonth.replace(/-/g, "."))) {
-            rows.push([student, log.date, log.teacher, log.comment]);
-          }
-        });
-      }
-      const csvContent = rows.map(e => e.map(cell => `"${cell}"`).join(",")).join("\n");
-      const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
-      const link = document.createElement("a");
-      link.href = URL.createObjectURL(blob);
-      link.download = `전체_학생_평가(${selectedMonth || '전체'}).csv`;
-      link.click();
+      alert("CSV 다운로드 기능은 아직 구현되지 않았습니다.");
     }
   </script>
 </head>
@@ -269,16 +189,21 @@
 
     <div id="viewTabs" class="filters"></div>
 
-    <div class="filters">
-      <label for="monthSelect">월별 보기:</label>
-      <input type="month" id="monthSelect" onchange="renderFilteredLogs()">
+    <div class="layout">
+      <div class="left-column">
+        <div class="filters">
+          <label for="monthSelect">월별 보기:</label>
+          <input type="month" id="monthSelect" onchange="renderFilteredLogs()">
+          <input type="hidden" id="selectedStudent">
+          <button class="action" onclick="downloadAllCSV()">CSV 다운로드</button>
+        </div>
+        <div id="studentList" class="student-list"></div>
+      </div>
 
-      <input type="hidden" id="selectedStudent">
-      <button class="action" onclick="downloadAllCSV()">CSV 다운로드</button>
+      <div class="right-column">
+        <div id="commentHistory"></div>
+      </div>
     </div>
-
-    <div id="studentList" class="student-list"></div>
-    <div id="commentHistory"></div>
   </div>
 </body>
 </html>
