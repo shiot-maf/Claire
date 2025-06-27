@@ -187,13 +187,19 @@ button:hover {
   <h3>${name} 학생 평가</h3>
   <label>날짜 선택:</label>
   <input type="date" id="commentDate" /><br>
+
   <textarea id="commentInput" rows="3" cols="50" placeholder="오늘의 평가를 입력하세요."></textarea><br>
   <button onclick="submitComment('${name}')">등록</button>
-  ${isAdmin ? `<button onclick="downloadCSV('${name}')">CSV로 저장</button>` : ``}
+
+  ${isAdmin ? `
+    <label>월 선택:</label>
+    <select id="monthSelect" onchange="renderStudentComments('${name}')"></select><br>
+    <button onclick="downloadCSV('${name}')">CSV로 저장</button>
+  ` : ``}
+
   <div id="commentHistory"></div>
-  document.getElementById("commentDate").value = new Date().toISOString().split("T")[0];
 `;
-  
+document.getElementById("commentDate").value = new Date().toISOString().split("T")[0];
 
 
   if (isAdmin) {
