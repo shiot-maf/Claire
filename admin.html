@@ -10,31 +10,41 @@
       background: #f4f6f9;
     }
     .container {
-      max-width: 1000px;
+      max-width: 1200px;
       margin: 0 auto;
       padding: 30px;
       background: #fff;
+      display: flex;
+      flex-direction: column;
     }
     h1 {
       color: #14532d;
       font-size: 24px;
+      margin-bottom: 20px;
     }
-    button.action {
+    .top-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .filters {
+      display: flex;
+      align-items: center;
+      margin-bottom: 20px;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    button.action, .student-button, .tab-button {
       background-color: #15803d;
       color: white;
       padding: 10px 15px;
-      margin-top: 10px;
       border: none;
       border-radius: 4px;
       cursor: pointer;
-    }
-    button.action:hover {
-      background-color: #14532d;
-    }
-    select, input[type="month"] {
-      padding: 6px;
       font-size: 14px;
-      margin: 10px 10px 10px 0;
+    }
+    button.action:hover, .student-button:hover, .tab-button:hover {
+      background-color: #14532d;
     }
     .logout-button {
       background-color: #991b1b;
@@ -42,8 +52,13 @@
       border: none;
       padding: 6px 12px;
       border-radius: 4px;
-      float: right;
       cursor: pointer;
+    }
+    .student-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 20px;
     }
     .comment-entry {
       border-bottom: 1px solid #ccc;
@@ -59,8 +74,41 @@
       margin-top: 4px;
       cursor: pointer;
     }
+    .tab-button.active {
+      background-color: #0f5132;
+    }
   </style>
   <script>
+    const classGroups = {
+      "월수금": {
+        "Intro": ["곽이나", "최가림", "황도윤", "김시연"],
+        "HighUP(LG2)": ["성예원", "조윤찬", "강유준", "진수혁", "정민서", "김태윤", "이지몽"],
+        "FlyUP(LG3)": ["박신우", "김태윤(KTY)", "이채은", "이채율", "양인영", "최소은", "양지윤"],
+        "Journeys2": ["임시윤", "조은정", "조혜인", "조은호", "오서원", "유은우"],
+        "Phonics1": ["서주원", "김윤설", "변은찬"],
+        "IAS": ["김채안", "최원홍"],
+        "M1": ["이서현", "이시우", "이규성"],
+        "M2": ["박태윤", "서완희", "김민주", "추선우"]
+      },
+      "화목": {
+        "Phonics2": ["이재백", "김시윤", "조윤서", "박설민", "김리온"],
+        "JumpUP(LG1)": ["김여원"],
+        "Arete": ["홍지훈"],
+        "M1": ["이현찬", "김진서", "정의윤", "정의담", "추선우"],
+        "M3": ["유시영"]
+      }
+    };
+
+    let allStudents = [];
+    for (const days in classGroups) {
+      for (const cls in classGroups[days]) {
+        allStudents.push(...classGroups[days][cls]);
+      }
+    }
+    allStudents = [...new Set(allStudents)].sort();
+
+    let currentView = 'student';
+
     window.onload = () => {
       const teacherId = localStorage.getItem("teacherId") || "";
       if (teacherId !== "admin") {
@@ -69,8 +117,8 @@
         return;
       }
       document.getElementById("teacherName").textContent = teacherId;
-      populateStudentFilter();
-      renderFilteredLogs();
+      renderTabs();
+      renderContent();
     };
 
     function logout() {
@@ -78,41 +126,93 @@
       location.href = "index.html";
     }
 
-    function populateStudentFilter() {
-      const allLogs = JSON.parse(localStorage.getItem("studentLogs") || "{}");
-      const studentSelect = document.getElementById("studentFilter");
-      studentSelect.innerHTML = '<option value="">전체</option>';
-      for (const student in allLogs) {
-        const option = document.createElement("option");
-        option.value = student;
-        option.textContent = student;
-        studentSelect.appendChild(option);
+    function renderTabs() {
+      const tabs = document.getElementById("viewTabs");
+      tabs.innerHTML = '';
+      [
+        { id: 'student', label: '학생별 보기' },
+        { id: 'class', label: '반별 보기' }
+      ].forEach(tab => {
+        const btn = document.createElement("button");
+        btn.textContent = tab.label;
+        btn.className = "tab-button" + (currentView === tab.id ? " active" : "");
+        btn.onclick = () => {
+          currentView = tab.id;
+          renderTabs();
+          renderContent();
+        };
+        tabs.appendChild(btn);
+      });
+    }
+
+    function renderContent() {
+      const studentList = document.getElementById("studentList");
+      studentList.innerHTML = '';
+      if (currentView === 'student') {
+        allStudents.forEach(name => {
+          const btn = document.createElement("button");
+          btn.className = "student-button";
+          btn.textContent = name;
+          btn.onclick = () => filterByStudent(name);
+          studentList.appendChild(btn);
+        });
+      } else if (currentView === 'class') {
+        for (const group in classGroups) {
+          const groupHeader = document.createElement("h3");
+          groupHeader.textContent = `${group} 요일`;
+          studentList.appendChild(groupHeader);
+          for (const cls in classGroups[group]) {
+            const clsHeader = document.createElement("h4");
+            clsHeader.textContent = `📘 ${cls}`;
+            studentList.appendChild(clsHeader);
+            classGroups[group][cls].forEach(name => {
+              const btn = document.createElement("button");
+              btn.className = "student-button";
+              btn.textContent = name;
+              btn.onclick = () => filterByStudent(name);
+              studentList.appendChild(btn);
+            });
+          }
+        }
       }
+      renderFilteredLogs();
+    }
+
+    function filterByStudent(name) {
+      document.getElementById("selectedStudent").value = name;
+      renderFilteredLogs();
     }
 
     function renderFilteredLogs() {
       const allLogs = JSON.parse(localStorage.getItem("studentLogs") || "{}");
       const selectedMonth = document.getElementById("monthSelect").value;
-      const selectedStudent = document.getElementById("studentFilter").value;
+      const selectedStudent = document.getElementById("selectedStudent").value;
       const history = document.getElementById("commentHistory");
       history.innerHTML = "";
 
-      for (const student in allLogs) {
-        if (selectedStudent && student !== selectedStudent) continue;
-        const logs = allLogs[student];
-        logs.forEach((log, index) => {
-          if (!selectedMonth || log.date.startsWith(selectedMonth.replace(/-/g, "."))) {
-            const entry = document.createElement("div");
-            entry.className = "comment-entry";
-            entry.innerHTML = `<strong>${student} | ${log.date} - ${log.teacher}</strong><div>${log.comment}</div>`;
-            const deleteBtn = document.createElement("button");
-            deleteBtn.textContent = "삭제";
-            deleteBtn.onclick = () => deleteComment(student, log, index);
-            entry.appendChild(deleteBtn);
-            history.appendChild(entry);
-          }
-        });
-      }
+      allStudents.forEach(student => {
+        if (selectedStudent && student !== selectedStudent) return;
+        const logs = allLogs[student] || [];
+        if (logs.length === 0) {
+          const emptyEntry = document.createElement("div");
+          emptyEntry.className = "comment-entry";
+          emptyEntry.innerHTML = `<strong>${student}</strong> - 평가 기록 없음`;
+          history.appendChild(emptyEntry);
+        } else {
+          logs.forEach((log, index) => {
+            if (!selectedMonth || log.date.startsWith(selectedMonth.replace(/-/g, "."))) {
+              const entry = document.createElement("div");
+              entry.className = "comment-entry";
+              entry.innerHTML = `<strong>${student} | ${log.date} - ${log.teacher}</strong><div>${log.comment}</div>`;
+              const deleteBtn = document.createElement("button");
+              deleteBtn.textContent = "삭제";
+              deleteBtn.onclick = () => deleteComment(student, log, index);
+              entry.appendChild(deleteBtn);
+              history.appendChild(entry);
+            }
+          });
+        }
+      });
     }
 
     function deleteComment(student, log, index) {
@@ -131,11 +231,11 @@
     function downloadAllCSV() {
       const allLogs = JSON.parse(localStorage.getItem("studentLogs") || "{}");
       const selectedMonth = document.getElementById("monthSelect").value;
-      const selectedStudent = document.getElementById("studentFilter").value;
+      const selectedStudent = document.getElementById("selectedStudent").value;
       const rows = [["학생명", "날짜", "선생님", "내용"]];
-      for (const student in allLogs) {
+      for (const student of allStudents) {
         if (selectedStudent && student !== selectedStudent) continue;
-        const logs = allLogs[student];
+        const logs = allLogs[student] || [];
         logs.forEach(log => {
           if (!selectedMonth || log.date.startsWith(selectedMonth.replace(/-/g, "."))) {
             rows.push([student, log.date, log.teacher, log.comment]);
@@ -153,18 +253,23 @@
 </head>
 <body>
   <div class="container">
-    <button class="logout-button" onclick="logout()">로그아웃</button>
-    <h1>관리자 페이지</h1>
+    <div class="top-bar">
+      <h1>관리자 페이지</h1>
+      <button class="logout-button" onclick="logout()">로그아웃</button>
+    </div>
     <p>관리자 ID: <strong id="teacherName"></strong></p>
 
-    <label for="monthSelect">월별 필터:</label>
-    <input type="month" id="monthSelect" onchange="renderFilteredLogs()">
+    <div id="viewTabs" class="filters"></div>
 
-    <label for="studentFilter">학생 필터:</label>
-    <select id="studentFilter" onchange="renderFilteredLogs()"></select>
+    <div class="filters">
+      <label for="monthSelect">월별 보기:</label>
+      <input type="month" id="monthSelect" onchange="renderFilteredLogs()">
 
-    <button class="action" onclick="downloadAllCSV()">CSV로 전체 평가 다운로드</button>
+      <input type="hidden" id="selectedStudent">
+      <button class="action" onclick="downloadAllCSV()">CSV 다운로드</button>
+    </div>
 
+    <div id="studentList" class="student-list"></div>
     <div id="commentHistory"></div>
   </div>
 </body>
