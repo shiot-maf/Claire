@@ -165,7 +165,7 @@
           for (const cls in classGroups[group]) {
             const clsBtn = document.createElement("button");
             clsBtn.className = "class-button";
-            clsBtn.textContent = `📘 ${cls}`;
+            clsBtn.textContent = `${cls}`;
             clsBtn.onclick = () => showStudentsInClass(classGroups[group][cls]);
             studentList.appendChild(clsBtn);
           }
