@@ -184,16 +184,16 @@ button:hover {
 
 
   section.innerHTML = `
-    <h3>${name} 학생 평가</h3>
-    ${isAdmin ? `
-      <label>월 선택:</label>
-      <select id="monthSelect" onchange="renderStudentComments('${name}')"></select><br>
-    ` : ``}
-    <textarea id="commentInput" rows="3" cols="50" placeholder="오늘의 평가를 입력하세요."></textarea><br>
-    <button onclick="submitComment('${name}')">등록</button>
-    ${isAdmin ? `<button onclick="downloadCSV('${name}')">CSV로 저장</button>` : ``}
-    <div id="commentHistory"></div>
-  `;
+  <h3>${name} 학생 평가</h3>
+  <label>날짜 선택:</label>
+  <input type="date" id="commentDate" /><br>
+  <textarea id="commentInput" rows="3" cols="50" placeholder="오늘의 평가를 입력하세요."></textarea><br>
+  <button onclick="submitComment('${name}')">등록</button>
+  ${isAdmin ? `<button onclick="downloadCSV('${name}')">CSV로 저장</button>` : ``}
+  <div id="commentHistory"></div>
+`;
+  document.getElementById("commentDate").value = new Date().toISOString().split("T")[0];
+
 
   if (isAdmin) {
     populateMonthSelect(name);
@@ -207,18 +207,32 @@ button:hover {
     }
 
     function submitComment(studentName) {
-      const text = document.getElementById("commentInput").value.trim();
-      if (!text) return;
-      const now = new Date().toLocaleDateString('ko-KR');
-      const teacherId = localStorage.getItem("teacherId") || "unknown";
-      const allLogs = JSON.parse(localStorage.getItem("studentLogs") || "{}");
-      if (!allLogs[studentName]) allLogs[studentName] = [];
-      allLogs[studentName].unshift({ date: now, teacher: teacherId, comment: text });
-      localStorage.setItem("studentLogs", JSON.stringify(allLogs));
-      populateMonthSelect(studentName);
-      renderStudentComments(studentName);
-      document.getElementById("commentInput").value = "";
-    }
+  const text = document.getElementById("commentInput").value.trim();
+  if (!text) return;
+
+  // 날짜 입력 필드에서 선택된 값을 가져오기
+  let selectedDate = document.getElementById("commentDate").value;
+  if (!selectedDate) {
+    // 선택하지 않은 경우 오늘 날짜를 기본값으로 사용
+    const now = new Date();
+    selectedDate = `${now.getFullYear()}.${String(now.getMonth() + 1).padStart(2, "0")}.${String(now.getDate()).padStart(2, "0")}`;
+  } else {
+    // yyyy-mm-dd → yyyy.mm.dd 로 포맷 변경
+    selectedDate = selectedDate.replace(/-/g, '.');
+  }
+
+  const teacherId = localStorage.getItem("teacherId") || "unknown";
+  const allLogs = JSON.parse(localStorage.getItem("studentLogs") || "{}");
+  if (!allLogs[studentName]) allLogs[studentName] = [];
+  allLogs[studentName].unshift({ date: selectedDate, teacher: teacherId, comment: text });
+  localStorage.setItem("studentLogs", JSON.stringify(allLogs));
+
+  populateMonthSelect(studentName);
+  renderStudentComments(studentName);
+  document.getElementById("commentInput").value = "";
+  document.getElementById("commentDate").value = ""; // 입력창 초기화
+}
+
 
     function renderStudentComments(studentName) {
   const allLogs = JSON.parse(localStorage.getItem("studentLogs") || "{}");
