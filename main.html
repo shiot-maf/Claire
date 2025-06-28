@@ -119,7 +119,11 @@
 
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
-
+   
+    window.logout = function () {
+    localStorage.removeItem("teacherId");
+    location.href = "index.html";
+  };
     window.db = db;
     window.addDoc = addDoc;
     window.getDocs = getDocs;
