@@ -1,219 +1,267 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta charset="UTF-8">
-  <title>관리자 페이지</title>
+  <meta charset="UTF-8" />
+  <title>학생 관찰 기록</title>
   <style>
     body {
-      margin: 0;
       font-family: 'Segoe UI', sans-serif;
-      background: #f4f6f9;
+      background: #f5f8ff;
+      margin: 0;
+      padding: 30px;
+    }
+    h2 {
+      text-align: center;
+      color: #167a1b;
+    }
+    label {
+      font-weight: bold;
     }
     .container {
-      max-width: 1200px;
+      max-width: 800px;
       margin: 0 auto;
-      padding: 30px;
       background: #fff;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
     }
-    .layout {
-      display: flex;
-      gap: 30px;
-    }
-    .left-column {
-      flex: 1;
-      min-width: 250px;
-    }
-    .right-column {
-      flex: 3;
-    }
-    h1 {
-      color: #14532d;
-      font-size: 24px;
-      margin-bottom: 20px;
-    }
-    .top-bar {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    .filters {
-      display: flex;
-      align-items: center;
-      margin-bottom: 20px;
-      gap: 10px;
-      flex-wrap: wrap;
-    }
-    button.action, .tab-button, .class-button {
-      background-color: #15803d;
-      color: white;
-      padding: 10px 15px;
+    button {
+      width: 150px;
+      padding: 10px 16px;
+      margin: 5px;
+      border-radius: 6px;
       border: none;
-      border-radius: 4px;
+      background-color: #64b668;
+      color: white;
       cursor: pointer;
-      font-size: 14px;
-    }
-    button.action:hover, .tab-button:hover, .class-button:hover {
-      background-color: #14532d;
+      box-sizing: border-box;
+      text-align: center;
+      transition: background-color 0.2s ease;
     }
     .logout-button {
-      background-color: #991b1b;
-      color: white;
-      border: none;
+      width: 60px;
       padding: 6px 12px;
-      border-radius: 4px;
-      cursor: pointer;
-    }
-    .accordion {
-      background-color: #15803d;
-      color: white;
-      cursor: pointer;
-      padding: 10px;
-      width: 60%;
-      text-align: left;
-      border: none;
-      outline: none;
-      transition: background-color 0.2s ease;
-      border-radius: 4px;
-      margin-bottom: 5px;
-    }
-    .accordion:hover {
-      background-color: #14532d;
-    }
-    .panel {
-      display: none;
-      flex-direction: column;
-      gap: 6px;
+      font-size: 9px;
+      background-color: #ccc;
+      color: #333;
+      border: 1px solid #999;
       margin-bottom: 10px;
-      padding-left: 10px;
     }
-    .panel .student-button {
-      background-color: #e6f4ea;
-      color: #14532d;
-      border: 1px solid #15803d;
-      font-size: 13px;
-      padding: 6px 10px;
-      text-align: left;
-      width: 40%;
-      border-radius: 4px;
+    .logout-button:hover {
+      background-color: #bbb;
     }
-    .panel .student-button:hover {
-      background-color: #d3ead8;
+    button:hover {
+      background-color: #4c9e52;
     }
-    .comment-entry {
+    button.active {
+      background-color: #125c17 !important;
+      font-weight: bold;
+      color: white;
+      border: 2px solid #0d4712;
+    }
+    #commentInput {
+      font-size: 16px;
+      margin: 5px 0;
+      padding: 10px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      width: 100%;
+      box-sizing: border-box;
+    }
+    .comment {
       border-bottom: 1px solid #ccc;
       padding: 8px 0;
       white-space: pre-wrap;
     }
-    .comment-entry button {
-      background-color: #991b1b;
-      color: white;
-      border: none;
-      padding: 4px 8px;
-      border-radius: 4px;
-      margin-top: 4px;
-      cursor: pointer;
+    .centered-buttons {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 10px;
+      margin-bottom: 15px;
     }
-    .tab-button.active {
-      background-color: #0f5132;
+    #commentHistory {
+      margin-top: 15px;
     }
   </style>
-  <script>
-    function toggleAccordion(e) {
-      const panel = e.nextElementSibling;
-      panel.style.display = panel.style.display === "flex" ? "none" : "flex";
+</head>
+<body>
+  <div class="container">
+    <h2>학생 관찰 기록 페이지</h2>
+    <p>선생님: <strong id="teacherName"></strong></p>
+    <button class="logout-button" onclick="logout()">로그아웃</button>
+    <hr>
+
+    <div class="centered-buttons">
+      <button class="day-group-button" data-group="월수금" onclick="selectDayGroup('월수금')">월수금</button>
+      <button class="day-group-button" data-group="화목" onclick="selectDayGroup('화목')">화목</button>
+      <select id="monthFilter" onchange="filterByMonth()">
+        <option value="">전체 보기</option>
+      </select>
+    </div>
+
+    <div id="classButtonsContainer" class="centered-buttons"></div>
+    <hr class="section-divider">
+    <div id="studentButtonsContainer" class="centered-buttons"></div>
+    <div id="commentSection"></div>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import { getFirestore, collection, addDoc, getDocs, query, where } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyCQ460HGskAiS7PzP7POHNani7dmZLs1d0",
+      authDomain: "claire-students-obs.firebaseapp.com",
+      projectId: "claire-students-obs",
+      storageBucket: "claire-students-obs.firebasestorage.app",
+      messagingSenderId: "413871024792",
+      appId: "1:413871024792:web:35b7cbbb3e3e9f25347eed",
+      measurementId: "G-FS2L4K2VBG"
+  };
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    const teacherId = localStorage.getItem("teacherId") || "";
+    document.getElementById("teacherName").innerText = teacherId;
+    if (!teacherId) {
+      alert("로그인이 필요합니다.");
+      location.href = "index.html";
     }
 
-    function renderClassAccordion(data) {
-      const studentList = document.getElementById("studentList");
-      studentList.innerHTML = "";
+    const classGroups = { /* ... same as before ... */ };
 
-      for (const className in data) {
-        const accordion = document.createElement("button");
-        accordion.className = "accordion";
-        accordion.innerText = className;
-        accordion.onclick = function() { toggleAccordion(this); };
-
-        const panel = document.createElement("div");
-        panel.className = "panel";
-
-        data[className].forEach(student => {
-          const btn = document.createElement("button");
-          btn.className = "student-button";
-          btn.innerText = student;
-          btn.onclick = function() { renderCommentsForStudent(student); };
-          panel.appendChild(btn);
-        });
-
-        studentList.appendChild(accordion);
-        studentList.appendChild(panel);
-      }
-    }
+    let selectedGroup = "";
+    let selectedClass = "";
+    let currentClassData = {};
+    let selectedMonth = "";
 
     function logout() {
       localStorage.removeItem("teacherId");
       location.href = "index.html";
     }
 
-    document.addEventListener("DOMContentLoaded", () => {
-      document.getElementById("teacherName").innerText = localStorage.getItem("teacherId") || "admin";
+    window.selectDayGroup = function(group) {
+      selectedGroup = group;
+      updateClassButtons(classGroups[group]);
+      document.getElementById("studentButtonsContainer").innerHTML = "";
+      document.getElementById("commentSection").innerHTML = "";
+    }
 
-      const classGroups = {
-        "Intro": ["곽이나", "최가림", "황도윤", "김시연"],
-        "HighUP(LG2)": ["성예원", "조윤찬", "강유준", "진수혁", "정민서", "김태윤", "이지몽"],
-        "FlyUP(LG3)": ["박신우", "김태윤(KTY)", "이채은", "이채율", "양인영", "최소은", "양지윤"],
-        "Journeys2": ["임시윤", "조은정", "조혜인", "조은호", "오서원", "유은우"],
-        "Phonics1": ["서주원", "김윤설", "변은찬"],
-        "IAS": ["김채안", "최원홍"],
-        "M1": ["이서현", "이시우", "이규성", "이현찬", "김진서", "정의윤", "정의담"],
-        "M2": ["박태윤", "서완희", "김민주", "추선우"],
-        "M3": ["유시영"],
-        "Phonics2": ["이재백", "김시윤", "조윤서", "박설민", "김리온"],
-        "JumpUP(LG1)": ["김여원"],
-        "Arete": ["홍지훈"]
-      };
+    function updateClassButtons(classGroupData) {
+      const container = document.getElementById("classButtonsContainer");
+      container.innerHTML = "";
+      currentClassData = classGroupData;
+      for (const cls in classGroupData) {
+        const btn = document.createElement("button");
+        btn.innerText = cls;
+        btn.onclick = () => renderStudents(cls);
+        container.appendChild(btn);
+      }
+    }
 
-      renderClassAccordion(classGroups);
-    });
+    function renderStudents(className) {
+      const container = document.getElementById("studentButtonsContainer");
+      container.innerHTML = "";
+      selectedClass = className;
+      document.getElementById("commentSection").innerHTML = "";
+      const students = currentClassData[className] || [];
+      students.forEach(name => {
+        const btn = document.createElement("button");
+        btn.innerText = name;
+        btn.onclick = () => openCommentBox(name);
+        container.appendChild(btn);
+      });
+    }
 
-    function renderCommentsForStudent(studentName) {
+    window.filterByMonth = function () {
+      selectedMonth = document.getElementById("monthFilter").value;
+      if (selectedClass) {
+        renderStudents(selectedClass);
+      }
+    }
+
+    async function openCommentBox(name) {
+      const section = document.getElementById("commentSection");
+      section.innerHTML = `
+        <h3>${name} 학생 평가</h3>
+        <label>날짜 선택:</label>
+        <input type="date" id="commentDate" /><br>
+        <textarea id="commentInput" rows="3" cols="50" placeholder="오늘의 평가를 입력하세요."></textarea><br>
+        <button onclick="submitComment('${name}')">등록</button>
+        <button onclick="downloadCSV('${name}')">CSV 다운로드</button>
+        <div id="commentHistory"></div>
+      `;
+      document.getElementById("commentDate").value = new Date().toISOString().split("T")[0];
+      await renderStudentComments(name);
+    }
+
+    window.submitComment = async function(studentName) {
+      const text = document.getElementById("commentInput").value.trim();
+      if (!text) return;
+
+      let selectedDate = document.getElementById("commentDate").value;
+      if (!selectedDate) {
+        const now = new Date();
+        selectedDate = `${now.getFullYear()}.${String(now.getMonth() + 1).padStart(2, "0")}.${String(now.getDate()).padStart(2, "0")}`;
+      } else {
+        selectedDate = selectedDate.replace(/-/g, ".");
+      }
+
+      await addDoc(collection(db, "comments"), {
+        student: studentName,
+        date: selectedDate,
+        teacher: teacherId,
+        comment: text
+      });
+
+      document.getElementById("commentInput").value = "";
+      await renderStudentComments(studentName);
+    }
+
+    window.downloadCSV = async function(studentName) {
+      const q = query(collection(db, "comments"), where("student", "==", studentName));
+      const snapshot = await getDocs(q);
+      const logs = [];
+      snapshot.forEach(doc => logs.push(doc.data()));
+      const filtered = selectedMonth ? logs.filter(log => log.date.startsWith(selectedMonth)) : logs;
+
+      const rows = [["날짜", "선생님", "내용"]];
+      filtered.forEach(log => rows.push([log.date, log.teacher, log.comment]));
+      const csvContent = rows.map(e => e.map(cell => `"${cell}"`).join(",")).join("\n");
+      const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+      const link = document.createElement("a");
+      link.href = URL.createObjectURL(blob);
+      link.download = `${studentName}_${selectedMonth || "전체"}.csv`;
+      link.click();
+    }
+
+    async function renderStudentComments(studentName) {
       const historyDiv = document.getElementById("commentHistory");
-      historyDiv.innerHTML = `<h3>${studentName} 평가 내역</h3><p>이곳에 평가 데이터 출력 예정</p>`;
+      const q = query(collection(db, "comments"), where("student", "==", studentName));
+      const snapshot = await getDocs(q);
+      const logs = [];
+      snapshot.forEach(doc => logs.push(doc.data()));
+      const filtered = selectedMonth ? logs.filter(log => log.date.startsWith(selectedMonth)) : logs;
+
+      historyDiv.innerHTML = "";
+      filtered.sort((a, b) => (b.date || "").localeCompare(a.date || ""));
+      filtered.forEach(log => {
+        const entry = document.createElement("div");
+        entry.className = "comment";
+        entry.innerHTML = `<strong>${log.date} - ${log.teacher}:</strong><div>${log.comment}</div>`;
+        historyDiv.appendChild(entry);
+      });
+
+      updateMonthFilterOptions(logs);
     }
 
-    function renderFilteredLogs() {
-      // 필터링 로직 향후 구현 예정
-    }
-
-    function downloadAllCSV() {
-      alert("CSV 다운로드 기능은 아직 구현되지 않았습니다.");
+    function updateMonthFilterOptions(logs) {
+      const select = document.getElementById("monthFilter");
+      const months = [...new Set(logs.map(log => log.date?.slice(0, 7)))].filter(Boolean);
+      months.sort().reverse();
+      select.innerHTML = '<option value="">전체 보기</option>' + months.map(m => `<option value="${m}">${m}</option>`).join("");
     }
   </script>
-</head>
-<body>
-  <div class="container">
-    <div class="top-bar">
-      <h1>관리자 페이지</h1>
-      <button class="logout-button" onclick="logout()">로그아웃</button>
-    </div>
-    <p>관리자 ID: <strong id="teacherName"></strong></p>
-
-    <div id="viewTabs" class="filters"></div>
-
-    <div class="layout">
-      <div class="left-column">
-        <div class="filters">
-          <label for="monthSelect">월별 보기:</label>
-          <input type="month" id="monthSelect" onchange="renderFilteredLogs()">
-          <input type="hidden" id="selectedStudent">
-          <button class="action" onclick="downloadAllCSV()">CSV 다운로드</button>
-        </div>
-        <div id="studentList" class="student-list"></div>
-      </div>
-
-      <div class="right-column">
-        <div id="commentHistory"></div>
-      </div>
-    </div>
-  </div>
 </body>
 </html>
