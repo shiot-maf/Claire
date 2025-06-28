@@ -1,124 +1,139 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta charset="UTF-8">
-  <title>학생 관리 페이지</title>
+  <meta charset="UTF-8" />
+  <title>학생 관찰 기록</title>
   <style>
     body {
-      margin: 0;
       font-family: 'Segoe UI', sans-serif;
-      background: #f4f6f9;
+      background: #f5f8ff;
+      margin: 0;
+      padding: 30px;
     }
-    .dashboard {
-      display: flex;
-      height: 100vh;
+    h2 {
+      text-align: center;
+      color: #167a1b;
     }
-    .sidebar {
-      width: 300px;
-      background-color: #14532d;
-      color: white;
-      padding: 20px;
-      box-sizing: border-box;
-      overflow-y: auto;
-    }
-    .sidebar h2 {
-      font-size: 16px;
-      margin: 20px 0 8px;
-      padding-bottom: 4px;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.3);
-    }
-    .sidebar button {
-      display: block;
-      width: 100%;
-      margin: 5px 0;
-      padding: 10px;
-      background-color: #166534;
-      border: none;
-      color: white;
-      cursor: pointer;
-      text-align: left;
-      border-radius: 4px;
-      font-size: 14px;
-      transition: background-color 0.2s ease;
-    }
-    .sidebar button:hover {
-      background-color: #15803d;
-    }
-    .sidebar button.active {
-      background-color: #0f5132;
+    label {
       font-weight: bold;
     }
-    .submenu {
-      padding-left: 10px;
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      background: #fff;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
     }
-    .submenu button {
-      background-color: #166534;
-      font-size: 13px;
-      padding: 8px;
-    }
-    .main {
-      flex: 1;
-      padding: 30px;
-      background-color: #fff;
-      overflow-y: auto;
-    }
-    .main h3 {
-      margin-top: 0;
-    }
-    textarea, select, input[type="date"] {
-      width: 100%;
-      margin-top: 10px;
-      margin-bottom: 10px;
-      padding: 8px;
-      font-size: 14px;
-      box-sizing: border-box;
-    }
-    button.action {
-      background-color: #15803d;
-      color: white;
-      padding: 10px 15px;
-      margin-right: 10px;
+    button {
+      width: 150px;
+      padding: 10px 16px;
+      margin: 5px;
+      border-radius: 6px;
       border: none;
-      border-radius: 4px;
+      background-color: #64b668;
+      color: white;
       cursor: pointer;
+      box-sizing: border-box;
+      text-align: center;
+      transition: background-color 0.2s ease;
     }
-    button.action:hover {
-      background-color: #166534;
+    .logout-button {
+      width: 60px;
+      padding: 6px 12px;
+      font-size: 9px;
+      background-color: #ccc;
+      color: #333;
+      border: 1px solid #999;
+      margin-bottom: 10px;
+    }
+    .logout-button:hover {
+      background-color: #bbb;
+    }
+    button:hover {
+      background-color: #4c9e52;
+    }
+    button.active {
+      background-color: #125c17 !important;
+      font-weight: bold;
+      color: white;
+      border: 2px solid #0d4712;
+    }
+    #commentInput {
+      font-size: 16px;
+      margin: 5px 0;
+      padding: 10px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      width: 100%;
+      box-sizing: border-box;
     }
     .comment {
       border-bottom: 1px solid #ccc;
       padding: 8px 0;
       white-space: pre-wrap;
     }
-    .student-button {
-      padding: 12px 20px;
-      margin: 5px;
-      font-size: 16px;
-      border-radius: 6px;
-      border: none;
-      background-color: #166534;
-      color: white;
-      cursor: pointer;
+    .centered-buttons {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 10px;
+      margin-bottom: 15px;
     }
-    .student-button:hover {
-      background-color: #14532d;
-    }
-    .teacher-info {
-      margin-bottom: 20px;
-      font-size: 14px;
-    }
-    .logout-button {
-      background-color: #991b1b;
-      border: none;
-      padding: 6px 12px;
-      color: white;
-      font-size: 12px;
-      border-radius: 4px;
-      cursor: pointer;
-      margin-top: 5px;
+    #commentHistory {
+      margin-top: 15px;
     }
   </style>
-  <script>
+</head>
+<body>
+  <div class="container">
+    <h2>학생 관찰 기록 페이지</h2>
+    <p>선생님: <strong id="teacherName"></strong></p>
+    <button class="logout-button" onclick="logout()">로그아웃</button>
+    <hr>
+
+    <div class="centered-buttons">
+      <button class="day-group-button" data-group="월수금" onclick="selectDayGroup('월수금')">월수금</button>
+      <button class="day-group-button" data-group="화목" onclick="selectDayGroup('화목')">화목</button>
+    </div>
+
+    <div id="classButtonsContainer" class="centered-buttons"></div>
+    <hr class="section-divider">
+    <div id="studentButtonsContainer" class="centered-buttons"></div>
+    <div id="commentSection"></div>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import { getFirestore, collection, addDoc, getDocs, query, where } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+     const firebaseConfig = {
+    apiKey: "AIzaSyCQ460HGskAiS7PzP7POHNani7dmZLs1d0",
+    authDomain: "claire-students-obs.firebaseapp.com",
+    projectId: "claire-students-obs",
+    storageBucket: "claire-students-obs.firebasestorage.app",
+    messagingSenderId: "413871024792",
+    appId: "1:413871024792:web:35b7cbbb3e3e9f25347eed",
+    measurementId: "G-FS2L4K2VBG"
+  };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    window.db = db;
+    window.addDoc = addDoc;
+    window.getDocs = getDocs;
+    window.collection = collection;
+    window.query = query;
+    window.where = where;
+
+    const teacherId = localStorage.getItem("teacherId") || "";
+    document.getElementById("teacherName").innerText = teacherId;
+    if (!teacherId) {
+      alert("로그인이 필요합니다.");
+      location.href = "index.html";
+    }
+
     const classGroups = {
       "월수금": {
         "Intro": ["곽이나", "최가림", "황도윤", "김시연"],
@@ -139,74 +154,94 @@
       }
     };
 
+    let selectedGroup = "";
+    let selectedClass = "";
+    let currentClassData = {};
+
     function logout() {
       localStorage.removeItem("teacherId");
       location.href = "index.html";
     }
 
-    function selectDayGroup(group, btn) {
-      document.querySelectorAll('.sidebar button').forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
+    window.selectDayGroup = function(group) {
+      selectedGroup = group;
+      updateClassButtons(classGroups[group]);
+      document.getElementById("studentButtonsContainer").innerHTML = "";
+      document.getElementById("commentSection").innerHTML = "";
+    }
 
-      const classButtonsContainer = document.getElementById("classButtonsContainer");
-      classButtonsContainer.innerHTML = "";
-      for (const cls in classGroups[group]) {
-        const button = document.createElement("button");
-        button.textContent = cls;
-        button.onclick = () => renderStudents(group, cls);
-        classButtonsContainer.appendChild(button);
+    function updateClassButtons(classGroupData) {
+      const container = document.getElementById("classButtonsContainer");
+      container.innerHTML = "";
+      currentClassData = classGroupData;
+      for (const cls in classGroupData) {
+        const btn = document.createElement("button");
+        btn.innerText = cls;
+        btn.onclick = () => renderStudents(cls);
+        container.appendChild(btn);
       }
     }
 
-    function renderStudents(group, cls) {
-      const students = classGroups[group][cls];
+    function renderStudents(className) {
       const container = document.getElementById("studentButtonsContainer");
-      const title = document.getElementById("selectedStudentTitle");
       container.innerHTML = "";
-      title.textContent = `${group} - ${cls} 학생 목록`;
-
+      selectedClass = className;
+      document.getElementById("commentSection").innerHTML = "";
+      const students = currentClassData[className] || [];
       students.forEach(name => {
         const btn = document.createElement("button");
-        btn.className = "student-button";
-        btn.textContent = name;
+        btn.innerText = name;
         btn.onclick = () => openCommentBox(name);
         container.appendChild(btn);
       });
     }
 
-    function openCommentBox(name) {
+    async function openCommentBox(name) {
       const section = document.getElementById("commentSection");
       section.innerHTML = `
         <h3>${name} 학생 평가</h3>
         <label>날짜 선택:</label>
-        <input type="date" id="commentDate"><br>
-        <textarea id="commentInput" rows="4" placeholder="오늘의 평가를 입력하세요."></textarea>
-        <button class="action" onclick="submitComment('${name}')">등록</button>
+        <input type="date" id="commentDate" /><br>
+        <textarea id="commentInput" rows="3" cols="50" placeholder="오늘의 평가를 입력하세요."></textarea><br>
+        <button onclick="submitComment('${name}')">등록</button>
         <div id="commentHistory"></div>
       `;
       document.getElementById("commentDate").value = new Date().toISOString().split("T")[0];
-      renderStudentComments(name);
+      await renderStudentComments(name);
     }
 
-    function submitComment(studentName) {
+    window.submitComment = async function(studentName) {
       const text = document.getElementById("commentInput").value.trim();
       if (!text) return;
+
       let selectedDate = document.getElementById("commentDate").value;
-      selectedDate = selectedDate.replace(/-/g, ".");
-      const teacherId = localStorage.getItem("teacherId") || "unknown";
-      const allLogs = JSON.parse(localStorage.getItem("studentLogs") || "{}");
-      if (!allLogs[studentName]) allLogs[studentName] = [];
-      allLogs[studentName].unshift({ date: selectedDate, teacher: teacherId, comment: text });
-      localStorage.setItem("studentLogs", JSON.stringify(allLogs));
-      renderStudentComments(studentName);
+      if (!selectedDate) {
+        const now = new Date();
+        selectedDate = `${now.getFullYear()}.${String(now.getMonth() + 1).padStart(2, "0")}.${String(now.getDate()).padStart(2, "0")}`;
+      } else {
+        selectedDate = selectedDate.replace(/-/g, ".");
+      }
+
+      await addDoc(collection(db, "comments"), {
+        student: studentName,
+        date: selectedDate,
+        teacher: teacherId,
+        comment: text
+      });
+
       document.getElementById("commentInput").value = "";
+      await renderStudentComments(studentName);
     }
 
-    function renderStudentComments(studentName) {
-      const allLogs = JSON.parse(localStorage.getItem("studentLogs") || "{}");
-      const logs = allLogs[studentName] || [];
+    async function renderStudentComments(studentName) {
       const historyDiv = document.getElementById("commentHistory");
+      const q = query(collection(db, "comments"), where("student", "==", studentName));
+      const snapshot = await getDocs(q);
+      const logs = [];
+      snapshot.forEach(doc => logs.push(doc.data()));
+
       historyDiv.innerHTML = "";
+      logs.sort((a, b) => (b.date || "").localeCompare(a.date || ""));
       logs.forEach(log => {
         const entry = document.createElement("div");
         entry.className = "comment";
@@ -214,62 +249,6 @@
         historyDiv.appendChild(entry);
       });
     }
-
-    window.onload = () => {
-      const teacherId = localStorage.getItem("teacherId") || "";
-      if (!teacherId) {
-        alert("로그인이 필요합니다.");
-        location.href = "index.html";
-        return;
-      }
-      document.getElementById("teacherName").textContent = teacherId;
-    };
   </script>
-</head>
-<body>
-  <div class="dashboard">
-    <div class="sidebar">
-      <div class="teacher-info">
-        선생님: <strong id="teacherName">알 수 없음</strong><br>
-        <button class="logout-button" onclick="logout()">로그아웃</button>
-      </div>
-      <h2>요일 선택</h2>
-      <button id="btnMonWedFri" onclick="selectDayGroup('월수금', this)">월수금</button>
-      <button id="btnTueThu" onclick="selectDayGroup('화목', this)">화목</button>
-
-      <h2>반 선택</h2>
-      <div id="classButtonsContainer"></div>
-    </div>
-    <div class="main">
-      <h3 id="selectedStudentTitle">학생을 선택해주세요</h3>
-      <div id="studentButtonsContainer"></div>
-      <div id="commentSection"></div>
-    </div>
-  </div>
-  
-<script type="module">
-  // Import the functions you need from the SDKs you need
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-app.js";
-  import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-analytics.js";
-  // TODO: Add SDKs for Firebase products that you want to use
-  // https://firebase.google.com/docs/web/setup#available-libraries
-
-  // Your web app's Firebase configuration
-  // For Firebase JS SDK v7.20.0 and later, measurementId is optional
-  const firebaseConfig = {
-    apiKey: "AIzaSyCQ460HGskAiS7PzP7POHNani7dmZLs1d0",
-    authDomain: "claire-students-obs.firebaseapp.com",
-    projectId: "claire-students-obs",
-    storageBucket: "claire-students-obs.firebasestorage.app",
-    messagingSenderId: "413871024792",
-    appId: "1:413871024792:web:35b7cbbb3e3e9f25347eed",
-    measurementId: "G-FS2L4K2VBG"
-  };
-
-  // Initialize Firebase
-  const app = initializeApp(firebaseConfig);
-  const analytics = getAnalytics(app);
-</script>
-  
 </body>
 </html>
