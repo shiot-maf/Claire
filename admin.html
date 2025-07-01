@@ -18,12 +18,22 @@
       font-weight: bold;
     }
     .container {
-      max-width: 800px;
+      display: flex;
+      gap: 20px;
+      max-width: 1200px;
       margin: 0 auto;
+    }
+    .left-panel, .right-panel {
       background: #fff;
       padding: 20px;
       border-radius: 12px;
       box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    }
+    .left-panel {
+      flex: 2;
+    }
+    .right-panel {
+      flex: 1;
     }
     button {
       width: 150px;
@@ -53,7 +63,10 @@
     button:hover {
       background-color: #4c9e52;
     }
-    button.active {
+    button.active,
+    .day-group-button.active,
+    #classButtonsContainer button.active,
+    #studentButtonsContainer button.active {
       background-color: #125c17 !important;
       font-weight: bold;
       color: white;
@@ -76,7 +89,6 @@
     .centered-buttons {
       display: flex;
       flex-wrap: wrap;
-      justify-content: center;
       gap: 10px;
       margin-bottom: 15px;
     }
@@ -87,23 +99,29 @@
 </head>
 <body>
   <div class="container">
-    <h2>학생 관찰 기록 페이지</h2>
-    <p>선생님: <strong id="teacherName"></strong></p>
-    <button class="logout-button" onclick="logout()">로그아웃</button>
-    <hr>
-
-    <div class="centered-buttons">
-      <button class="day-group-button" onclick="selectDayGroup('월수금', this)">월수금</button>
-      <button class="day-group-button" onclick="selectDayGroup('화목', this)">화목</button>
-      <select id="monthFilter" onchange="filterByMonth()">
-        <option value="">전체 보기</option>
-      </select>
+    <div class="left-panel">
+      <p>선생님: <strong id="teacherName"></strong></p>
+      <button class="logout-button" onclick="logout()">로그아웃</button>
+      <hr>
+      <div class="centered-buttons">
+        <button onclick="enrollStudent()">입학 조치</button>
+        <button onclick="expelStudent()">퇴원 조치</button>
+      </div>
+      <div class="centered-buttons">
+        <button class="day-group-button" data-group="월수금" onclick="selectDayGroup('월수금', this)">월수금</button>
+        <button class="day-group-button" data-group="화목" onclick="selectDayGroup('화목', this)">화목</button>
+      </div>
+      <div id="classButtonsContainer" class="centered-buttons"></div>
+      <hr>
+      <div id="studentButtonsContainer" class="centered-buttons"></div>
     </div>
-
-    <div id="classButtonsContainer" class="centered-buttons"></div>
-    <hr class="section-divider">
-    <div id="studentButtonsContainer" class="centered-buttons"></div>
-    <div id="commentSection"></div>
+    <div class="right-panel">
+      <label for="monthPicker">월 선택:</label>
+      <input type="month" id="monthPicker" /><br><br>
+      <button onclick="downloadCSV()">CSV 다운로드</button>
+      <button onclick="deleteComments()">코멘트 삭제</button>
+      <div id="commentSection"></div>
+    </div>
   </div>
 
   <script type="module">
