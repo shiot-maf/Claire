@@ -359,16 +359,7 @@
       document.getElementById("enrollDialog").close();
     });
 
-    document.getElementById("expelButton").addEventListener("click", async () => {
-      const name = prompt("퇴원 처리할 학생의 이름을 입력하세요:");
-      if (!name) return;
-      const confirmed = confirm(`${name} 학생을 퇴원 처리하시겠습니까?\n퇴원 후 평가 등록이 차단됩니다.`);
-      if (confirmed) {
-        const studentRef = doc(db, "students", name);
-        await setDoc(studentRef, { status: "expelled" }, { merge: true });
-        alert(`${name} 학생이 퇴원 처리되었습니다.`);
-      }
-    });
+
 
 
     window.downloadCSV = async function (studentName) {
