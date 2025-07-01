@@ -110,16 +110,20 @@
     }
   </style>
 </head>
-<body>
+ <h2>학생 관찰 기록 페이지</h2>
   <div class="container">
     <div class="left-panel">
       <p>선생님: <strong id="teacherName"></strong></p>
       <button class="logout-button" onclick="logout()">로그아웃</button>
       <hr>
+
+      <h4>학생관리 메뉴</h4>
       <div class="centered-buttons">
-        <button onclick="enrollStudent()">입학 조치</button>
-        <button onclick="expelStudent()">퇴원 조치</button>
+        <button id="enrollButton">입학 조치</button>
+        <button id="expelButton">퇴원 조치</button>
       </div>
+
+      <hr>
       <div class="centered-buttons">
         <button class="day-group-button" data-group="월수금" onclick="selectDayGroup('월수금', this)">월수금</button>
         <button class="day-group-button" data-group="화목" onclick="selectDayGroup('화목', this)">화목</button>
@@ -128,15 +132,17 @@
       <hr>
       <div id="studentButtonsContainer" class="centered-buttons"></div>
     </div>
+
     <div class="right-panel">
       <label for="monthPicker">월 선택:</label>
       <input type="month" id="monthPicker" /><br><br>
+      <button onclick="downloadCSV()">CSV 다운로드</button>
+      <button onclick="deleteComments()">코멘트 삭제</button>
       <div id="commentSection"></div>
     </div>
   </div>
 
-  
- <dialog id="enrollDialog">
+  <dialog id="enrollDialog">
     <h3>학생 입학 등록</h3>
     <input type="text" id="newStudentName" placeholder="이름" />
     <select id="newStudentGender">
@@ -145,13 +151,17 @@
       <option value="여">여</option>
     </select>
     <input type="text" id="newStudentClass" placeholder="반 이름 (예: Phonics1)" />
-    <button onclick="submitEnrollment()">등록</button>
+    <button id="submitEnrollBtn">등록</button>
     <button onclick="document.getElementById('enrollDialog').close()">닫기</button>
   </dialog>
-  
+
   <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-    import { getFirestore, collection, addDoc, getDocs, query, where } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+    import {
+      initializeApp
+    } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import {
+      getFirestore, doc, setDoc, getDoc
+    } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyCQ460HGskAiS7PzP7POHNani7dmZLs1d0",
@@ -159,8 +169,7 @@
       projectId: "claire-students-obs",
       storageBucket: "claire-students-obs.appspot.com",
       messagingSenderId: "413871024792",
-      appId: "1:413871024792:web:35b7cbbb3e3e9f25347eed",
-      measurementId: "G-FS2L4K2VBG"
+      appId: "1:413871024792:web:35b7cbbb3e3e9f25347eed"
     };
 
     const app = initializeApp(firebaseConfig);
@@ -169,20 +178,16 @@
     window.logout = function () {
       localStorage.removeItem("teacherId");
       location.href = "index.html";
-    }
-
-    const teacherId = localStorage.getItem("teacherId") || "";
-    if (!teacherId) {
-      alert("로그인이 필요합니다.");
-      location.href = "index.html";
-    } else {
-      document.getElementById("teacherName").innerText = teacherId;
-    }
-window.showEnrollDialog = function() {
-      document.getElementById("enrollDialog").showModal();
     };
 
-    window.submitEnrollment = async function() {
+    const teacherId = localStorage.getItem("teacherId") || "";
+    document.getElementById("teacherName").innerText = teacherId;
+
+    document.getElementById("enrollButton").addEventListener("click", () => {
+      document.getElementById("enrollDialog").showModal();
+    });
+
+    document.getElementById("submitEnrollBtn").addEventListener("click", async () => {
       const name = document.getElementById("newStudentName").value.trim();
       const gender = document.getElementById("newStudentGender").value;
       const className = document.getElementById("newStudentClass").value.trim();
@@ -194,9 +199,9 @@ window.showEnrollDialog = function() {
       await setDoc(studentRef, { status: "active", gender, class: className }, { merge: true });
       alert(`${name} 학생이 입학 등록되었습니다.`);
       document.getElementById("enrollDialog").close();
-    };
+    });
 
-    window.prepareExpelStudent = async function() {
+    document.getElementById("expelButton").addEventListener("click", async () => {
       const name = prompt("퇴원 처리할 학생의 이름을 입력하세요:");
       if (!name) return;
       const confirmed = confirm(`${name} 학생을 퇴원 처리하시겠습니까?\n퇴원 후 평가 등록이 차단됩니다.`);
@@ -205,23 +210,7 @@ window.showEnrollDialog = function() {
         await setDoc(studentRef, { status: "expelled" }, { merge: true });
         alert(`${name} 학생이 퇴원 처리되었습니다.`);
       }
-    };
-
-    async function isStudentActive(name) {
-      const docRef = doc(db, "students", name);
-      const snap = await getDoc(docRef);
-      return !snap.exists() || snap.data().status !== "expelled";
-    }
-
-    async function filterOutExpelledStudents(studentList) {
-      const results = [];
-      for (const name of studentList) {
-        if (await isStudentActive(name)) {
-          results.push(name);
-        }
-      }
-      return results;
-    }
+    });
     const classGroups = {
       "월수금": {
         "Intro": ["곽이나", "최가림", "황도윤", "김시연"],
