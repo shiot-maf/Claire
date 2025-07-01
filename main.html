@@ -131,7 +131,17 @@
     window.query = query;
     window.where = where;
 
-    const teacherId = localStorage.getItem("teacherId") || "";
+   let teacherId = "";
+window.addEventListener("DOMContentLoaded", () => {
+  teacherId = localStorage.getItem("teacherId") || "";
+  if (!teacherId) {
+    alert("로그인이 필요합니다.");
+    location.href = "index.html";
+  } else {
+    document.getElementById("teacherName").innerText = teacherId;
+  }
+});
+
     document.getElementById("teacherName").innerText = teacherId;
     if (!teacherId) {
       alert("로그인이 필요합니다.");
