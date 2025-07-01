@@ -53,10 +53,7 @@
     button:hover {
       background-color: #4c9e52;
     }
-    button.active,
-    .day-group-button.active,
-    #classButtonsContainer button.active,
-    #studentButtonsContainer button.active {
+    button.active {
       background-color: #125c17 !important;
       font-weight: bold;
       color: white;
@@ -96,8 +93,8 @@
     <hr>
 
     <div class="centered-buttons">
-      <button class="day-group-button" data-group="월수금" onclick="selectDayGroup('월수금', this)">월수금</button>
-      <button class="day-group-button" data-group="화목" onclick="selectDayGroup('화목', this)">화목</button>
+      <button class="day-group-button" onclick="selectDayGroup('월수금', this)">월수금</button>
+      <button class="day-group-button" onclick="selectDayGroup('화목', this)">화목</button>
       <select id="monthFilter" onchange="filterByMonth()">
         <option value="">전체 보기</option>
       </select>
@@ -113,30 +110,49 @@
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
     import { getFirestore, collection, addDoc, getDocs, query, where } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-    const firebaseConfig = { /* 동일 */ };
+    const firebaseConfig = {
+      apiKey: "AIzaSyCQ460HGskAiS7PzP7POHNani7dmZLs1d0",
+      authDomain: "claire-students-obs.firebaseapp.com",
+      projectId: "claire-students-obs",
+      storageBucket: "claire-students-obs.appspot.com",
+      messagingSenderId: "413871024792",
+      appId: "1:413871024792:web:35b7cbbb3e3e9f25347eed",
+      measurementId: "G-FS2L4K2VBG"
+    };
+
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
 
-    const teacherId = localStorage.getItem("teacherId") || "";
-    document.getElementById("teacherName").innerText = teacherId;
-    if (!teacherId) {
-      alert("로그인이 필요합니다.");
-      location.href = "index.html";
-    }
-
-    window.logout = function() {
+    window.logout = function () {
       localStorage.removeItem("teacherId");
       location.href = "index.html";
     }
 
-    const classGroups = { /* 동일 */ };
+    const teacherId = localStorage.getItem("teacherId") || "";
+    if (!teacherId) {
+      alert("로그인이 필요합니다.");
+      location.href = "index.html";
+    } else {
+      document.getElementById("teacherName").innerText = teacherId;
+    }
+
+    const classGroups = {
+      "월수금": {
+        "Intro": ["곽이나", "최가림", "황도윤", "김시연"],
+        "HighUP(LG2)": ["성예원", "조윤찬", "강유준", "진수혁", "정민서", "김태윤", "이지몽"]
+      },
+      "화목": {
+        "Phonics2": ["이재백", "김시윤", "조윤서", "박설민", "김리온"]
+      }
+    };
+
     let selectedGroup = "";
     let selectedClass = "";
     let selectedStudent = "";
     let currentClassData = {};
     let selectedMonth = "";
 
-    window.selectDayGroup = function(group, btn) {
+    window.selectDayGroup = function (group, btn) {
       document.querySelectorAll(".day-group-button").forEach(b => b.classList.remove("active"));
       btn.classList.add("active");
       selectedGroup = group;
@@ -205,17 +221,12 @@
       await renderStudentComments(name);
     }
 
-    window.submitComment = async function(studentName) {
+    window.submitComment = async function (studentName) {
       const text = document.getElementById("commentInput").value.trim();
       if (!text) return;
 
       let selectedDate = document.getElementById("commentDate").value;
-      if (!selectedDate) {
-        const now = new Date();
-        selectedDate = `${now.getFullYear()}.${String(now.getMonth() + 1).padStart(2, "0")}.${String(now.getDate()).padStart(2, "0")}`;
-      } else {
-        selectedDate = selectedDate.replace(/-/g, ".");
-      }
+      selectedDate = selectedDate ? selectedDate.replace(/-/g, ".") : new Date().toISOString().split("T")[0].replace(/-/g, ".");
 
       await addDoc(collection(db, "comments"), {
         student: studentName,
@@ -228,7 +239,7 @@
       await renderStudentComments(studentName);
     }
 
-    window.downloadCSV = async function(studentName) {
+    window.downloadCSV = async function (studentName) {
       const q = query(collection(db, "comments"), where("student", "==", studentName));
       const snapshot = await getDocs(q);
       const logs = [];
