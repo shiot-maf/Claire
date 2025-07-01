@@ -18,16 +18,26 @@
       font-weight: bold;
     }
     .container {
-      max-width: 800px;
+      display: flex;
+      gap: 20px;
+      max-width: 1200px;
       margin: 0 auto;
+    }
+    .left-panel, .right-panel {
       background: #fff;
       padding: 20px;
       border-radius: 12px;
       box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
     }
+    .left-panel {
+      flex: 1;
+    }
+    .right-panel {
+      flex: 2;
+    }
     button {
-      width: 150px;
-      padding: 10px 16px;
+      width: 100px;
+      padding: 10px;
       margin: 5px;
       border-radius: 6px;
       border: none;
@@ -79,36 +89,63 @@
     .centered-buttons {
       display: flex;
       flex-wrap: wrap;
-      justify-content: center;
       gap: 10px;
       margin-bottom: 15px;
     }
     #commentHistory {
       margin-top: 15px;
     }
+    dialog {
+      border: none;
+      border-radius: 8px;
+      padding: 20px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+    }
+    dialog input, dialog select {
+      display: block;
+      margin: 10px 0;
+      padding: 8px;
+      width: 100%;
+      font-size: 16px;
+    }
   </style>
 </head>
 <body>
+  <h2>학생 관찰 기록 페이지</h2>
   <div class="container">
-    <h2>학생 관찰 기록 페이지</h2>
-    <p>선생님: <strong id="teacherName"></strong></p>
-    <button class="logout-button" onclick="logout()">로그아웃</button>
-    <hr>
+    <div class="left-panel">
+      <p>선생님: <strong id="teacherName"></strong></p>
+      <button class="logout-button" onclick="logout()">로그아웃</button>
+      <hr>
 
-    <div class="centered-buttons">
-      <button class="day-group-button" data-group="월수금" onclick="selectDayGroup('월수금', this)">월수금</button>
-      <button class="day-group-button" data-group="화목" onclick="selectDayGroup('화목', this)">화목</button>
+      <h4>학생관리 메뉴</h4>
+      <div class="centered-buttons">
+        <button id="enrollButton">입학 조치</button>
+        <button id="expelButton">퇴원 조치</button>
+      </div>
+
+      <hr>
+      <div class="centered-buttons">
+        <button class="day-group-button" data-group="월수금" onclick="selectDayGroup('월수금', this)">월수금</button>
+        <button class="day-group-button" data-group="화목" onclick="selectDayGroup('화목', this)">화목</button>
+      </div>
+      <div id="classButtonsContainer" class="centered-buttons"></div>
+      <hr>
+      <div id="studentButtonsContainer" class="centered-buttons"></div>
     </div>
 
-    <div id="classButtonsContainer" class="centered-buttons"></div>
-    <hr class="section-divider">
-    <div id="studentButtonsContainer" class="centered-buttons"></div>
-    <div id="commentSection"></div>
+    <div class="right-panel">
+      <label for="monthPicker">월 선택:</label>
+      <input type="month" id="monthPicker" /><br><br>
+      <button onclick="downloadCSV()">CSV 저장</button>
+      <button onclick="deleteComments()">코멘트 삭제</button>
+      <div id="commentSection"></div>
+    </div>
   </div>
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-    import { getFirestore, collection, addDoc, getDocs, query, where } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+    import { getFirestore, doc, getDoc, getDocs, collection, query, where } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyCQ460HGskAiS7PzP7POHNani7dmZLs1d0",
@@ -126,87 +163,69 @@
     window.logout = function () {
       localStorage.removeItem("teacherId");
       location.href = "index.html";
-    }
-
-    let teacherId = "";
-    window.addEventListener("DOMContentLoaded", () => {
-      teacherId = localStorage.getItem("teacherId") || "";
-      if (!teacherId) {
-        alert("로그인이 필요합니다.");
-        location.href = "index.html";
-      } else {
-        document.getElementById("teacherName").innerText = teacherId;
-      }
-    });
-
-    const classGroups = {
-      "월수금": {
-        "Intro": ["곽이나", "최가림", "황도윤", "김시연"],
-        "HighUP(LG2)": ["성예원", "조윤찬", "강유준", "진수혁", "정민서", "김태윤", "이지몽"],
-        "FlyUP(LG3)": ["박신우", "김태윤(KTY)", "이채은", "이채율", "양인영", "최소은", "양지윤"],
-        "Journeys2": ["임시윤", "조은정", "조혜인", "조은호", "오서원", "유은우"],
-        "Phonics1": ["서주원", "김윤설", "변은찬"],
-        "IAS": ["김채안", "최원홍"],
-        "M1": ["이서현", "이시우", "이규성"],
-        "M2": ["박태윤", "서완희", "김민주", "추선우"]
-      },
-      "화목": {
-        "Phonics2": ["이재백", "김시윤", "조윤서", "박설민", "김리온"],
-        "JumpUP(LG1)": ["김여원"],
-        "Arete": ["홍지훈"],
-        "M1": ["이현찬", "김진서", "정의윤", "정의담", "추선우"],
-        "M3": ["유시영"]
-      }
     };
 
-    let selectedGroup = "";
-    let selectedClass = "";
-    let selectedStudent = "";
-    let currentClassData = {};
-
-    window.selectDayGroup = function(group, btn) {
-      document.querySelectorAll(".day-group-button").forEach(b => b.classList.remove("active"));
-      btn.classList.add("active");
-      selectedGroup = group;
-      updateClassButtons(classGroups[group]);
-      document.getElementById("studentButtonsContainer").innerHTML = "";
-      document.getElementById("commentSection").innerHTML = "";
+    async function isStudentActive(name) {
+      const docRef = doc(db, "students", name);
+      const snap = await getDoc(docRef);
+      return !snap.exists() || snap.data().status !== "expelled";
     }
 
-    function updateClassButtons(classGroupData) {
+    async function filterActiveStudents(studentList) {
+      const active = [];
+      for (const name of studentList) {
+        if (await isStudentActive(name)) active.push(name);
+      }
+      return active;
+    }
+
+    window.selectDayGroup = async function(group, btn) {
+      document.querySelectorAll(".day-group-button").forEach(b => b.classList.remove("active"));
+      btn.classList.add("active");
+      const classGroups = {
+        "월수금": {
+          "Intro": ["곽이나", "최가림", "황도윤", "김시연"],
+          "HighUP(LG2)": ["성예원", "조윤찬", "강유준", "진수혁", "정민서", "김태윤", "이지몽"],
+          "FlyUP(LG3)": ["박신우", "김태윤(KTY)", "이채은", "이채율", "양인영", "최소은", "양지윤"],
+          "Journeys2": ["임시윤", "조은정", "조혜인", "조은호", "오서원", "유은우"],
+          "Phonics1": ["서주원", "김윤설", "변은찬"],
+          "IAS": ["김채안", "최원홍"],
+          "M1": ["이서현", "이시우", "이규성"],
+          "M2": ["박태윤", "서완희", "김민주", "추선우"]
+        },
+        "화목": {
+          "Phonics2": ["이재백", "김시윤", "조윤서", "박설민", "김리온"],
+          "JumpUP(LG1)": ["김여원"],
+          "Arete": ["홍지훈"],
+          "M1": ["이현찬", "김진서", "정의윤", "정의담", "추선우"],
+          "M3": ["유시영"]
+        }
+      };
+
       const container = document.getElementById("classButtonsContainer");
       container.innerHTML = "";
-      currentClassData = classGroupData;
-      for (const cls in classGroupData) {
+      const studentContainer = document.getElementById("studentButtonsContainer");
+      studentContainer.innerHTML = "";
+
+      for (const className in classGroups[group]) {
         const btn = document.createElement("button");
-        btn.innerText = cls;
-        btn.onclick = () => {
+        btn.innerText = className;
+        btn.onclick = async () => {
           document.querySelectorAll("#classButtonsContainer button").forEach(b => b.classList.remove("active"));
           btn.classList.add("active");
-          renderStudents(cls);
+          const studentList = classGroups[group][className];
+          const activeStudents = await filterActiveStudents(studentList);
+          studentContainer.innerHTML = "";
+          activeStudents.forEach(name => {
+            const sBtn = document.createElement("button");
+            sBtn.innerText = name;
+            sBtn.onclick = () => openCommentBox(name);
+            studentContainer.appendChild(sBtn);
+          });
         };
         container.appendChild(btn);
       }
-    }
-
-    function renderStudents(className) {
-      const container = document.getElementById("studentButtonsContainer");
-      container.innerHTML = "";
-      selectedClass = className;
-      document.getElementById("commentSection").innerHTML = "";
-      const students = currentClassData[className] || [];
-      students.forEach(name => {
-        const btn = document.createElement("button");
-        btn.innerText = name;
-        btn.onclick = () => {
-          document.querySelectorAll("#studentButtonsContainer button").forEach(b => b.classList.remove("active"));
-          btn.classList.add("active");
-          selectedStudent = name;
-          openCommentBox(name);
-        };
-        container.appendChild(btn);
-      });
-    }
+    };
 
     async function openCommentBox(name) {
       const section = document.getElementById("commentSection");
@@ -237,7 +256,7 @@
       await addDoc(collection(db, "comments"), {
         student: studentName,
         date: selectedDate,
-        teacher: teacherId,
+        teacher: localStorage.getItem("teacherId"),
         comment: text
       });
 
