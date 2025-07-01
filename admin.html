@@ -237,6 +237,22 @@
         "M3": ["유시영"]
       }
     };
+    
+        const groupSelect = document.getElementById("newStudentGroup");
+        const classSelect = document.getElementById("newStudentClass");
+    
+      groupSelect.addEventListener("change", () => {
+      const selectedGroup = groupSelect.value;
+      classSelect.innerHTML = '<option value="">반 선택</option>';
+      if (classGroups[selectedGroup]) {
+        Object.keys(classGroups[selectedGroup]).forEach(cls => {
+          const opt = document.createElement("option");
+          opt.value = cls;
+          opt.innerText = cls;
+          classSelect.appendChild(opt);
+        });
+      }
+    });
 
     let selectedGroup = "";
     let selectedClass = "";
