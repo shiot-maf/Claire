@@ -223,7 +223,57 @@
       }
     };
 
-    const expelledStudents = new Set();
+     document.getElementById("expelButton").addEventListener("click", () => {
+      document.getElementById("expelGroup").value = "";
+      document.getElementById("expelClass").innerHTML = '<option value="">반 선택</option>';
+      document.getElementById("expelStudent").innerHTML = '<option value="">학생 선택</option>';
+      document.getElementById("expelDialog").showModal();
+    });
+
+    document.getElementById("expelGroup").addEventListener("change", () => {
+      const group = document.getElementById("expelGroup").value;
+      const classSelect = document.getElementById("expelClass");
+      classSelect.innerHTML = '<option value="">반 선택</option>';
+      document.getElementById("expelStudent").innerHTML = '<option value="">학생 선택</option>';
+      if (classGroups[group]) {
+        for (const cls in classGroups[group]) {
+          const opt = document.createElement("option");
+          opt.value = cls;
+          opt.innerText = cls;
+          classSelect.appendChild(opt);
+        }
+      }
+    });
+
+     document.getElementById("expelClass").addEventListener("change", async () => {
+      const group = document.getElementById("expelGroup").value;
+      const className = document.getElementById("expelClass").value;
+      const studentSelect = document.getElementById("expelStudent");
+      studentSelect.innerHTML = '<option value="">학생 선택</option>';
+      if (classGroups[group] && classGroups[group][className]) {
+        const students = classGroups[group][className];
+        for (const name of students) {
+          if (await isStudentActive(name)) {
+            const opt = document.createElement("option");
+            opt.value = name;
+            opt.innerText = name;
+            studentSelect.appendChild(opt);
+          }
+        }
+      }
+    });
+
+    document.getElementById("submitExpelBtn").addEventListener("click", async () => {
+      const name = document.getElementById("expelStudent").value;
+      if (!name) return;
+      const confirmed = confirm(`${name} 학생을 퇴원 처리하시겠습니까?`);
+      if (confirmed) {
+        const studentRef = doc(db, "students", name);
+        await setDoc(studentRef, { status: "expelled" }, { merge: true });
+        alert(`${name} 학생이 퇴원 처리되었습니다.`);
+        document.getElementById("expelDialog").close();
+      }
+    });
 
     async function isStudentActive(name) {
       const ref = doc(db, "students", name);
