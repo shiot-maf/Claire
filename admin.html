@@ -162,13 +162,9 @@
     <button onclick="document.getElementById('enrollDialog').close()">닫기</button>
   </dialog>
 
-  <script type="module">
-    import {
-      initializeApp
-    } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-    import {
-      getFirestore, doc, setDoc, getDoc
-    } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+   <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyCQ460HGskAiS7PzP7POHNani7dmZLs1d0",
@@ -190,20 +186,108 @@
     const teacherId = localStorage.getItem("teacherId") || "";
     document.getElementById("teacherName").innerText = teacherId;
 
+    const classGroups = {
+      "월수금": {
+        "Intro": ["곽이나", "최가림", "황도윤", "김시연"],
+        "HighUP(LG2)": ["성예원", "조윤찬", "강유준"],
+        "FlyUP(LG3)": ["박신우", "이채은"],
+        "Journeys2": ["임시윤", "조은정"],
+        "Phonics1": ["서주원"],
+        "IAS": ["김채안"],
+        "M1": ["이서현"],
+        "M2": ["박태윤"]
+      },
+      "화목": {
+        "Phonics2": ["이재백"],
+        "JumpUP(LG1)": ["김여원"],
+        "Arete": ["홍지훈"],
+        "M1": ["이현찬"],
+        "M3": ["유시영"]
+      }
+    };
+
+    const expelledStudents = new Set();
+
+    async function isStudentActive(name) {
+      const ref = doc(db, "students", name);
+      const snap = await getDoc(ref);
+      if (snap.exists() && snap.data().status === "expelled") {
+        expelledStudents.add(name);
+        return false;
+      }
+      return true;
+    }
+
+    async function filterActiveStudents(students) {
+      const filtered = [];
+      for (const name of students) {
+        if (await isStudentActive(name)) {
+          filtered.push(name);
+        }
+      }
+      return filtered;
+    }
+
+    window.selectDayGroup = async function(group, el) {
+      document.querySelectorAll('.day-group-button').forEach(btn => btn.classList.remove('active'));
+      el.classList.add('active');
+      const classContainer = document.getElementById('classButtonsContainer');
+      classContainer.innerHTML = '';
+      for (const className in classGroups[group]) {
+        const btn = document.createElement('button');
+        btn.innerText = className;
+        btn.onclick = () => renderStudents(group, className);
+        classContainer.appendChild(btn);
+      }
+      document.getElementById('studentButtonsContainer').innerHTML = '';
+    };
+
+    async function renderStudents(group, className) {
+      const container = document.getElementById('studentButtonsContainer');
+      container.innerHTML = '';
+      const students = await filterActiveStudents(classGroups[group][className]);
+      students.forEach(name => {
+        const btn = document.createElement('button');
+        btn.innerText = name;
+        container.appendChild(btn);
+      });
+    }
+
+    const groupSelect = document.getElementById("newStudentGroup");
+    const classSelect = document.getElementById("newStudentClass");
+
+    groupSelect.addEventListener("change", () => {
+      const selectedGroup = groupSelect.value;
+      classSelect.innerHTML = '<option value="">반 선택</option>';
+      if (classGroups[selectedGroup]) {
+        Object.keys(classGroups[selectedGroup]).forEach(cls => {
+          const opt = document.createElement("option");
+          opt.value = cls;
+          opt.innerText = cls;
+          classSelect.appendChild(opt);
+        });
+      }
+    });
+
     document.getElementById("enrollButton").addEventListener("click", () => {
+      groupSelect.value = "";
+      classSelect.innerHTML = '<option value="">반 선택</option>';
+      document.getElementById("newStudentName").value = "";
+      document.getElementById("newStudentGender").value = "";
       document.getElementById("enrollDialog").showModal();
     });
 
     document.getElementById("submitEnrollBtn").addEventListener("click", async () => {
       const name = document.getElementById("newStudentName").value.trim();
       const gender = document.getElementById("newStudentGender").value;
-      const className = document.getElementById("newStudentClass").value.trim();
-      if (!name || !gender || !className) {
+      const group = groupSelect.value;
+      const className = classSelect.value;
+      if (!name || !gender || !group || !className) {
         alert("모든 정보를 입력해주세요.");
         return;
       }
       const studentRef = doc(db, "students", name);
-      await setDoc(studentRef, { status: "active", gender, class: className }, { merge: true });
+      await setDoc(studentRef, { status: "active", gender, group, class: className }, { merge: true });
       alert(`${name} 학생이 입학 등록되었습니다.`);
       document.getElementById("enrollDialog").close();
     });
@@ -218,134 +302,7 @@
         alert(`${name} 학생이 퇴원 처리되었습니다.`);
       }
     });
-    const classGroups = {
-      "월수금": {
-        "Intro": ["곽이나", "최가림", "황도윤", "김시연"],
-        "HighUP(LG2)": ["성예원", "조윤찬", "강유준", "진수혁", "정민서", "김태윤", "이지몽"],
-        "FlyUP(LG3)": ["박신우", "김태윤(KTY)", "이채은", "이채율", "양인영", "최소은", "양지윤"],
-        "Journeys2": ["임시윤", "조은정", "조혜인", "조은호", "오서원", "유은우"],
-        "Phonics1": ["서주원", "김윤설", "변은찬"],
-        "IAS": ["김채안", "최원홍"],
-        "M1": ["이서현", "이시우", "이규성"],
-        "M2": ["박태윤", "서완희", "김민주", "추선우"]
-      },
-      "화목": {
-        "Phonics2": ["이재백", "김시윤", "조윤서", "박설민", "김리온"],
-        "JumpUP(LG1)": ["김여원"],
-        "Arete": ["홍지훈"],
-        "M1": ["이현찬", "김진서", "정의윤", "정의담", "추선우"],
-        "M3": ["유시영"]
-      }
-    };
-    
-        const groupSelect = document.getElementById("newStudentGroup");
-        const classSelect = document.getElementById("newStudentClass");
-    
-      groupSelect.addEventListener("change", () => {
-      const selectedGroup = groupSelect.value;
-      classSelect.innerHTML = '<option value="">반 선택</option>';
-      if (classGroups[selectedGroup]) {
-        Object.keys(classGroups[selectedGroup]).forEach(cls => {
-          const opt = document.createElement("option");
-          opt.value = cls;
-          opt.innerText = cls;
-          classSelect.appendChild(opt);
-        });
-      }
-    });
 
-    let selectedGroup = "";
-    let selectedClass = "";
-    let selectedStudent = "";
-    let currentClassData = {};
-    let selectedMonth = "";
-
-    window.selectDayGroup = function (group, btn) {
-      document.querySelectorAll(".day-group-button").forEach(b => b.classList.remove("active"));
-      btn.classList.add("active");
-      selectedGroup = group;
-      updateClassButtons(classGroups[group]);
-      document.getElementById("studentButtonsContainer").innerHTML = "";
-      document.getElementById("commentSection").innerHTML = "";
-    }
-
-    function updateClassButtons(classGroupData) {
-      const container = document.getElementById("classButtonsContainer");
-      container.innerHTML = "";
-      currentClassData = classGroupData;
-      for (const cls in classGroupData) {
-        const btn = document.createElement("button");
-        btn.innerText = cls;
-        btn.onclick = () => {
-          document.querySelectorAll("#classButtonsContainer button").forEach(b => b.classList.remove("active"));
-          btn.classList.add("active");
-          renderStudents(cls);
-        };
-        container.appendChild(btn);
-      }
-    }
-
-    function renderStudents(className) {
-      const container = document.getElementById("studentButtonsContainer");
-      container.innerHTML = "";
-      selectedClass = className;
-      document.getElementById("commentSection").innerHTML = "";
-      const students = currentClassData[className] || [];
-      students.forEach(name => {
-        const btn = document.createElement("button");
-        btn.innerText = name;
-        btn.onclick = () => {
-          document.querySelectorAll("#studentButtonsContainer button").forEach(b => b.classList.remove("active"));
-          btn.classList.add("active");
-          selectedStudent = name;
-          openCommentBox(name);
-        };
-        if (name === selectedStudent) {
-          btn.classList.add("active");
-        }
-        container.appendChild(btn);
-      });
-    }
-
-    window.filterByMonth = function () {
-      selectedMonth = document.getElementById("monthFilter").value;
-      if (selectedClass) {
-        renderStudents(selectedClass);
-      }
-    }
-
-    async function openCommentBox(name) {
-      const section = document.getElementById("commentSection");
-      section.innerHTML = `
-        <h3>${name} 학생 평가</h3>
-        <label>날짜 선택:</label>
-        <input type="date" id="commentDate" /><br>
-        <textarea id="commentInput" rows="3" cols="50" placeholder="오늘의 평가를 입력하세요."></textarea><br>
-        <button onclick="submitComment('${name}')">등록</button>
-        <button onclick="downloadCSV('${name}')">CSV 저장</button>
-        <div id="commentHistory"></div>
-      `;
-      document.getElementById("commentDate").value = new Date().toISOString().split("T")[0];
-      await renderStudentComments(name);
-    }
-
-    window.submitComment = async function (studentName) {
-      const text = document.getElementById("commentInput").value.trim();
-      if (!text) return;
-
-      let selectedDate = document.getElementById("commentDate").value;
-      selectedDate = selectedDate ? selectedDate.replace(/-/g, ".") : new Date().toISOString().split("T")[0].replace(/-/g, ".");
-
-      await addDoc(collection(db, "comments"), {
-        student: studentName,
-        date: selectedDate,
-        teacher: teacherId,
-        comment: text
-      });
-
-      document.getElementById("commentInput").value = "";
-      await renderStudentComments(studentName);
-    }
 
     window.downloadCSV = async function (studentName) {
       const q = query(collection(db, "comments"), where("student", "==", studentName));
