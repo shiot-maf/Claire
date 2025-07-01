@@ -53,7 +53,7 @@
     button:hover {
       background-color: #4c9e52;
     }
-     button.active,
+    button.active,
     .day-group-button.active,
     #classButtonsContainer button.active,
     #studentButtonsContainer button.active {
@@ -96,8 +96,8 @@
     <hr>
 
     <div class="centered-buttons">
-      <button class="day-group-button" data-group="월수금" onclick="selectDayGroup('월수금')">월수금</button>
-      <button class="day-group-button" data-group="화목" onclick="selectDayGroup('화목')">화목</button>
+      <button class="day-group-button" data-group="월수금" onclick="selectDayGroup('월수금', this)">월수금</button>
+      <button class="day-group-button" data-group="화목" onclick="selectDayGroup('화목', this)">화목</button>
     </div>
 
     <div id="classButtonsContainer" class="centered-buttons"></div>
@@ -110,46 +110,34 @@
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
     import { getFirestore, collection, addDoc, getDocs, query, where } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-     const firebaseConfig = {
-    apiKey: "AIzaSyCQ460HGskAiS7PzP7POHNani7dmZLs1d0",
-    authDomain: "claire-students-obs.firebaseapp.com",
-    projectId: "claire-students-obs",
-    storageBucket: "claire-students-obs.firebasestorage.app",
-    messagingSenderId: "413871024792",
-    appId: "1:413871024792:web:35b7cbbb3e3e9f25347eed",
-    measurementId: "G-FS2L4K2VBG"
-  };
+    const firebaseConfig = {
+      apiKey: "AIzaSyCQ460HGskAiS7PzP7POHNani7dmZLs1d0",
+      authDomain: "claire-students-obs.firebaseapp.com",
+      projectId: "claire-students-obs",
+      storageBucket: "claire-students-obs.appspot.com",
+      messagingSenderId: "413871024792",
+      appId: "1:413871024792:web:35b7cbbb3e3e9f25347eed",
+      measurementId: "G-FS2L4K2VBG"
+    };
 
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
-   
+
     window.logout = function () {
-    localStorage.removeItem("teacherId");
-    location.href = "index.html";
-  };
-    window.db = db;
-    window.addDoc = addDoc;
-    window.getDocs = getDocs;
-    window.collection = collection;
-    window.query = query;
-    window.where = where;
-
-   let teacherId = "";
-window.addEventListener("DOMContentLoaded", () => {
-  teacherId = localStorage.getItem("teacherId") || "";
-  if (!teacherId) {
-    alert("로그인이 필요합니다.");
-    location.href = "index.html";
-  } else {
-    document.getElementById("teacherName").innerText = teacherId;
-  }
-});
-
-    document.getElementById("teacherName").innerText = teacherId;
-    if (!teacherId) {
-      alert("로그인이 필요합니다.");
+      localStorage.removeItem("teacherId");
       location.href = "index.html";
     }
+
+    let teacherId = "";
+    window.addEventListener("DOMContentLoaded", () => {
+      teacherId = localStorage.getItem("teacherId") || "";
+      if (!teacherId) {
+        alert("로그인이 필요합니다.");
+        location.href = "index.html";
+      } else {
+        document.getElementById("teacherName").innerText = teacherId;
+      }
+    });
 
     const classGroups = {
       "월수금": {
@@ -173,14 +161,12 @@ window.addEventListener("DOMContentLoaded", () => {
 
     let selectedGroup = "";
     let selectedClass = "";
+    let selectedStudent = "";
     let currentClassData = {};
 
-    function logout() {
-      localStorage.removeItem("teacherId");
-      location.href = "index.html";
-    }
-
-    window.selectDayGroup = function(group) {
+    window.selectDayGroup = function(group, btn) {
+      document.querySelectorAll(".day-group-button").forEach(b => b.classList.remove("active"));
+      btn.classList.add("active");
       selectedGroup = group;
       updateClassButtons(classGroups[group]);
       document.getElementById("studentButtonsContainer").innerHTML = "";
@@ -194,7 +180,11 @@ window.addEventListener("DOMContentLoaded", () => {
       for (const cls in classGroupData) {
         const btn = document.createElement("button");
         btn.innerText = cls;
-        btn.onclick = () => renderStudents(cls);
+        btn.onclick = () => {
+          document.querySelectorAll("#classButtonsContainer button").forEach(b => b.classList.remove("active"));
+          btn.classList.add("active");
+          renderStudents(cls);
+        };
         container.appendChild(btn);
       }
     }
@@ -208,7 +198,12 @@ window.addEventListener("DOMContentLoaded", () => {
       students.forEach(name => {
         const btn = document.createElement("button");
         btn.innerText = name;
-        btn.onclick = () => openCommentBox(name);
+        btn.onclick = () => {
+          document.querySelectorAll("#studentButtonsContainer button").forEach(b => b.classList.remove("active"));
+          btn.classList.add("active");
+          selectedStudent = name;
+          openCommentBox(name);
+        };
         container.appendChild(btn);
       });
     }
