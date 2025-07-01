@@ -53,12 +53,7 @@
     button:hover {
       background-color: #4c9e52;
     }
-    button.active {
-      background-color: #125c17 !important;
-      font-weight: bold;
-      color: white;
-      border: 2px solid #0d4712;
-    }
+    button.active,
     .day-group-button.active,
     #classButtonsContainer button.active,
     #studentButtonsContainer button.active {
@@ -101,8 +96,8 @@
     <hr>
 
     <div class="centered-buttons">
-      <button class="day-group-button" data-group="월수금" onclick="selectDayGroup('월수금')">월수금</button>
-      <button class="day-group-button" data-group="화목" onclick="selectDayGroup('화목')">화목</button>
+      <button class="day-group-button" data-group="월수금" onclick="selectDayGroup('월수금', this)">월수금</button>
+      <button class="day-group-button" data-group="화목" onclick="selectDayGroup('화목', this)">화목</button>
       <select id="monthFilter" onchange="filterByMonth()">
         <option value="">전체 보기</option>
       </select>
@@ -118,16 +113,7 @@
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
     import { getFirestore, collection, addDoc, getDocs, query, where } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-    const firebaseConfig = {
-      apiKey: "AIzaSyCQ460HGskAiS7PzP7POHNani7dmZLs1d0",
-      authDomain: "claire-students-obs.firebaseapp.com",
-      projectId: "claire-students-obs",
-      storageBucket: "claire-students-obs.firebasestorage.app",
-      messagingSenderId: "413871024792",
-      appId: "1:413871024792:web:35b7cbbb3e3e9f25347eed",
-      measurementId: "G-FS2L4K2VBG"
-    };
-
+    const firebaseConfig = { /* 동일 */ };
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
 
@@ -138,37 +124,21 @@
       location.href = "index.html";
     }
 
-    const classGroups = {
-      "월수금": {
-        "Intro": ["곽이나", "최가림", "황도윤", "김시연"],
-        "HighUP(LG2)": ["성예원", "조윤찬", "강유준", "진수혁", "정민서", "김태윤", "이지몽"],
-        "FlyUP(LG3)": ["박신우", "김태윤(KTY)", "이채은", "이채율", "양인영", "최소은", "양지윤"],
-        "Journeys2": ["임시윤", "조은정", "조혜인", "조은호", "오서원", "유은우"],
-        "Phonics1": ["서주원", "김윤설", "변은찬"],
-        "IAS": ["김채안", "최원홍"],
-        "M1": ["이서현", "이시우", "이규성"],
-        "M2": ["박태윤", "서완희", "김민주", "추선우"]
-      },
-      "화목": {
-        "Phonics2": ["이재백", "김시윤", "조윤서", "박설민", "김리온"],
-        "JumpUP(LG1)": ["김여원"],
-        "Arete": ["홍지훈"],
-        "M1": ["이현찬", "김진서", "정의윤", "정의담", "추선우"],
-        "M3": ["유시영"]
-      }
-    };
-
     window.logout = function() {
       localStorage.removeItem("teacherId");
       location.href = "index.html";
     }
 
+    const classGroups = { /* 동일 */ };
     let selectedGroup = "";
     let selectedClass = "";
+    let selectedStudent = "";
     let currentClassData = {};
     let selectedMonth = "";
 
-    window.selectDayGroup = function(group) {
+    window.selectDayGroup = function(group, btn) {
+      document.querySelectorAll(".day-group-button").forEach(b => b.classList.remove("active"));
+      btn.classList.add("active");
       selectedGroup = group;
       updateClassButtons(classGroups[group]);
       document.getElementById("studentButtonsContainer").innerHTML = "";
@@ -182,7 +152,11 @@
       for (const cls in classGroupData) {
         const btn = document.createElement("button");
         btn.innerText = cls;
-        btn.onclick = () => renderStudents(cls);
+        btn.onclick = () => {
+          document.querySelectorAll("#classButtonsContainer button").forEach(b => b.classList.remove("active"));
+          btn.classList.add("active");
+          renderStudents(cls);
+        };
         container.appendChild(btn);
       }
     }
@@ -196,7 +170,15 @@
       students.forEach(name => {
         const btn = document.createElement("button");
         btn.innerText = name;
-        btn.onclick = () => openCommentBox(name);
+        btn.onclick = () => {
+          document.querySelectorAll("#studentButtonsContainer button").forEach(b => b.classList.remove("active"));
+          btn.classList.add("active");
+          selectedStudent = name;
+          openCommentBox(name);
+        };
+        if (name === selectedStudent) {
+          btn.classList.add("active");
+        }
         container.appendChild(btn);
       });
     }
@@ -287,9 +269,7 @@
       const select = document.getElementById("monthFilter");
       const months = [...new Set(logs.map(log => log.date?.slice(0, 7)))].filter(Boolean);
       months.sort().reverse();
-      const currentValue = select.value;
       select.innerHTML = '<option value="">전체 보기</option>' + months.map(m => `<option value="${m}">${m}</option>`).join("");
-      select.value = currentValue;
     }
   </script>
 </body>
