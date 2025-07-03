@@ -317,6 +317,39 @@
         historyDiv.appendChild(entry);
       });
     }
+
+     function enrollStudent() {
+      const name = document.getElementById("newStudentName").value;
+      const gender = document.getElementById("newStudentGender").value;
+      const group = document.getElementById("newStudentGroup").value;
+      const cls = document.getElementById("newStudentClass").value;
+      if (!name || !gender || !group || !cls) {
+        alert("모든 항목을 입력해주세요.");
+        return;
+      }
+      if (!classGroups[group][cls].includes(name)) {
+        classGroups[group][cls].push(name);
+      }
+      alert(`${name} 학생이 ${group} - ${cls} 반에 입학 등록되었습니다.`);
+      document.getElementById("enrollDialog").close();
+    }
+
+    function expelStudent() {
+      const group = document.getElementById("expelGroup").value;
+      const cls = document.getElementById("expelClass").value;
+      const name = document.getElementById("expelStudent").value;
+      if (!group || !cls || !name) {
+        alert("모든 항목을 선택해주세요.");
+        return;
+      }
+      const idx = classGroups[group][cls].indexOf(name);
+      if (idx !== -1) {
+        classGroups[group][cls].splice(idx, 1);
+        alert(`${name} 학생이 ${group} - ${cls} 반에서 퇴원 처리되었습니다.`);
+        document.getElementById("expelDialog").close();
+      }
+    }
+    
   </script>
 </body>
 </html>
