@@ -124,6 +124,13 @@
         <button id="expelButton">퇴원 조치</button>
       </div>
 
+      <h4>선생님 관리 메뉴</h4>
+      <div class="centered-buttons">
+        <input type="text" id="teacherInput" placeholder="선생님 ID" />
+        <button onclick="addTeacher()">등록</button>
+        <button onclick="removeTeacher()">제거</button>
+      </div>
+      
       <hr>
       <div class="centered-buttons">
         <button class="day-group-button" data-group="월수금" onclick="selectDayGroup('월수금', this)">월수금</button>
@@ -349,7 +356,36 @@
         document.getElementById("expelDialog").close();
       }
     }
-    
+
+    window.addTeacher = async function () {
+      const teacherId = document.getElementById("teacherInput").value.trim();
+      if (!teacherId) {
+        alert("선생님 ID를 입력하세요.");
+        return;
+      }
+      try {
+        await setDoc(doc(db, "teachers", teacherId), { createdAt: new Date().toISOString() });
+        alert(`선생님 ${teacherId} 등록 완료`);
+        document.getElementById("teacherInput").value = "";
+      } catch (error) {
+        alert("등록 실패: " + error);
+      }
+    };
+
+    window.removeTeacher = async function () {
+      const teacherId = document.getElementById("teacherInput").value.trim();
+      if (!teacherId) {
+        alert("선생님 ID를 입력하세요.");
+        return;
+      }
+      try {
+        await deleteDoc(doc(db, "teachers", teacherId));
+        alert(`선생님 ${teacherId} 제거 완료`);
+        document.getElementById("teacherInput").value = "";
+      } catch (error) {
+        alert("제거 실패: " + error);
+      }
+    };
   </script>
 </body>
 </html>
