@@ -164,8 +164,6 @@
         const teacherRef = doc(db, "teachers", teacherId);
         const docSnap = await getDoc(teacherRef);
 
-        console.log("선생님 문서 스냅샷:", docSnap);
-
         if (!docSnap.exists()) {
           alert("등록되지 않은 선생님입니다.");
           location.href = "index.html";
