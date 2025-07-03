@@ -129,27 +129,30 @@
       where,
       getDocs,
       addDoc,
+      doc,
+      getDoc
     } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-    const firebaseConfig = {
-  apiKey: "AIzaSyCQ460HGskAiS7PzP7POHNani7dmZLs1d0",
-  authDomain: "claire-students-obs.firebaseapp.com",
-  projectId: "claire-students-obs",
-  storageBucket: "claire-students-obs.firebasestorage.app",
-  messagingSenderId: "413871024792",
-  appId: "1:413871024792:web:35b7cbbb3e3e9f25347eed",
-  measurementId: "G-FS2L4K2VBG"
-};
 
-// Initialize Firebase
+    const firebaseConfig = {
+      apiKey: "AIzaSyCQ460HGskAiS7PzP7POHNani7dmZLs1d0",
+      authDomain: "claire-students-obs.firebaseapp.com",
+      projectId: "claire-students-obs",
+      storageBucket: "claire-students-obs.firebasestorage.app",
+      messagingSenderId: "413871024792",
+      appId: "1:413871024792:web:35b7cbbb3e3e9f25347eed",
+      measurementId: "G-FS2L4K2VBG"
+    };
+
     const app = initializeApp(firebaseConfig);
     const analytics = getAnalytics(app);
     const db = getFirestore(app);
-
 
     window.onload = async function () {
       const urlParams = new URLSearchParams(window.location.search);
       const teacherId = urlParams.get("teacher");
       const teacherNameElement = document.getElementById("teacherName");
+
+      console.log("URL에서 읽은 teacherId:", teacherId);
 
       if (!teacherId) {
         alert("접근 오류: 선생님 아이디가 URL에 없습니다.");
@@ -157,48 +160,61 @@
         return;
       }
 
-      const teacherRef = doc(db, "teachers", teacherId);
-      const docSnap = await getDoc(teacherRef);
+      try {
+        const teacherRef = doc(db, "teachers", teacherId);
+        const docSnap = await getDoc(teacherRef);
 
-      if (!docSnap.exists()) {
-        alert("등록되지 않은 선생님입니다.");
-        location.href = "index.html";
-        return;
-      }
+        console.log("선생님 문서 스냅샷:", docSnap);
 
-      teacherNameElement.innerText = teacherId;
-      window.currentTeacherId = teacherId;
+        if (!docSnap.exists()) {
+          alert("등록되지 않은 선생님입니다.");
+          location.href = "index.html";
+          return;
+        }
+
+        teacherNameElement.innerText = teacherId;
+        window.currentTeacherId = teacherId;
 
         document.querySelectorAll(".day-group-button").forEach(btn => {
-    btn.addEventListener("click", () => {
-      selectDayGroup(btn.dataset.group, btn);
-    });
-  });
-};
-    
+          btn.addEventListener("click", () => {
+            console.log("요일 버튼 클릭됨:", btn.dataset.group);
+            selectDayGroup(btn.dataset.group, btn);
+          });
+        });
+      } catch (error) {
+        console.error("🔥 Firebase 오류:", error);
+        alert("데이터를 불러오는 중 문제가 발생했습니다.");
+      }
+    };
 
     window.logout = function () {
       localStorage.removeItem("teacherId");
       location.href = "index.html";
     };
 
-    // ✅ selectDayGroup 함수 먼저 정의
     async function selectDayGroup(group, btn) {
+      console.log("✅ selectDayGroup 호출됨:", group);
       if (!group) return;
 
-      // 요일 버튼 스타일 변경
       document.querySelectorAll(".day-group-button").forEach(b => b.classList.remove("active"));
       btn.classList.add("active");
 
       const classMap = {};
 
-      const snapshot = await getDocs(query(collection(db, "students"), where("group", "==", group)));
-      snapshot.forEach(docSnap => {
-        const data = docSnap.data();
-        if (!data || !data.class || !data.name || data.status === "expelled") return;
-        if (!classMap[data.class]) classMap[data.class] = [];
-        classMap[data.class].push(data.name);
-      });
+      try {
+        const snapshot = await getDocs(query(collection(db, "students"), where("group", "==", group)));
+        console.log("📦 학생 문서 스냅샷:", snapshot);
+
+        snapshot.forEach(docSnap => {
+          const data = docSnap.data();
+          console.log("🧍 학생 데이터:", data);
+          if (!data || !data.class || !data.name || data.status === "expelled") return;
+          if (!classMap[data.class]) classMap[data.class] = [];
+          classMap[data.class].push(data.name);
+        });
+      } catch (error) {
+        console.error("🚨 학생 데이터 로딩 오류:", error);
+      }
 
       const container = document.getElementById("classButtonsContainer");
       const studentContainer = document.getElementById("studentButtonsContainer");
@@ -206,9 +222,11 @@
       studentContainer.innerHTML = "";
 
       for (const className in classMap) {
+        console.log("📘 반 생성:", className);
         const classBtn = document.createElement("button");
         classBtn.innerText = className;
         classBtn.onclick = () => {
+          console.log("📗 반 선택됨:", className);
           document.querySelectorAll("#classButtonsContainer button").forEach(b => b.classList.remove("active"));
           classBtn.classList.add("active");
 
@@ -216,7 +234,10 @@
           classMap[className].forEach(name => {
             const sBtn = document.createElement("button");
             sBtn.innerText = name;
-            sBtn.onclick = () => openCommentBox(name);
+            sBtn.onclick = () => {
+              console.log("📝 학생 선택됨:", name);
+              openCommentBox(name);
+            };
             studentContainer.appendChild(sBtn);
           });
         };
@@ -224,19 +245,13 @@
       }
 
       const firstBtn = container.querySelector("button");
-if (firstBtn) firstBtn.click();
-
+      if (firstBtn) firstBtn.click();
     }
 
-    
-
-    // 🧷 전역 등록 (필수!)
     window.selectDayGroup = selectDayGroup;
 
-
-
-    // 코멘트 입력 UI 열기
     async function openCommentBox(name) {
+      console.log("🪄 openCommentBox 호출됨:", name);
       const section = document.getElementById("commentSection");
       section.innerHTML = `
         <h3>${name} 학생 평가</h3>
@@ -276,6 +291,7 @@ if (firstBtn) firstBtn.click();
     };
 
     async function renderStudentComments(studentName) {
+      console.log("📜 코멘트 렌더링 시작:", studentName);
       const historyDiv = document.getElementById("commentHistory");
       const q = query(collection(db, "comments"), where("student", "==", studentName));
       const snapshot = await getDocs(q);
@@ -291,7 +307,6 @@ if (firstBtn) firstBtn.click();
         historyDiv.appendChild(entry);
       });
     }
-
   </script>
 </body>
 </html>
