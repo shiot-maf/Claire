@@ -61,23 +61,48 @@
     <p id="message"></p>
   </div>
 
-  <script>
-    const validIds = ['Nagyeong', 'Eun', 'Sunny', 'admin'];
+   <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-    function login() {
-  const inputId = document.getElementById("teacherId").value.trim(); 
-  if (!inputId) {
-    alert("아이디를 입력하세요.");
-    return;
-  }
-  localStorage.setItem("teacherId", inputId);
-  if (inputId === "admin") {
-    location.href = "admin.html";
-  } else {
-    location.href = "main.html";
-  }
-}
+    const firebaseConfig = {
+      apiKey: "AIzaSyCQ460HGskAiS7PzP7POHNani7dmZLs1d0",
+      authDomain: "claire-students-obs.firebaseapp.com",
+      projectId: "claire-students-obs",
+      storageBucket: "claire-students-obs.appspot.com",
+      messagingSenderId: "413871024792",
+      appId: "1:413871024792:web:35b7cbbb3e3e9f25347eed",
+      measurementId: "G-FS2L4K2VBG"
+    };
 
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    async function login() {
+      const teacherId = document.getElementById("teacherId").value.trim();
+      const msg = document.getElementById("message");
+
+      if (!teacherId) {
+        msg.innerText = "아이디를 입력하세요.";
+        return;
+      }
+
+      const teacherRef = doc(db, "teachers", teacherId);
+      const docSnap = await getDoc(teacherRef);
+
+      if (!docSnap.exists()) {
+        msg.innerText = "등록되지 않은 아이디입니다.";
+        return;
+      }
+
+      // lastLogin 업데이트
+      await setDoc(teacherRef, { lastLogin: new Date().toISOString() }, { merge: true });
+
+      if (teacherId === "admin") {
+        location.href = "admin.html";
+      } else {
+        location.href = `main.html?teacher=${encodeURIComponent(teacherId)}`;
+      }
+    }
   </script>
-</body>
 </html>
