@@ -97,7 +97,7 @@
 
   await setDoc(teacherRef, { lastLogin: new Date().toISOString() }, { merge: true });
 
-  if (teacherId === "admin") {
+  if (teacherId === "claire_admin") {
     location.href = "admin.html";
   } else {
     location.href = `main.html?teacher=${encodeURIComponent(teacherId)}`;
