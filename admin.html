@@ -130,7 +130,7 @@
         <button onclick="addTeacher()">등록</button>
         <button onclick="removeTeacher()">제거</button>
       </div>
-      
+
       <hr>
       <div class="centered-buttons">
         <button class="day-group-button" data-group="월수금" onclick="selectDayGroup('월수금', this)">월수금</button>
@@ -204,8 +204,51 @@
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
 
+    window.onload = async function () {
+      const urlParams = new URLSearchParams(window.location.search);
+      const teacherId = urlParams.get("teacher");
+      const teacherNameElement = document.getElementById("teacherName");
+
+      if (!teacherId) {
+        alert("접근 오류: 선생님 아이디가 URL에 없습니다.");
+        location.href = "index.html";
+        return;
+      }
+
+      const teacherRef = doc(db, "teachers", teacherId);
+      const docSnap = await getDoc(teacherRef);
+
+      if (!docSnap.exists()) {
+        alert("등록되지 않은 선생님입니다.");
+        location.href = "index.html";
+        return;
+      }
+
+      teacherNameElement.innerText = teacherId;
+      window.currentTeacherId = teacherId;
+    }
+
+    window.submitComment = async function(studentName) {
+      const text = document.getElementById("commentInput").value.trim();
+      if (!text) return;
+      let selectedDate = document.getElementById("commentDate").value;
+      if (!selectedDate) {
+        const now = new Date();
+        selectedDate = `${now.getFullYear()}.${String(now.getMonth() + 1).padStart(2, "0")}.${String(now.getDate()).padStart(2, "0")}`;
+      } else {
+        selectedDate = selectedDate.replace(/-/g, ".");
+      }
+      await addDoc(collection(db, "comments"), {
+        student: studentName,
+        date: selectedDate,
+        teacher: window.currentTeacherId,
+        comment: text
+      });
+      document.getElementById("commentInput").value = "";
+      await renderStudentComments(studentName);
+    }
+
     window.logout = function () {
-      localStorage.removeItem("teacherId");
       location.href = "index.html";
     };
 
@@ -223,28 +266,6 @@
       return active;
     }
 
-    window.selectDayGroup = async function(group, btn) {
-      document.querySelectorAll(".day-group-button").forEach(b => b.classList.remove("active"));
-      btn.classList.add("active");
-      const classGroups = {
-        "월수금": {
-          "Intro": ["곽이나", "최가림", "황도윤", "김시연"],
-          "HighUP(LG2)": ["성예원", "조윤찬", "강유준", "진수혁", "정민서", "김태윤", "이지몽"],
-          "FlyUP(LG3)": ["박신우", "김태윤(KTY)", "이채은", "이채율", "양인영", "최소은", "양지윤"],
-          "Journeys2": ["임시윤", "조은정", "조혜인", "조은호", "오서원", "유은우"],
-          "Phonics1": ["서주원", "김윤설", "변은찬"],
-          "IAS": ["김채안", "최원홍"],
-          "M1": ["이서현", "이시우", "이규성"],
-          "M2": ["박태윤", "서완희", "김민주", "추선우"]
-        },
-        "화목": {
-          "Phonics2": ["이재백", "김시윤", "조윤서", "박설민", "김리온"],
-          "JumpUP(LG1)": ["김여원"],
-          "Arete": ["홍지훈"],
-          "M1": ["이현찬", "김진서", "정의윤", "정의담", "추선우"],
-          "M3": ["유시영"]
-        }
-      };
 
       const container = document.getElementById("classButtonsContainer");
       container.innerHTML = "";
@@ -268,8 +289,8 @@
           });
         };
         container.appendChild(btn);
-      }
-    };
+      };
+    
 
     async function openCommentBox(name) {
       const section = document.getElementById("commentSection");
@@ -325,7 +346,7 @@
       });
     }
 
-     function enrollStudent() {
+    function enrollStudent() {
       const name = document.getElementById("newStudentName").value;
       const gender = document.getElementById("newStudentGender").value;
       const group = document.getElementById("newStudentGroup").value;
