@@ -118,12 +118,6 @@
       <button class="logout-button" onclick="logout()">로그아웃</button>
       <hr>
 
-      <h4>학생관리 메뉴</h4>
-      <div class="centered-buttons">
-        <button id="enrollButton">입학 조치</button>
-        <button id="expelButton">퇴원 조치</button>
-      </div>
-
       <hr>
       <div class="centered-buttons">
         <button class="day-group-button" data-group="월수금" onclick="selectDayGroup('월수금', this)">월수금</button>
@@ -135,10 +129,6 @@
     </div>
 
     <div class="right-panel">
-      <label for="monthPicker">월 선택:</label>
-      <input type="month" id="monthPicker" /><br><br>
-      <button onclick="downloadCSV()">CSV 저장</button>
-      <button onclick="deleteComments()">코멘트 삭제</button>
       <div id="commentSection"></div>
     </div>
   </div>
@@ -189,7 +179,7 @@
       location.href = "index.html";
     };
 
-     window.addEventListener("DOMContentLoaded", () => {
+   window.addEventListener("DOMContentLoaded", () => {
       document.querySelectorAll(".day-group-button").forEach((btn) => {
         btn.addEventListener("click", async () => {
           const group = btn.dataset.group;
@@ -203,18 +193,19 @@
     });
 
     async function selectDayGroup(group, btn) {
+      if (!group) return;
+
       document.querySelectorAll(".day-group-button").forEach(b => b.classList.remove("active"));
       btn.classList.add("active");
 
       const classMap = {};
 
       const snapshot = await getDocs(query(collection(db, "students"), where("group", "==", group)));
-      snapshot.forEach(doc => {
-        const data = doc.data();
-        if (data.status !== "expelled") {
-          if (!classMap[data.class]) classMap[data.class] = [];
-          classMap[data.class].push(data.name);
-        }
+      snapshot.forEach(docSnap => {
+        const data = docSnap.data();
+        if (!data || !data.class || !data.name || data.status === "expelled") return;
+        if (!classMap[data.class]) classMap[data.class] = [];
+        classMap[data.class].push(data.name);
       });
 
       const container = document.getElementById("classButtonsContainer");
