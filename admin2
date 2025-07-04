@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>어드민 페이지</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #f4f9f4;
+    }
+    .container {
+      display: flex;
+      height: 100vh;
+    }
+    nav {
+      width: 250px;
+      background-color: #1f4d1f;
+      color: white;
+      padding: 20px;
+      box-sizing: border-box;
+    }
+    nav h2 {
+      font-size: 20px;
+      margin-bottom: 20px;
+      color: #c9f2ca;
+    }
+    .accordion-section {
+      margin-bottom: 10px;
+    }
+    .accordion-button {
+      background-color: transparent;
+      color: white;
+      border: none;
+      padding: 10px;
+      text-align: left;
+      width: 100%;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    .accordion-button:hover {
+      background-color: #2e6b2e;
+    }
+    .accordion-content {
+      display: none;
+      flex-direction: column;
+      padding-left: 10px;
+    }
+    .accordion-content.show {
+      display: flex;  
+    }
+    .accordion-content button {
+      background-color: #3b8c3b;
+      color: white;
+      border: none;
+      padding: 8px;
+      margin: 4px 0;
+      text-align: left;
+      width: 100%;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    .accordion-content button:hover {
+      background-color: #2e6b2e;
+    }
+    .main-panel {
+      flex: 1;
+      padding: 20px;
+      overflow-y: auto;
+    }
+    .tab-button {
+      padding: 10px 20px;
+      margin: 0 5px;
+      border: none;
+      border-radius: 6px;
+      background-color: #64b668;
+      color: white;
+      cursor: pointer;
+    }
+    .tab-button.active {
+      background-color: #125c17;
+      font-weight: bold;
+    }
+    .tab-content {
+      display: none;
+      padding: 20px;
+      background: #fff;
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+    .tab-content.active {
+      display: block;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <nav>
+      <h2>관리 메뉴</h2>
+      <!--학생 관리 영역 -->
+      <div class="accordion-section">
+        <button class="accordion-button" onclick="toggleAccordion('student')">학생 관리</button>
+        <div id="student" class="accordion-content">
+          <button onclick="loadContent('입학')">입학</button>
+          <button onclick="loadContent('퇴원')">퇴원</button>
+          <button onclick="loadContent('반 추가')">반 추가</button>
+          <button onclick="loadContent('반 삭제')">반 삭제</button>
+          <button onclick="loadContent('반 바꿈')">반 바꿈</button>
+        </div>
+      </div>
+      <!--선생님 관리 영역-->
+      <div class="accordion-section">
+        <button class="accordion-button" onclick="toggleAccordion('teacher')">선생님 관리</button>
+        <div id="teacher" class="accordion-content">
+          <button onclick="loadContent('선생님 추가')">선생님 추가</button>
+          <button onclick="loadContent('선생님 삭제')">선생님 삭제</button>
+        </div>
+      </div>
+      <!--평가 관리 영역-->
+      <div class="accordion-section">
+        <button class="accordion-button" onclick="toggleAccordion('comments')">평가 관리</button>
+        <div id="comments" class="accordion-content">
+          <button onclick="loadContent('오늘의 평가')">오늘의 평가</button>
+          <button onclick="loadContent('반별 평가')">반별 평가</button>
+          <button onclick="loadContent('학생별 평가')">학생별 평가</button>
+          <button onclick="loadContent('평가 추가')">평가 추가</button>
+        </div>
+      </div>
+    </nav>
+
+    <div class="main-panel" id="mainPanel">
+        <h2>코멘트 열람</h2>
+
+  <div class="tabs">
+    <button class="tab-button active" data-tab="today">오늘의 평가</button>
+    <button class="tab-button" data-tab="byClass">반별 보기</button>
+    <button class="tab-button" data-tab="byTeacher">선생님별 보기</button>
+  </div>
+
+  <div id="today" class="tab-content active">
+    <h3>오늘의 평가</h3>
+    <div id="todayComments">(여기에 오늘 날짜 기준 코멘트가 표시됩니다)</div>
+  </div>
+
+  <div id="byClass" class="tab-content">
+    <h3>반별 보기</h3>
+    <label>요일:</label>
+    <select id="groupSelector"></select>
+    <label>반:</label>
+    <select id="classSelector"></select>
+    <div>
+      <input type="date" id="startDate">
+      <input type="date" id="endDate">
+      <button onclick="downloadCommentsByClass()">다운로드</button>
+    </div>
+    <div id="classComments">(반별 코멘트 표시)</div>
+  </div>
+
+  <div id="byTeacher" class="tab-content">
+    <h3>선생님별 보기</h3>
+    <label>선생님:</label>
+    <select id="teacherSelector"></select>
+    <div>
+      <input type="date" id="startTeacherDate">
+      <input type="date" id="endTeacherDate">
+      <button onclick="downloadCommentsByTeacher()">다운로드</button>
+    </div>
+    <div id="teacherComments">(선생님별 코멘트 표시)</div>
+  </div>
+    </div>
+  </div>
+
+  <script type="module">
+    window.toggleAccordion = function(id) {
+      const content = document.getElementById(id);
+      const isVisible = content.classList.contains('show');
+      document.querySelectorAll('.accordion-content').forEach(c => c.classList.remove('show'));
+      if (!isVisible) content.classList.add('show');
+    };
+    function loadContent(name) {
+      const panel = document.getElementById('mainPanel');
+      const target = panel.querySelector('.tab-content.active');
+      if (target) target.innerHTML = `<h3>${name} 기능이 여기에 로드됩니다.</h3>`;
+}
+    function toggleAccordion(id) {
+      const content = document.getElementById(id);
+      const isVisible = content.classList.contains('show');
+      document.querySelectorAll('.accordion-content').forEach(c => c.classList.remove('show'));
+  if (!isVisible) content.classList.add('show');
+}
+
+
+
+        document.querySelectorAll('.tab-button').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.tab-button').forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+        btn.classList.add('active');
+        document.getElementById(btn.dataset.tab).classList.add('active');
+      });
+    });
+  </script>
+  
+</body>
+</html>
