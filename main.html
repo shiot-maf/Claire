@@ -18,6 +18,7 @@
       font-weight: bold;
     }
     .container {
+      max-width: 800px;
       display: flex;
       gap: 20px;
       max-width: 1200px;
@@ -36,6 +37,8 @@
       flex: 2;
     }
     button {
+      width: 150px;
+      padding: 10px 16px;
       width: 100px;
       padding: 10px;
       margin: 5px;
@@ -89,167 +92,168 @@
     .centered-buttons {
       display: flex;
       flex-wrap: wrap;
+      justify-content: center;
       gap: 10px;
       margin-bottom: 15px;
     }
     #commentHistory {
       margin-top: 15px;
-    } 
+    }
+    dialog {
+      border: none;
+      border-radius: 8px;
+      padding: 20px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+    }
+    dialog input, dialog select {
+      display: block;
+      margin: 10px 0;
+      padding: 8px;
+      width: 100%;
+      font-size: 16px;
+    }
   </style>
 </head>
+
 <body>
   <h2>학생 관찰 기록 페이지</h2>
   <div class="container">
+    <h2>학생 관찰 기록 페이지</h2>
+    <p>선생님: <strong id="teacherName"></strong></p>
+    <button class="logout-button" onclick="logout()">로그아웃</button>
+    <hr>
     <div class="left-panel">
       <p>선생님: <strong id="teacherName"></strong></p>
       <button class="logout-button" onclick="logout()">로그아웃</button>
       <hr>
 
+    <div class="centered-buttons">
+      <button class="day-group-button" data-group="월수금" onclick="selectDayGroup('월수금', this)">월수금</button>
+      <button class="day-group-button" data-group="화목" onclick="selectDayGroup('화목', this)">화목</button>
+      <hr>
       <div class="centered-buttons">
-        <button class="day-group-button" data-group="월수금">월수금</button>
-        <button class="day-group-button" data-group="화목">화목</button>
+        <button class="day-group-button" data-group="월수금" onclick="selectDayGroup('월수금', this)">월수금</button>
+        <button class="day-group-button" data-group="화목" onclick="selectDayGroup('화목', this)">화목</button>
       </div>
       <div id="classButtonsContainer" class="centered-buttons"></div>
       <hr>
       <div id="studentButtonsContainer" class="centered-buttons"></div>
     </div>
 
+    <div id="classButtonsContainer" class="centered-buttons"></div>
+    <hr class="section-divider">
+    <div id="studentButtonsContainer" class="centered-buttons"></div>
+    <div id="commentSection"></div>
     <div class="right-panel">
+      <label for="monthPicker">월 선택:</label>
+      <input type="month" id="monthPicker" /><br><br>
       <div id="commentSection"></div>
     </div>
   </div>
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-    import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-analytics.js";
-    import {
-      getFirestore,
-      collection,
-      query,
-      where,
-      getDocs,
-      addDoc,
-      doc,
-      getDoc
-    } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+    import { getFirestore, collection, addDoc, getDocs, query, where } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+    import { getFirestore, doc, getDoc, getDocs, collection, query, where } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyCQ460HGskAiS7PzP7POHNani7dmZLs1d0",
       authDomain: "claire-students-obs.firebaseapp.com",
       projectId: "claire-students-obs",
-      storageBucket: "claire-students-obs.firebasestorage.app",
+      storageBucket: "claire-students-obs.appspot.com",
       messagingSenderId: "413871024792",
       appId: "1:413871024792:web:35b7cbbb3e3e9f25347eed",
       measurementId: "G-FS2L4K2VBG"
     };
 
     const app = initializeApp(firebaseConfig);
-    const analytics = getAnalytics(app);
     const db = getFirestore(app);
-
-    window.onload = async function () {
-      const urlParams = new URLSearchParams(window.location.search);
-      const teacherId = urlParams.get("teacher");
-      const teacherNameElement = document.getElementById("teacherName");
-
-      console.log("URL에서 읽은 teacherId:", teacherId);
-
-      if (!teacherId) {
-        alert("접근 오류: 선생님 아이디가 URL에 없습니다.");
-        location.href = "index.html";
-        return;
-      }
-
-      try {
-        const teacherRef = doc(db, "teachers", teacherId);
-        const docSnap = await getDoc(teacherRef);
-
-        if (!docSnap.exists()) {
-          alert("등록되지 않은 선생님입니다.");
-          location.href = "index.html";
-          return;
-        }
-
-        teacherNameElement.innerText = teacherId;
-        window.currentTeacherId = teacherId;
-
-        document.querySelectorAll(".day-group-button").forEach(btn => {
-          btn.addEventListener("click", () => {
-            console.log("요일 버튼 클릭됨:", btn.dataset.group);
-            selectDayGroup(btn.dataset.group, btn);
-          });
-        });
-      } catch (error) {
-        console.error("🔥 Firebase 오류:", error);
-        alert("데이터를 불러오는 중 문제가 발생했습니다.");
-      }
-    };
 
     window.logout = function () {
       localStorage.removeItem("teacherId");
       location.href = "index.html";
     };
 
-    async function selectDayGroup(group, btn) {
-      console.log("✅ selectDayGroup 호출됨:", group);
-      if (!group) return;
+    let teacherId = "";
+    window.addEventListener("DOMContentLoaded", () => {
+      teacherId = localStorage.getItem("teacherId") || "";
+      if (!teacherId) {
+        alert("로그인이 필요합니다.");
+        location.href = "index.html";
+      } else {
+        document.getElementById("teacherName").innerText = teacherId;
+      }
+    });
+    async function isStudentActive(name) {
+      const docRef = doc(db, "students", name);
+      const snap = await getDoc(docRef);
+      return !snap.exists() || snap.data().status !== "expelled";
+    }
 
+    window.selectDayGroup = function(group, btn) {
+    window.selectDayGroup = async function(group, btn) {
       document.querySelectorAll(".day-group-button").forEach(b => b.classList.remove("active"));
       btn.classList.add("active");
+      selectedGroup = group;
+      updateClassButtons(classGroups[group]);
+      document.getElementById("studentButtonsContainer").innerHTML = "";
+      document.getElementById("commentSection").innerHTML = "";
+    }
+  };
 
-      const classMap = {};
-
-      try {
-        const snapshot = await getDocs(query(collection(db, "students"), where("group", "==", group)));
-        console.log("📦 학생 문서 스냅샷:", snapshot);
-
-        snapshot.forEach(docSnap => {
-          const data = docSnap.data();
-          console.log("🧍 학생 데이터:", data);
-          if (!data || !data.class || !data.name || data.status === "expelled") return;
-          if (!classMap[data.class]) classMap[data.class] = [];
-          classMap[data.class].push(data.name);
-        });
-      } catch (error) {
-        console.error("🚨 학생 데이터 로딩 오류:", error);
-      }
-
+    function updateClassButtons(classGroupData) {
       const container = document.getElementById("classButtonsContainer");
-      const studentContainer = document.getElementById("studentButtonsContainer");
       container.innerHTML = "";
+      currentClassData = classGroupData;
+      for (const cls in classGroupData) {
+      const studentContainer = document.getElementById("studentButtonsContainer");
       studentContainer.innerHTML = "";
 
-      for (const className in classMap) {
-        console.log("📘 반 생성:", className);
-        const classBtn = document.createElement("button");
-        classBtn.innerText = className;
-        classBtn.onclick = () => {
-          console.log("📗 반 선택됨:", className);
+      for (const className in classGroups[group]) {
+        const btn = document.createElement("button");
+        btn.innerText = cls;
+        btn.onclick = () => {
+        btn.innerText = className;
+        btn.onclick = async () => {
           document.querySelectorAll("#classButtonsContainer button").forEach(b => b.classList.remove("active"));
-          classBtn.classList.add("active");
-
+          btn.classList.add("active");
+          renderStudents(cls);
+          const studentList = classGroups[group][className];
+          const activeStudents = await filterActiveStudents(studentList);
           studentContainer.innerHTML = "";
-          classMap[className].forEach(name => {
+          activeStudents.forEach(name => {
             const sBtn = document.createElement("button");
             sBtn.innerText = name;
-            sBtn.onclick = () => {
-              console.log("📝 학생 선택됨:", name);
-              openCommentBox(name);
-            };
+            sBtn.onclick = () => openCommentBox(name);
             studentContainer.appendChild(sBtn);
           });
         };
-        container.appendChild(classBtn);
+        container.appendChild(btn);
       }
-
-      const firstBtn = container.querySelector("button");
-      if (firstBtn) firstBtn.click();
     }
+  }
+}
 
-    window.selectDayGroup = selectDayGroup;
+    function renderStudents(className) {
+      const container = document.getElementById("studentButtonsContainer");
+      container.innerHTML = "";
+      selectedClass = className;
+      document.getElementById("commentSection").innerHTML = "";
+      const students = currentClassData[className] || [];
+      students.forEach(name => {
+        const btn = document.createElement("button");
+        btn.innerText = name;
+        btn.onclick = () => {
+          document.querySelectorAll("#studentButtonsContainer button").forEach(b => b.classList.remove("active"));
+          btn.classList.add("active");
+          selectedStudent = name;
+          openCommentBox(name);
+        };
+        container.appendChild(btn);
+      });
+    };
 
     async function openCommentBox(name) {
-      console.log("🪄 openCommentBox 호출됨:", name);
       const section = document.getElementById("commentSection");
       section.innerHTML = `
         <h3>${name} 학생 평가</h3>
@@ -262,8 +266,6 @@
       document.getElementById("commentDate").value = new Date().toISOString().split("T")[0];
       await renderStudentComments(name);
     }
-
-    window.openCommentBox = openCommentBox;
 
     window.submitComment = async function(studentName) {
       const text = document.getElementById("commentInput").value.trim();
@@ -280,16 +282,16 @@
       await addDoc(collection(db, "comments"), {
         student: studentName,
         date: selectedDate,
-        teacher: window.currentTeacherId,
+        teacher: teacherId,
+        teacher: localStorage.getItem("teacherId"),
         comment: text
       });
 
       document.getElementById("commentInput").value = "";
       await renderStudentComments(studentName);
-    };
+    }
 
     async function renderStudentComments(studentName) {
-      console.log("📜 코멘트 렌더링 시작:", studentName);
       const historyDiv = document.getElementById("commentHistory");
       const q = query(collection(db, "comments"), where("student", "==", studentName));
       const snapshot = await getDocs(q);
