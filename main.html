@@ -73,8 +73,10 @@
   <h2>학생 코멘트 입력 페이지</h2>
   <div class="container">
     <div class="left-panel">
-      <p>선생님 ID: <strong id="teacherName"></strong></p>
-      <button onclick="logout()" style="margin-left: 10px;">로그아웃</button>
+      <div style="display: flex; align-items: center; justify-content: space-between;">
+      <span>선생님 ID: <strong id="teacherName"></strong></span>
+      <button onclick="logout()" style="font-size: 12px; padding: 4px 8px; background-color: #ddd; color: #333; border: 1px solid #aaa; border-radius: 4px; cursor: pointer;">로그아웃</button>
+    </div>
       <div id="groupButtons"></div>
       <hr>
       <div id="classButtons"></div>
