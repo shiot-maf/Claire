@@ -1,24 +1,20 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta charset="UTF-8" />
-  <title>학생 관찰 기록</title>
+  <meta charset="UTF-8">
+  <title>학생 코멘트 입력</title>
   <style>
     body {
       font-family: 'Segoe UI', sans-serif;
       background: #f5f8ff;
       margin: 0;
-      padding: 30px;
+      padding: 20px;
     }
     h2 {
       text-align: center;
       color: #167a1b;
     }
-    label {
-      font-weight: bold;
-    }
     .container {
-      max-width: 800px;
       display: flex;
       gap: 20px;
       max-width: 1200px;
@@ -27,8 +23,8 @@
     .left-panel, .right-panel {
       background: #fff;
       padding: 20px;
-      border-radius: 12px;
-      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     }
     .left-panel {
       flex: 1;
@@ -37,120 +33,61 @@
       flex: 2;
     }
     button {
-      width: 150px;
       padding: 10px 16px;
-      width: 100px;
-      padding: 10px;
       margin: 5px;
-      border-radius: 6px;
       border: none;
+      border-radius: 6px;
       background-color: #64b668;
       color: white;
       cursor: pointer;
-      box-sizing: border-box;
-      text-align: center;
-      transition: background-color 0.2s ease;
-    }
-    .logout-button {
-      width: 60px;
-      padding: 6px 12px;
-      font-size: 9px;
-      background-color: #ccc;
-      color: #333;
-      border: 1px solid #999;
-      margin-bottom: 10px;
-    }
-    .logout-button:hover {
-      background-color: #bbb;
     }
     button:hover {
       background-color: #4c9e52;
     }
-    button.active,
-    .day-group-button.active,
-    #classButtonsContainer button.active,
-    #studentButtonsContainer button.active {
-      background-color: #125c17 !important;
+    button.active {
+      background-color: #125c17;
       font-weight: bold;
-      color: white;
       border: 2px solid #0d4712;
     }
-    #commentInput {
-      font-size: 16px;
-      margin: 5px 0;
+    textarea {
+      width: 90%;
+      height: 100px;
       padding: 10px;
       border-radius: 6px;
       border: 1px solid #ccc;
-      width: 100%;
-      box-sizing: border-box;
+      margin-bottom: 10px;
+      font-size: 16px;
+    }
+    input[type="date"] {
+      padding: 8px;
+      font-size: 16px;
+      margin-bottom: 10px;
     }
     .comment {
       border-bottom: 1px solid #ccc;
       padding: 8px 0;
-      white-space: pre-wrap;
-    }
-    .centered-buttons {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 10px;
-      margin-bottom: 15px;
-    }
-    #commentHistory {
-      margin-top: 15px;
-    }
-    dialog {
-      border: none;
-      border-radius: 8px;
-      padding: 20px;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.3);
-    }
-    dialog input, dialog select {
-      display: block;
-      margin: 10px 0;
-      padding: 8px;
-      width: 100%;
-      font-size: 16px;
     }
   </style>
 </head>
-
 <body>
-  <h2>학생 관찰 기록 페이지</h2>
+  <h2>학생 코멘트 입력 페이지</h2>
   <div class="container">
     <div class="left-panel">
-      <p>선생님: <strong id="teacherName"></strong></p>
-      <button class="logout-button" onclick="logout()">로그아웃</button>
+      <p>선생님 ID: <strong id="teacherName"></strong></p>
+      <div id="groupButtons"></div>
       <hr>
-
-    <div class="centered-buttons">
-      <button class="day-group-button" data-group="월수금" onclick="selectDayGroup('월수금', this)">월수금</button>
-      <button class="day-group-button" data-group="화목" onclick="selectDayGroup('화목', this)">화목</button>
+      <div id="classButtons"></div>
       <hr>
-      <div class="centered-buttons">
-        <button class="day-group-button" data-group="월수금" onclick="selectDayGroup('월수금', this)">월수금</button>
-        <button class="day-group-button" data-group="화목" onclick="selectDayGroup('화목', this)">화목</button>
-      </div>
-      <div id="classButtonsContainer" class="centered-buttons"></div>
-      <hr>
-      <div id="studentButtonsContainer" class="centered-buttons"></div>
+      <div id="studentButtons"></div>
     </div>
-
-    <div id="classButtonsContainer" class="centered-buttons"></div>
-    <hr class="section-divider">
-    <div id="studentButtonsContainer" class="centered-buttons"></div>
-    <div id="commentSection"></div>
     <div class="right-panel">
-      <label for="monthPicker">월 선택:</label>
-      <input type="month" id="monthPicker" /><br><br>
       <div id="commentSection"></div>
     </div>
   </div>
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-    import { getFirestore, collection, addDoc, getDocs, query, where } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-    import { getFirestore, doc, getDoc, getDocs, collection, query, where } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+    import { getFirestore, collection, getDocs, query, where, addDoc, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyCQ460HGskAiS7PzP7POHNani7dmZLs1d0",
@@ -158,150 +95,134 @@
       projectId: "claire-students-obs",
       storageBucket: "claire-students-obs.appspot.com",
       messagingSenderId: "413871024792",
-      appId: "1:413871024792:web:35b7cbbb3e3e9f25347eed",
-      measurementId: "G-FS2L4K2VBG"
+      appId: "1:413871024792:web:35b7cbbb3e3e9f25347eed"
     };
 
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
 
-    window.logout = function () {
-      localStorage.removeItem("teacherId");
+    const teacherId = new URLSearchParams(location.search).get("teacher");
+    if (!teacherId) {
+      alert("선생님 ID가 필요합니다.");
       location.href = "index.html";
-    };
+      throw new Error("Missing teacherId in URL");
+    }
+    document.getElementById("teacherName").innerText = teacherId;
 
-    let teacherId = "";
-    window.addEventListener("DOMContentLoaded", () => {
-      teacherId = localStorage.getItem("teacherId") || "";
-      if (!teacherId) {
-        alert("로그인이 필요합니다.");
-        location.href = "index.html";
-      } else {
-        document.getElementById("teacherName").innerText = teacherId;
-      }
+    const groupButtons = document.getElementById("groupButtons");
+    const classButtons = document.getElementById("classButtons");
+    const studentButtons = document.getElementById("studentButtons");
+    const commentSection = document.getElementById("commentSection");
+
+    const groups = ["월수금", "화목"];
+
+    groups.forEach(group => {
+      const btn = document.createElement("button");
+      btn.innerText = group;
+      btn.onclick = () => loadClasses(group);
+      groupButtons.appendChild(btn);
+      console.log(group)
     });
-    async function isStudentActive(name) {
-      const docRef = doc(db, "students", name);
-      const snap = await getDoc(docRef);
-      return !snap.exists() || snap.data().status !== "expelled";
-    }
 
-    window.selectDayGroup = function(group, btn) {
-    window.selectDayGroup = async function(group, btn) {
-      document.querySelectorAll(".day-group-button").forEach(b => b.classList.remove("active"));
-      btn.classList.add("active");
-      selectedGroup = group;
-      updateClassButtons(classGroups[group]);
-      document.getElementById("studentButtonsContainer").innerHTML = "";
-      document.getElementById("commentSection").innerHTML = "";
-    }
-  };
+async function loadClasses(group) {
+  console.clear(); // 새로 시작
+  console.log("선택된 요일 그룹:", group);
 
-    function updateClassButtons(classGroupData) {
-      const container = document.getElementById("classButtonsContainer");
-      container.innerHTML = "";
-      currentClassData = classGroupData;
-      for (const cls in classGroupData) {
-      const studentContainer = document.getElementById("studentButtonsContainer");
-      studentContainer.innerHTML = "";
+  const allDocs = await getDocs(collection(db, "students"));
+  console.log("전체 학생 수:", allDocs.size);
 
-      for (const className in classGroups[group]) {
-        const btn = document.createElement("button");
-        btn.innerText = cls;
-        btn.onclick = () => {
-        btn.innerText = className;
-        btn.onclick = async () => {
-          document.querySelectorAll("#classButtonsContainer button").forEach(b => b.classList.remove("active"));
-          btn.classList.add("active");
-          renderStudents(cls);
-          const studentList = classGroups[group][className];
-          const activeStudents = await filterActiveStudents(studentList);
-          studentContainer.innerHTML = "";
-          activeStudents.forEach(name => {
-            const sBtn = document.createElement("button");
-            sBtn.innerText = name;
-            sBtn.onclick = () => openCommentBox(name);
-            studentContainer.appendChild(sBtn);
-          });
-        };
-        container.appendChild(btn);
+  const map = {};
+  let countMatched = 0;
+
+  allDocs.forEach(docSnap => {
+    const data = docSnap.data();
+    console.log(`학생: ${data.name}, group: ${data.group}, class: ${data.class}, status: ${data.status}`);
+
+    if (data.group === group) {
+      if (data.status !== "expelled") {
+        if (!map[data.class]) map[data.class] = [];
+        map[data.class].push(data.name);
+        countMatched++;
       }
     }
-  }
+  });
+
+  console.log(`선택한 그룹(${group})에 해당하는 학생 수: ${countMatched}`);
+  console.log("반 별 분류:", map);
+
+  renderClassButtons(map);
 }
 
-    function renderStudents(className) {
-      const container = document.getElementById("studentButtonsContainer");
-      container.innerHTML = "";
-      selectedClass = className;
-      document.getElementById("commentSection").innerHTML = "";
-      const students = currentClassData[className] || [];
+    function renderClassButtons(classMap) {
+      classButtons.innerHTML = "";
+      studentButtons.innerHTML = "";
+      commentSection.innerHTML = "";
+      for (const className in classMap) {
+        const btn = document.createElement("button");
+        btn.innerText = className;
+        btn.onclick = () => renderStudentButtons(classMap[className]);
+        classButtons.appendChild(btn);
+      }
+    }
+
+    function renderStudentButtons(students) {
+      studentButtons.innerHTML = "";
+      commentSection.innerHTML = "";
       students.forEach(name => {
         const btn = document.createElement("button");
         btn.innerText = name;
-        btn.onclick = () => {
-          document.querySelectorAll("#studentButtonsContainer button").forEach(b => b.classList.remove("active"));
-          btn.classList.add("active");
-          selectedStudent = name;
-          openCommentBox(name);
-        };
-        container.appendChild(btn);
+        btn.onclick = () => openCommentBox(name);
+        studentButtons.appendChild(btn);
       });
-    };
+    }
 
     async function openCommentBox(name) {
-      const section = document.getElementById("commentSection");
-      section.innerHTML = `
-        <h3>${name} 학생 평가</h3>
-        <label>날짜 선택:</label>
-        <input type="date" id="commentDate" /><br>
-        <textarea id="commentInput" rows="3" cols="50" placeholder="오늘의 평가를 입력하세요."></textarea><br>
+      commentSection.innerHTML = `
+        <h3>${name} 학생</h3>
+        <input type="date" id="commentDate" value="${new Date().toISOString().split("T")[0]}"><br>
+        <textarea id="commentInput" placeholder="코멘트를 입력하세요"></textarea><br>
         <button onclick="submitComment('${name}')">등록</button>
         <div id="commentHistory"></div>
       `;
-      document.getElementById("commentDate").value = new Date().toISOString().split("T")[0];
-      await renderStudentComments(name);
+      await renderCommentHistory(name);
     }
 
-    window.submitComment = async function(studentName) {
+    window.submitComment = async function(name) {
       const text = document.getElementById("commentInput").value.trim();
-      if (!text) return;
-
-      let selectedDate = document.getElementById("commentDate").value;
-      if (!selectedDate) {
-        const now = new Date();
-        selectedDate = `${now.getFullYear()}.${String(now.getMonth() + 1).padStart(2, "0")}.${String(now.getDate()).padStart(2, "0")}`;
-      } else {
-        selectedDate = selectedDate.replace(/-/g, ".");
-      }
-
+      const date = document.getElementById("commentDate").value;
+      if (!text || !date) return;
       await addDoc(collection(db, "comments"), {
-        student: studentName,
-        date: selectedDate,
+        student: name,
+        date: date.replace(/-/g, "."),
         teacher: teacherId,
-        teacher: localStorage.getItem("teacherId"),
         comment: text
       });
-
       document.getElementById("commentInput").value = "";
-      await renderStudentComments(studentName);
+      await renderCommentHistory(name);
     }
 
-    async function renderStudentComments(studentName) {
-      const historyDiv = document.getElementById("commentHistory");
-      const q = query(collection(db, "comments"), where("student", "==", studentName));
-      const snapshot = await getDocs(q);
-      const logs = [];
-      snapshot.forEach(doc => logs.push(doc.data()));
-
-      historyDiv.innerHTML = "";
-      logs.sort((a, b) => (b.date || "").localeCompare(a.date || ""));
-      logs.forEach(log => {
-        const entry = document.createElement("div");
-        entry.className = "comment";
-        entry.innerHTML = `<strong>${log.date} - ${log.teacher}:</strong><div>${log.comment}</div>`;
-        historyDiv.appendChild(entry);
+    async function renderCommentHistory(name) {
+      const container = document.getElementById("commentHistory");
+      container.innerHTML = "";
+      const snapshot = await getDocs(query(collection(db, "comments"), where("student", "==", name)));
+      const list = [];
+      snapshot.forEach(doc => list.push({ id: doc.id, ...doc.data() }));
+      list.sort((a, b) => (b.date || "").localeCompare(a.date || ""));
+      list.forEach(item => {
+        const div = document.createElement("div");
+        div.className = "comment";
+        div.innerHTML = `
+          <strong>${item.date} - ${item.teacher}</strong>
+          <div>${item.comment}</div>
+          <button onclick="deleteComment('${item.id}', '${name}')">삭제</button>
+        `;
+        container.appendChild(div);
       });
+    }
+
+    window.deleteComment = async function(id, studentName) {
+      await deleteDoc(doc(db, "comments", id));
+      await renderCommentHistory(studentName);
     }
   </script>
 </body>
