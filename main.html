@@ -187,6 +187,13 @@ async function loadClasses(group) {
         <button onclick="submitComment('${name}')">등록</button>
         <div id="commentHistory"></div>
       `;
+      document.getElementById("commentInput").addEventListener("keydown", function (e) {
+        if (e.key === "Enter" && (e.ctrlKey || e.metaKey)) {
+      e.preventDefault(); // 폼 자동 제출 방지
+      submitComment(name);
+  }
+});
+
       await renderCommentHistory(name);
     }
 
