@@ -1,0 +1,804 @@
+<title>Write It in English</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Karla:wght@400;500;700&family=Noto+Sans+KR:wght@400;700&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+  :root{
+    --sheet:#FFFDF7;
+    --page:#EFEADC;
+    --ink:#262A1F;
+    --ink-soft:#5B5D4C;
+    --accent:#1E6B49;
+    --accent-soft:#E4EFE8;
+    --accent-ink:#F4FBF6;
+    --correction:#B23B32;
+    --correction-soft:#F7E4E0;
+    --border:#D5CDB6;
+    --line:#C6BEA6;
+    --mono-ink:#7A7663;
+    --font-display:'Fraunces',Georgia,'Times New Roman',serif;
+    --font-read:'Fraunces',Georgia,serif;
+    --font-ui:'Karla','Noto Sans KR',-apple-system,BlinkMacSystemFont,sans-serif;
+    --font-ko:'Noto Sans KR','Karla',sans-serif;
+    --font-mono:'JetBrains Mono',ui-monospace,Consolas,monospace;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --sheet:#20261F;
+      --page:#161A15;
+      --ink:#ECE7D6;
+      --ink-soft:#B4B19D;
+      --accent:#6FC79A;
+      --accent-soft:#22321F;
+      --accent-ink:#0D1611;
+      --correction:#E2897C;
+      --correction-soft:#3A2420;
+      --border:#3A4034;
+      --line:#454B3D;
+      --mono-ink:#8B9083;
+    }
+  }
+  :root[data-theme="dark"]{
+    --sheet:#20261F;
+    --page:#161A15;
+    --ink:#ECE7D6;
+    --ink-soft:#B4B19D;
+    --accent:#6FC79A;
+    --accent-soft:#22321F;
+    --accent-ink:#0D1611;
+    --correction:#E2897C;
+    --correction-soft:#3A2420;
+    --border:#3A4034;
+    --line:#454B3D;
+    --mono-ink:#8B9083;
+  }
+
+  *{box-sizing:border-box;}
+  @media (prefers-reduced-motion: reduce){*{transition:none !important;}}
+  body{
+    margin:0;
+    background:var(--page);
+    color:var(--ink);
+    font-family:var(--font-ui);
+    font-size:16px;
+    line-height:1.7;
+    -webkit-font-smoothing:antialiased;
+  }
+  a{color:var(--accent);}
+  a:focus-visible{outline:2px solid var(--correction); outline-offset:3px;}
+  code{font-family:var(--font-mono); font-size:.88em;}
+
+  .stack{max-width:820px; margin:0 auto; padding:40px 20px 70px; display:flex; flex-direction:column; gap:26px;}
+
+  .sheet{
+    background:var(--sheet);
+    border:1px solid var(--border);
+    border-radius:4px;
+    padding:38px 42px 34px;
+  }
+  @media (max-width:600px){ .sheet{padding:28px 22px 26px;} }
+
+  /* ---------- cover ---------- */
+  .cover-eyebrow{
+    font-family:var(--font-mono);
+    font-size:11.5px;
+    letter-spacing:.14em;
+    text-transform:uppercase;
+    color:var(--correction);
+    margin:0 0 12px;
+  }
+  .cover h1{
+    font-family:var(--font-display);
+    font-weight:600;
+    font-size:clamp(2.2rem,6vw,3.1rem);
+    line-height:1.12;
+    letter-spacing:-.015em;
+    margin:0 0 16px;
+    text-wrap:balance;
+  }
+  .cover p.blurb{
+    font-family:var(--font-read);
+    font-size:1.02rem;
+    color:var(--ink-soft);
+    max-width:56ch;
+    margin:0 0 26px;
+  }
+  .namebar{
+    display:flex;
+    gap:26px;
+    flex-wrap:wrap;
+    padding:16px 0 0;
+    border-top:1px solid var(--border);
+  }
+  .namefield{display:flex; align-items:baseline; gap:10px; flex:1 1 190px;}
+  .namefield span{
+    font-family:var(--font-mono);
+    font-size:12px;
+    color:var(--mono-ink);
+    white-space:nowrap;
+  }
+  .namefield i{flex:1; border-bottom:1.5px solid var(--line); height:26px; display:block;}
+  .howto{
+    margin:26px 0 0;
+    padding:16px 18px;
+    background:var(--accent-soft);
+    border-radius:4px;
+    font-size:.92rem;
+    color:var(--ink-soft);
+  }
+  .howto b{color:var(--ink);}
+  .howto ul{margin:8px 0 0; padding-left:19px;}
+  .howto li{margin:0 0 5px;}
+
+  /* ---------- practice header ---------- */
+  .step-head{
+    display:flex;
+    gap:16px;
+    align-items:flex-start;
+    padding:0 0 16px;
+    border-bottom:2px solid var(--accent);
+    margin:0 0 24px;
+  }
+  .step-num{
+    flex:none;
+    width:46px; height:46px;
+    border-radius:50%;
+    background:var(--accent);
+    color:var(--accent-ink);
+    font-family:var(--font-mono);
+    font-size:15px;
+    font-weight:600;
+    display:flex; align-items:center; justify-content:center;
+  }
+  .step-titles{flex:1; min-width:0;}
+  .step-titles h2{
+    font-family:var(--font-display);
+    font-weight:600;
+    font-size:1.68rem;
+    line-height:1.2;
+    letter-spacing:-.01em;
+    margin:2px 0 5px;
+    text-wrap:balance;
+  }
+  .step-goal{
+    font-size:.9rem;
+    color:var(--accent);
+    font-weight:700;
+    margin:0 0 4px;
+  }
+  .step-id{
+    font-family:var(--font-mono);
+    font-size:11px;
+    color:var(--mono-ink);
+    margin:0;
+  }
+
+  /* ---------- activity ---------- */
+  .act{margin:0 0 26px;}
+  .act:last-of-type{margin-bottom:0;}
+  .act-label{
+    font-family:var(--font-mono);
+    font-size:11.5px;
+    letter-spacing:.09em;
+    color:var(--correction);
+    font-weight:600;
+    margin:0 0 5px;
+  }
+  .act-prompt{
+    font-weight:700;
+    font-size:1rem;
+    margin:0 0 12px;
+    color:var(--ink);
+  }
+  .act-hint{
+    font-size:.87rem;
+    color:var(--ink-soft);
+    font-style:italic;
+    margin:-6px 0 12px;
+  }
+
+  /* passage */
+  .passage{
+    font-family:var(--font-read);
+    background:var(--page);
+    border-left:3px solid var(--accent);
+    border-radius:0 4px 4px 0;
+    padding:16px 20px;
+    margin:0 0 16px;
+    font-size:1rem;
+    line-height:1.85;
+  }
+  .passage h5{
+    font-family:var(--font-ui);
+    font-size:.88rem;
+    font-weight:700;
+    letter-spacing:.02em;
+    margin:0 0 8px;
+    color:var(--accent);
+  }
+  .passage p{margin:0 0 10px;}
+  .passage p:last-child{margin-bottom:0;}
+
+  /* writing lines */
+  .lines{
+    background-image:repeating-linear-gradient(to bottom,transparent 0 31px,var(--line) 31px 32px);
+    min-height:96px;
+  }
+  .lines.l1{min-height:32px;}
+  .lines.l2{min-height:64px;}
+  .lines.l4{min-height:128px;}
+  .lines.l5{min-height:160px;}
+
+  /* inline blank for sentence frames */
+  .blank{
+    display:inline-block;
+    min-width:130px;
+    border-bottom:1.5px solid var(--line);
+    margin:0 3px;
+    vertical-align:-2px;
+  }
+  .blank.short{min-width:78px;}
+  .blank.long{min-width:210px;}
+
+  ul.frames{list-style:none; margin:0; padding:0;}
+  ul.frames li{
+    font-family:var(--font-read);
+    font-size:1.02rem;
+    line-height:2.5;
+    margin:0 0 6px;
+    padding:0 0 0 2px;
+  }
+
+  /* ordering rows */
+  ol.ordered{list-style:none; margin:0; padding:0;}
+  ol.ordered li{
+    display:flex;
+    align-items:flex-start;
+    gap:12px;
+    margin:0 0 11px;
+    font-family:var(--font-read);
+    font-size:1rem;
+  }
+  .obox{
+    flex:none;
+    width:30px; height:30px;
+    border:1.5px solid var(--ink-soft);
+    border-radius:4px;
+    margin-top:1px;
+  }
+
+  /* boxed answers */
+  .boxrow{display:grid; gap:12px; margin:0 0 12px;}
+  .boxrow.three{grid-template-columns:repeat(3,1fr);}
+  @media (max-width:600px){ .boxrow.three{grid-template-columns:1fr;} }
+  .abox{
+    border:1px solid var(--border);
+    border-radius:4px;
+    padding:10px 12px 6px;
+    background:var(--sheet);
+  }
+  .abox h6{
+    font-family:var(--font-mono);
+    font-size:11px;
+    letter-spacing:.06em;
+    color:var(--accent);
+    font-weight:600;
+    margin:0 0 6px;
+  }
+  .abox .lines{background-image:repeating-linear-gradient(to bottom,transparent 0 27px,var(--line) 27px 28px);}
+
+  /* word bank */
+  .bank{
+    border:1px solid var(--accent);
+    border-radius:5px;
+    padding:18px 20px;
+    margin:0 0 22px;
+    background:var(--sheet);
+  }
+  .bank-row{
+    display:grid;
+    grid-template-columns:150px 1fr;
+    gap:12px 16px;
+    padding:9px 0;
+    border-bottom:1px dashed var(--border);
+    align-items:baseline;
+  }
+  .bank-row:last-child{border-bottom:none; padding-bottom:0;}
+  @media (max-width:600px){ .bank-row{grid-template-columns:1fr; gap:5px;} }
+  .bank-key{
+    font-size:.86rem;
+    font-weight:700;
+    color:var(--accent);
+  }
+  .chips{display:flex; flex-wrap:wrap; gap:6px;}
+  .chip{
+    font-family:var(--font-read);
+    font-size:.93rem;
+    background:var(--accent-soft);
+    border-radius:3px;
+    padding:2px 9px;
+    white-space:nowrap;
+  }
+
+  /* numbered fill rows */
+  ol.fill{margin:0; padding:0 0 0 22px;}
+  ol.fill li{margin:0 0 14px; font-size:.98rem; font-family:var(--font-read);}
+  ol.fill li:last-child{margin-bottom:0;}
+  ol.fill .lines{margin-top:5px;}
+
+  /* short-answer inline rows */
+  ol.qrows{margin:0; padding:0 0 0 22px;}
+  ol.qrows li{
+    margin:0 0 10px;
+    font-family:var(--font-read);
+    font-size:1rem;
+    display:flex;
+    justify-content:space-between;
+    gap:16px;
+    align-items:baseline;
+    border-bottom:1px dotted var(--border);
+    padding-bottom:5px;
+  }
+  ol.qrows li span.ans{
+    flex:none;
+    width:54px;
+    border-bottom:1.5px solid var(--line);
+    height:20px;
+  }
+
+  /* checkbox list */
+  ul.checks{list-style:none; margin:0; padding:0;}
+  ul.checks li{
+    position:relative;
+    padding-left:28px;
+    margin:0 0 9px;
+    font-size:.96rem;
+  }
+  ul.checks li::before{
+    content:"";
+    position:absolute;
+    left:0; top:5px;
+    width:15px; height:15px;
+    border:1.5px solid var(--ink-soft);
+    border-radius:3px;
+  }
+
+  /* plan grid */
+  .plan{display:grid; border:1px solid var(--border); border-radius:4px; overflow:hidden;}
+  .plan-row{display:grid; grid-template-columns:132px 1fr; border-bottom:1px solid var(--border);}
+  .plan-row:last-child{border-bottom:none;}
+  @media (max-width:600px){ .plan-row{grid-template-columns:100px 1fr;} }
+  .plan-key{
+    background:var(--accent-soft);
+    padding:11px 12px;
+    font-size:.85rem;
+    font-weight:700;
+    border-right:1px solid var(--border);
+  }
+  .plan-val{padding:6px 12px;}
+  .plan-val .lines{background-image:repeating-linear-gradient(to bottom,transparent 0 29px,var(--line) 29px 30px); min-height:30px;}
+  .plan-val .lines.two{min-height:60px;}
+
+  /* teacher note (Korean) */
+  .tnote{
+    margin:28px 0 0;
+    padding:14px 16px;
+    border:1px dashed var(--border);
+    border-radius:4px;
+    background:var(--page);
+    font-family:var(--font-ko);
+    font-size:.85rem;
+    line-height:1.75;
+    color:var(--ink-soft);
+  }
+  .tnote b.tlabel{
+    font-family:var(--font-mono);
+    font-size:11px;
+    letter-spacing:.08em;
+    text-transform:uppercase;
+    color:var(--mono-ink);
+    display:block;
+    margin:0 0 6px;
+  }
+  .tnote p{margin:0 0 7px;}
+  .tnote p:last-child{margin:0;}
+
+  .colophon{
+    font-family:var(--font-mono);
+    font-size:11px;
+    color:var(--mono-ink);
+    line-height:1.75;
+    text-align:center;
+    padding:6px 0 0;
+  }
+
+  /* ---------- print ---------- */
+  @media print{
+    body{background:#fff;}
+    .stack{max-width:none; padding:0; gap:0;}
+    .sheet{
+      border:none;
+      border-radius:0;
+      padding:0 0 12mm;
+      page-break-after:always;
+      break-after:page;
+    }
+    .sheet:last-of-type{page-break-after:auto; break-after:auto;}
+    .colophon{display:none;}
+    .passage{background:#fff; border-left:3px solid #1E6B49;}
+    .tnote{background:#fff;}
+    .chip{background:#fff; border:1px solid #D5CDB6;}
+    @page{size:A4; margin:16mm 14mm;}
+  }
+</style>
+
+<div class="stack">
+
+  <!-- ================= COVER ================= -->
+  <section class="sheet cover">
+    <p class="cover-eyebrow">Structured Writing · Practice Book 2</p>
+    <h1>Write It in English</h1>
+    <p class="blurb">
+      You already know these stories. Now you will build them again — in English.
+      The shapes are the same: beginning, middle, end. One idea in one paragraph.
+      Only the words are new.
+    </p>
+
+    <div class="namebar">
+      <label class="namefield"><span>NAME</span><i></i></label>
+      <label class="namefield"><span>CLASS</span><i></i></label>
+      <label class="namefield"><span>DATE</span><i></i></label>
+    </div>
+
+    <div class="howto">
+      <b>How to use this book</b>
+      <ul>
+        <li>Do one practice page each lesson. Do not skip pages.</li>
+        <li>Keep the <b>Word Bank</b> page open while you write. You may copy from it.</li>
+        <li><b>Say your sentence out loud before you write it.</b> Every time.</li>
+        <li>It is fine to use the same words again and again. That is how they stay.</li>
+      </ul>
+    </div>
+
+    <div class="tnote">
+      <b class="tlabel">선생님께</b>
+      <p>「글쓰기 첫걸음」을 마친 학생을 위한 후속 학습지입니다. 학생용 활동은 전부 영어이고, 이 <b>선생님께</b> 칸만 한국어입니다.</p>
+      <p>지문은 첫걸음에서 한국어로 읽었던 것과 <b>같은 내용</b>을 영어로 옮긴 것입니다 — 내용이 익숙하면 학생은 인지 부담을 언어에만 쓸 수 있습니다. 첫걸음 학습지를 옆에 두고 견주어 보게 하세요.</p>
+    </div>
+  </section>
+
+  <!-- ================= WORD BANK ================= -->
+  <section class="sheet">
+    <div class="step-head">
+      <div class="step-num">WB</div>
+      <div class="step-titles">
+        <p class="step-goal">Keep this page open while you write</p>
+        <h2>Word Bank</h2>
+        <p class="step-id">signal words &amp; sentence frames</p>
+      </div>
+    </div>
+
+    <div class="bank">
+      <div class="bank-row">
+        <div class="bank-key">Time order</div>
+        <div class="chips"><span class="chip">first</span><span class="chip">next</span><span class="chip">then</span><span class="chip">after that</span><span class="chip">finally</span></div>
+      </div>
+      <div class="bank-row">
+        <div class="bank-key">Adding more</div>
+        <div class="chips"><span class="chip">also</span><span class="chip">and</span><span class="chip">another</span><span class="chip">too</span></div>
+      </div>
+      <div class="bank-row">
+        <div class="bank-key">Giving a reason</div>
+        <div class="chips"><span class="chip">because</span><span class="chip">so</span><span class="chip">that is why</span></div>
+      </div>
+      <div class="bank-row">
+        <div class="bank-key">Showing a difference</div>
+        <div class="chips"><span class="chip">but</span><span class="chip">however</span><span class="chip">on the other hand</span></div>
+      </div>
+      <div class="bank-row">
+        <div class="bank-key">Giving an example</div>
+        <div class="chips"><span class="chip">for example</span><span class="chip">such as</span><span class="chip">like</span></div>
+      </div>
+    </div>
+
+    <div class="act">
+      <p class="act-label">Practice</p>
+      <p class="act-prompt">Write the best signal word in each blank. Use the Word Bank.</p>
+      <ol class="fill">
+        <li>It was raining, <span class="blank short"></span> we stayed inside.</li>
+        <li>I like apples. <span class="blank short"></span>, I like oranges.</li>
+        <li>First, put the bread on the plate. <span class="blank short"></span>, add some cheese.</li>
+        <li>Cats and dogs are both pets. <span class="blank"></span>, cats are much quieter.</li>
+        <li>Bees are useful <span class="blank short"></span> they help flowers grow.</li>
+      </ol>
+    </div>
+
+    <div class="tnote">
+      <b class="tlabel">선생님께</b>
+      <p>비영어권 학습자에게 <b>구조는 낱말로 드러납니다.</b> 이 페이지를 매 차시 책상에 펼쳐 두게 하고, 보고 베끼는 것을 허용해 주세요 — 표현을 외우는 것이 아니라 <b>구조를 쓰는 것</b>이 목표입니다.</p>
+    </div>
+  </section>
+
+  <!-- ================= PRACTICE 1 ================= -->
+  <section class="sheet">
+    <div class="step-head">
+      <div class="step-num">1</div>
+      <div class="step-titles">
+        <p class="step-goal">Beginning · Middle · End</p>
+        <h2>Put the Story in Order</h2>
+        <p class="step-id">mt_VEwM7ClYYE · Story Sequence and Central Message</p>
+      </div>
+    </div>
+
+    <div class="act">
+      <p class="act-label">Activity 1</p>
+      <p class="act-prompt">Number the sentences from 1 to 5.</p>
+      <ol class="ordered">
+        <li><span class="obox"></span><span>One morning, she saw a tiny green leaf in the pot.</span></li>
+        <li><span class="obox"></span><span>Last spring, Mina planted a small seed in a pot.</span></li>
+        <li><span class="obox"></span><span>After that, she watered the pot every day again.</span></li>
+        <li><span class="obox"></span><span>For many days, nothing came out of the soil.</span></li>
+        <li><span class="obox"></span><span>Then she felt sad and pushed the pot into a corner.</span></li>
+      </ol>
+    </div>
+
+    <div class="act">
+      <p class="act-label">Activity 2</p>
+      <p class="act-prompt">Write what happens in each part. One sentence each.</p>
+      <div class="boxrow three">
+        <div class="abox"><h6>BEGINNING</h6><div class="lines l2"></div></div>
+        <div class="abox"><h6>MIDDLE</h6><div class="lines l2"></div></div>
+        <div class="abox"><h6>END</h6><div class="lines l2"></div></div>
+      </div>
+    </div>
+
+    <div class="act">
+      <p class="act-label">Activity 3</p>
+      <p class="act-prompt">What did Mina learn? Finish the sentence.</p>
+      <p class="act-hint">Do not write what happened. Write what she understood.</p>
+      <ul class="frames">
+        <li>Mina learned that <span class="blank long"></span>.</li>
+      </ul>
+    </div>
+
+    <div class="act">
+      <p class="act-label">Activity 4</p>
+      <p class="act-prompt">Circle the words in Activity 1 that show <b>time</b>.</p>
+      <p class="act-hint">There are four. One of them is “One morning”.</p>
+    </div>
+
+    <div class="tnote">
+      <b class="tlabel">선생님께</b>
+      <p>첫걸음 STEP 1의 「민서와 화분」을 영어로 옮긴 것입니다. 정답 순서는 <b>2 → 4 → 5 → 1 → 3</b>.</p>
+      <p>활동 3에서 줄거리를 다시 쓰면 “But what did she <i>understand</i>?”로 한 번 더 물어 주세요. 한국어로 이미 답해 본 질문이라, 영어로도 도달할 수 있습니다.</p>
+    </div>
+  </section>
+
+  <!-- ================= PRACTICE 2 ================= -->
+  <section class="sheet">
+    <div class="step-head">
+      <div class="step-num">2</div>
+      <div class="step-titles">
+        <p class="step-goal">One paragraph, one main idea</p>
+        <h2>Main Idea and Details</h2>
+        <p class="step-id">mt_QCWWmDMYZR → mt_sMAcZW6vWM</p>
+      </div>
+    </div>
+
+    <div class="passage">
+      <h5>PARAGRAPH A</h5>
+      <p>Emperor penguins live in Antarctica. Antarctica is the coldest place on Earth. In winter, the temperature falls to −60°C. Emperor penguins stand together in large groups on the ice.</p>
+    </div>
+
+    <div class="act">
+      <p class="act-prompt">Finish the sentences about Paragraph A.</p>
+      <ul class="frames">
+        <li>This paragraph is about <span class="blank long"></span>.</li>
+        <li>One detail is <span class="blank long"></span>.</li>
+        <li>Another detail is <span class="blank long"></span>.</li>
+      </ul>
+    </div>
+
+    <div class="passage">
+      <h5>PARAGRAPH B</h5>
+      <p>Emperor penguins have four layers of feathers. The feathers stop the cold wind. They also have thick fat under their skin. When the wind is very strong, hundreds of penguins stand close together and share their heat.</p>
+    </div>
+
+    <div class="act">
+      <p class="act-prompt">Write the main idea of Paragraph B in <b>one sentence</b>.</p>
+      <div class="lines l2"></div>
+    </div>
+
+    <div class="act">
+      <p class="act-label">Activity 3</p>
+      <p class="act-prompt">Write <b>three</b> details from Paragraph B.</p>
+      <ol class="fill">
+        <li><div class="lines l1"></div></li>
+        <li><div class="lines l1"></div></li>
+        <li><div class="lines l1"></div></li>
+      </ol>
+    </div>
+
+    <div class="act">
+      <p class="act-label">Activity 4</p>
+      <p class="act-prompt">Write <b>one</b> sentence that tells about Paragraph A <b>and</b> Paragraph B together.</p>
+      <p class="act-hint">Do not write your own opinion. Only what the text says.</p>
+      <div class="lines l2"></div>
+    </div>
+
+    <div class="tnote">
+      <b class="tlabel">선생님께</b>
+      <p>첫걸음 STEP 3의 「황제펭귄」 ①②문단입니다. 문단의 <b>첫 문장을 그대로 옮겨 적는지</b> 보세요 — 영어에서는 특히 이 회피가 자주 나옵니다. “Say it in your own words. Five words is enough.”로 짧게 요구하면 부담이 줄어듭니다.</p>
+    </div>
+  </section>
+
+  <!-- ================= PRACTICE 3 ================= -->
+  <section class="sheet">
+    <div class="step-head">
+      <div class="step-num">3</div>
+      <div class="step-titles">
+        <p class="step-goal">Every sentence must belong</p>
+        <h2>Keep the Paragraph Together</h2>
+        <p class="step-id">paragraph unity · fact vs. opinion</p>
+      </div>
+    </div>
+
+    <div class="act">
+      <p class="act-label">Activity 1</p>
+      <p class="act-prompt">One sentence does not belong. Cross it out.</p>
+
+      <div class="passage">
+        <p>Bees live in a hive. A hive can hold thousands of bees. Every bee has a job to do. I ate honey on my toast this morning. The queen bee lays all the eggs.</p>
+      </div>
+      <div class="passage">
+        <p>Rain helps plants grow. Plants need water to make their food. Without rain, the soil becomes dry and hard. My umbrella is blue. Farmers watch the sky every day.</p>
+      </div>
+    </div>
+
+    <div class="act">
+      <p class="act-label">Activity 2</p>
+      <p class="act-prompt">Write <b>F</b> for fact or <b>O</b> for opinion.</p>
+      <ol class="qrows">
+        <li><span>Penguins live in Antarctica.</span><span class="ans"></span></li>
+        <li><span>Penguins are the cutest birds in the world.</span><span class="ans"></span></li>
+        <li><span>A hive can hold thousands of bees.</span><span class="ans"></span></li>
+        <li><span>Honey tastes better than sugar.</span><span class="ans"></span></li>
+        <li><span>Rain helps plants grow.</span><span class="ans"></span></li>
+        <li><span>Rainy days are boring.</span><span class="ans"></span></li>
+      </ol>
+    </div>
+
+    <div class="act">
+      <p class="act-label">Activity 3</p>
+      <p class="act-prompt">Choose one <b>opinion</b> above. Change it into a <b>fact</b>.</p>
+      <p class="act-hint">Example: “Penguins are the cutest birds.” → “Penguins have black and white feathers.”</p>
+      <div class="lines l2"></div>
+    </div>
+
+    <div class="tnote">
+      <b class="tlabel">선생님께</b>
+      <p>첫걸음 STEP 6에서 다룬 <b>사실과 느낌 구분</b>을 영어로 옮긴 활동입니다. 설명문을 쓸 때 느낌 문장으로 분량을 채우는 습관을 여기서 끊어 주세요.</p>
+      <p>활동 1의 정답은 “I ate honey on my toast this morning.”과 “My umbrella is blue.”입니다. 왜 어울리지 않는지 <b>영어 한 문장으로</b> 말하게 하면 좋습니다 — “It is not about bees.”면 충분합니다.</p>
+    </div>
+  </section>
+
+  <!-- ================= PRACTICE 4 ================= -->
+  <section class="sheet">
+    <div class="step-head">
+      <div class="step-num">4</div>
+      <div class="step-titles">
+        <p class="step-goal">Borrow the frame, fill your own words</p>
+        <h2>Write to Inform</h2>
+        <p class="step-id">mt__MDiDU9Vck · Writing to inform</p>
+      </div>
+    </div>
+
+    <div class="act">
+      <p class="act-label">Activity 1</p>
+      <p class="act-prompt">Choose something <b>you know well</b>.</p>
+      <p class="act-hint">Your pet · your favourite sport · your town · a food you can cook</p>
+      <div class="plan">
+        <div class="plan-row"><div class="plan-key">My topic</div><div class="plan-val"><div class="lines"></div></div></div>
+        <div class="plan-row"><div class="plan-key">Who will read it</div><div class="plan-val"><div class="lines"></div></div></div>
+        <div class="plan-row"><div class="plan-key">Three key words</div><div class="plan-val"><div class="lines two"></div></div></div>
+      </div>
+    </div>
+
+    <div class="act">
+      <p class="act-label">Activity 2</p>
+      <p class="act-prompt">Fill in the frames. Write <b>facts</b>, not feelings.</p>
+      <ul class="frames">
+        <li>I want to tell you about <span class="blank long"></span>.</li>
+        <li>First, <span class="blank long"></span>.</li>
+        <li>Also, <span class="blank long"></span>.</li>
+        <li>Finally, <span class="blank long"></span>.</li>
+        <li>Now you know <span class="blank long"></span>.</li>
+      </ul>
+    </div>
+
+    <div class="act">
+      <p class="act-label">Activity 3</p>
+      <p class="act-prompt">Say your five sentences out loud. Then write them here as <b>one paragraph</b>.</p>
+      <ul class="checks">
+        <li>I said every sentence out loud before I wrote it.</li>
+      </ul>
+      <div class="lines l5" style="margin-top:10px;"></div>
+    </div>
+
+    <div class="tnote">
+      <b class="tlabel">선생님께</b>
+      <p>문장 프레임(sentence frame)은 비영어권 학습자가 <b>문법에 막혀 구조를 못 배우는 상황</b>을 막아 줍니다. 프레임을 그대로 쓰는 것을 “베끼기”로 보지 마세요 — 채워 넣는 내용이 학생의 것이면 됩니다.</p>
+      <p>활동 3의 체크박스를 반드시 지키게 하세요. 원본 데이터에서 <code>Saying Sentences Before Writing Them</code>은 초기 쓰기 주제 전체의 하드 선수 조건입니다.</p>
+    </div>
+  </section>
+
+  <!-- ================= PRACTICE 5 ================= -->
+  <section class="sheet">
+    <div class="step-head">
+      <div class="step-num">5</div>
+      <div class="step-titles">
+        <p class="step-goal">One paragraph becomes three</p>
+        <h2>Build Three Paragraphs</h2>
+        <p class="step-id">mt_hp2qJ-QRBn + mt_AvJMWQbDsr</p>
+      </div>
+    </div>
+
+    <div class="act">
+      <p class="act-label">Activity 1</p>
+      <p class="act-prompt">Use your topic from Practice 4. Plan your headings first.</p>
+      <div class="plan">
+        <div class="plan-row"><div class="plan-key">Title</div><div class="plan-val"><div class="lines"></div></div></div>
+        <div class="plan-row"><div class="plan-key">Heading 1</div><div class="plan-val"><div class="lines"></div></div></div>
+        <div class="plan-row"><div class="plan-key">Heading 2</div><div class="plan-val"><div class="lines"></div></div></div>
+      </div>
+    </div>
+
+    <div class="act">
+      <p class="act-label">Activity 2</p>
+      <p class="act-prompt">Write your text in the boxes. Use signal words from the Word Bank.</p>
+
+      <div class="abox" style="margin-bottom:12px;">
+        <h6>INTRODUCTION — say what the text is about</h6>
+        <div class="lines l2"></div>
+      </div>
+      <div class="abox" style="margin-bottom:12px;">
+        <h6>BODY 1 — facts about Heading 1</h6>
+        <div class="lines l4"></div>
+      </div>
+      <div class="abox" style="margin-bottom:12px;">
+        <h6>BODY 2 — facts about Heading 2</h6>
+        <div class="lines l4"></div>
+      </div>
+      <div class="abox">
+        <h6>CONCLUSION — one last sentence for your reader</h6>
+        <div class="lines l2"></div>
+      </div>
+    </div>
+
+    <div class="act">
+      <p class="act-label">Activity 3 · Check your own writing</p>
+      <p class="act-prompt">Read your text out loud. Then tick each box.</p>
+      <ul class="checks">
+        <li>Each paragraph has <b>only one</b> main idea.</li>
+        <li>I used at least two signal words from the Word Bank.</li>
+        <li>My body paragraphs have facts, not feelings.</li>
+        <li>My conclusion does not start a new topic.</li>
+        <li>I found and fixed one mistake by myself.</li>
+      </ul>
+    </div>
+
+    <div class="tnote">
+      <b class="tlabel">선생님께</b>
+      <p>이 학습지의 도착점입니다. 첫걸음 STEP 7에서 한국어로 세웠던 것과 <b>같은 구조</b>를 영어로 세우게 됩니다 — 두 장을 나란히 놓고 비교하게 하면, 구조가 언어와 무관하게 같다는 것을 학생이 스스로 발견합니다.</p>
+      <p>여기까지가 입문 트랙의 끝입니다. 다음은 「글쓰기 설계도」의 <b>1단계</b>부터 순서대로 이어 가세요. 다만 이 학습지의 마지막 장(세 문단 쓰기)을 무리 없이 해낸 학생이라면 <b>3단계 「문단의 발견」</b>으로 바로 건너뛰어도 됩니다 — 1·2단계는 이 학습지에서 이미 다룬 내용과 크게 겹칩니다.</p>
+    </div>
+  </section>
+
+  <p class="colophon">
+    Marble Skill Taxonomy (v1) · © Generative Spark, Inc. (Marble) · https://withmarble.com<br>
+    licensed under ODbL 1.0 (database) and CC BY-SA 4.0 (content)<br>
+    Passages and activities were written for this worksheet.
+  </p>
+
+</div>

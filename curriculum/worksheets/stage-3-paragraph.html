@@ -1,0 +1,1047 @@
+<title>3단계 문단의 발견</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;500;700&family=Noto+Sans+KR:wght@400;500;700&family=JetBrains+Mono:wght@400;500;600&display=swap">
+<style>
+  :root{
+    --sheet:#FFFDF7; --page:#EFEADC; --ink:#262A1F; --ink-soft:#5B5D4C;
+    --accent:#1E6B49; --accent-soft:#E4EFE8; --accent-ink:#F4FBF6;
+    --correction:#B23B32; --correction-soft:#F7E4E0;
+    --border:#D5CDB6; --line:#C6BEA6; --mono-ink:#7A7663;
+    --font-display:'Noto Serif KR',Georgia,serif;
+    --font-read:'Noto Serif KR',Georgia,serif;
+    --font-ui:'Noto Sans KR',-apple-system,BlinkMacSystemFont,sans-serif;
+    --font-mono:'JetBrains Mono',ui-monospace,Consolas,monospace;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --sheet:#20261F; --page:#161A15; --ink:#ECE7D6; --ink-soft:#B4B19D;
+      --accent:#6FC79A; --accent-soft:#22321F; --accent-ink:#0D1611;
+      --correction:#E2897C; --correction-soft:#3A2420;
+      --border:#3A4034; --line:#454B3D; --mono-ink:#8B9083;
+    }
+  }
+  :root[data-theme="dark"]{
+    --sheet:#20261F; --page:#161A15; --ink:#ECE7D6; --ink-soft:#B4B19D;
+    --accent:#6FC79A; --accent-soft:#22321F; --accent-ink:#0D1611;
+    --correction:#E2897C; --correction-soft:#3A2420;
+    --border:#3A4034; --line:#454B3D; --mono-ink:#8B9083;
+  }
+
+  *{box-sizing:border-box;}
+  @media (prefers-reduced-motion: reduce){*{transition:none !important;}}
+  body{
+    margin:0; background:var(--page); color:var(--ink);
+    font-family:var(--font-ui); font-size:16px; line-height:1.7;
+    -webkit-font-smoothing:antialiased;
+  }
+  a{color:var(--accent);}
+  a:focus-visible{outline:2px solid var(--correction); outline-offset:3px;}
+
+  .stack{max-width:820px; margin:0 auto; padding:40px 20px 70px; display:flex; flex-direction:column; gap:26px;}
+  .sheet{background:var(--sheet); border:1px solid var(--border); border-radius:4px; padding:38px 42px 34px; position:relative;}
+  @media (max-width:600px){ .sheet{padding:28px 22px 26px;} }
+  .pagemark{position:absolute; top:14px; right:18px; font-family:var(--font-mono); font-size:10.5px; color:var(--mono-ink); letter-spacing:.06em;}
+
+  /* cover */
+  .cover-eyebrow{font-family:var(--font-mono); font-size:11.5px; letter-spacing:.14em; text-transform:uppercase; color:var(--correction); margin:0 0 12px;}
+  .cover h1{font-family:var(--font-display); font-weight:700; font-size:clamp(2rem,5.5vw,2.8rem); line-height:1.2; margin:0 0 6px; text-wrap:balance;}
+  .cover .h1-en{font-family:var(--font-mono); font-size:13px; letter-spacing:.1em; text-transform:uppercase; color:var(--accent); margin:0 0 18px;}
+  .cover p.blurb{font-family:var(--font-read); color:var(--ink-soft); max-width:55ch; margin:0 0 22px;}
+  .bigidea{border:2px solid var(--accent); border-radius:5px; padding:16px 20px; margin:0 0 22px; text-align:center;}
+  .bigidea .ko{font-family:var(--font-display); font-weight:700; font-size:1.3rem; margin:0 0 4px; color:var(--ink);}
+  .bigidea .en{font-family:var(--font-read); font-size:1.03rem; color:var(--accent); margin:0;}
+
+  .toc{border:1px solid var(--border); border-radius:5px; padding:14px 18px; margin:0 0 22px;}
+  .toc p.toc-label{font-family:var(--font-mono); font-size:10.5px; letter-spacing:.09em; color:var(--mono-ink); font-weight:600; margin:0 0 10px;}
+  .toc ol{list-style:none; margin:0; padding:0; counter-reset:tocc;}
+  .toc li{counter-increment:tocc; display:flex; align-items:baseline; gap:11px; padding:5px 0; font-size:.92rem; border-bottom:1px dashed var(--border);}
+  .toc li:last-child{border-bottom:none;}
+  .toc li::before{content:"CH " counter(tocc); font-family:var(--font-mono); font-size:10px; font-weight:600; color:var(--accent-ink); background:var(--accent); padding:2px 6px; border-radius:3px; flex:none;}
+  .toc li .t{flex:1; font-weight:600;}
+  .toc li .pp{font-family:var(--font-mono); font-size:10.5px; color:var(--mono-ink); white-space:nowrap;}
+
+  .namebar{display:flex; gap:26px; flex-wrap:wrap; padding:16px 0 0; border-top:1px solid var(--border);}
+  .namefield{display:flex; align-items:baseline; gap:10px; flex:1 1 190px;}
+  .namefield span{font-family:var(--font-mono); font-size:12px; color:var(--mono-ink); white-space:nowrap;}
+  .namefield i{flex:1; border-bottom:1.5px solid var(--line); height:26px; display:block;}
+  .howto{margin:22px 0 0; padding:16px 18px; background:var(--accent-soft); border-radius:4px; font-size:.9rem; color:var(--ink-soft);}
+  .howto b{color:var(--ink);}
+  .howto ol{margin:8px 0 0; padding-left:20px;}
+  .howto li{margin:0 0 5px;}
+
+  /* chapter bar */
+  .chapbar{display:flex; align-items:center; gap:14px; flex-wrap:wrap; background:var(--accent-soft); border-radius:5px; padding:11px 16px; margin:0 0 20px;}
+  .chapnum{font-family:var(--font-mono); font-size:10.5px; font-weight:600; letter-spacing:.09em; color:var(--accent-ink); background:var(--accent); padding:3px 9px; border-radius:3px; flex:none;}
+  .chaptitle{font-weight:700; font-size:1rem; color:var(--ink); flex:1; min-width:0;}
+  .chaptopic{font-family:var(--font-mono); font-size:10.5px; color:var(--mono-ink); white-space:nowrap;}
+  .scaffold{display:flex; align-items:center; gap:5px; flex:none;}
+  .scaffold b{font-family:var(--font-mono); font-size:9.5px; letter-spacing:.06em; color:var(--mono-ink); font-weight:600;}
+  .scaffold i{width:8px; height:8px; border-radius:50%; border:1.5px solid var(--accent); display:block;}
+  .scaffold i.on{background:var(--accent);}
+
+  /* header */
+  .step-head{display:flex; gap:16px; align-items:flex-start; padding:0 0 16px; border-bottom:2px solid var(--accent); margin:0 0 22px;}
+  .step-num{flex:none; padding:0 12px; height:40px; border-radius:20px; background:var(--accent); color:var(--accent-ink); font-family:var(--font-mono); font-size:13px; font-weight:600; letter-spacing:.06em; display:flex; align-items:center; justify-content:center; white-space:nowrap;}
+  .step-titles{flex:1; min-width:0;}
+  .step-titles h2{font-family:var(--font-display); font-weight:700; font-size:1.45rem; line-height:1.25; margin:0 0 3px; text-wrap:balance;}
+  .step-titles .h2-en{font-family:var(--font-read); font-size:.94rem; color:var(--accent); margin:0;}
+
+  /* activity — stage 3: Korean primary, English secondary */
+  .act{margin:0 0 24px;}
+  .act:last-of-type{margin-bottom:0;}
+  .act-label{font-family:var(--font-mono); font-size:11.5px; letter-spacing:.09em; color:var(--correction); font-weight:600; margin:0 0 5px;}
+  .act-prompt{font-weight:700; font-size:1.01rem; margin:0 0 2px; color:var(--ink);}
+  .act-en{font-family:var(--font-read); font-size:.93rem; color:var(--accent); margin:0 0 11px;}
+  .act-hint{font-size:.86rem; color:var(--ink-soft); margin:-5px 0 11px;}
+
+  .rule{border-left:3px solid var(--correction); background:var(--correction-soft); border-radius:0 4px 4px 0; padding:12px 16px; margin:0 0 16px; font-size:.93rem;}
+  .rule b{color:var(--correction);}
+
+  .passage{font-family:var(--font-read); background:var(--page); border-left:3px solid var(--accent); border-radius:0 4px 4px 0; padding:14px 17px; margin:0 0 13px; font-size:1rem; line-height:2.05;}
+  .passage h5{font-family:var(--font-mono); font-size:11px; font-weight:600; letter-spacing:.08em; margin:0 0 7px; color:var(--accent);}
+  .passage h5 span{font-family:var(--font-ui); color:var(--ink-soft); letter-spacing:0; font-weight:400;}
+  .passage p{margin:0;}
+  .passage.spaced{line-height:2.5;}
+  .compare{display:grid; grid-template-columns:1fr 1fr; gap:13px; margin:0 0 13px;}
+  @media (max-width:640px){ .compare{grid-template-columns:1fr;} }
+  .compare .passage{margin:0;}
+
+  .lines{background-image:repeating-linear-gradient(to bottom,transparent 0 32px,var(--line) 32px 33px); min-height:99px;}
+  .lines.l1{min-height:33px;}
+  .lines.l2{min-height:66px;}
+  .lines.l3{min-height:99px;}
+  .lines.l4{min-height:132px;}
+  .lines.l5{min-height:165px;}
+
+  .blank{display:inline-block; min-width:130px; border-bottom:1.5px solid var(--line); margin:0 4px; vertical-align:-3px;}
+  .blank.short{min-width:74px;}
+  .blank.long{min-width:200px;}
+  .blank.full{display:block; min-width:0; width:100%; height:30px; margin:4px 0;}
+
+  ul.frames{list-style:none; margin:0; padding:0;}
+  ul.frames li{font-family:var(--font-read); font-size:1.02rem; line-height:2.5; margin:0 0 5px;}
+
+  .bank{border:1px solid var(--accent); border-radius:5px; padding:16px 18px; margin:0 0 18px;}
+  .bank-row{display:grid; grid-template-columns:172px 1fr; gap:10px 16px; padding:10px 0; border-bottom:1px dashed var(--border); align-items:baseline;}
+  .bank-row:last-child{border-bottom:none; padding-bottom:0;}
+  @media (max-width:600px){ .bank-row{grid-template-columns:1fr; gap:4px;} }
+  .bank-key{font-size:.85rem; font-weight:700; color:var(--accent);}
+  .bank-key small{display:block; font-weight:400; color:var(--ink-soft); font-size:.92em;}
+  .chips{display:flex; flex-wrap:wrap; gap:6px;}
+  .chip{font-family:var(--font-read); font-size:.96rem; background:var(--accent-soft); border-radius:3px; padding:2px 10px; white-space:nowrap;}
+
+  .topicbox{border:1px dashed var(--accent); border-radius:5px; padding:13px 16px; margin:0 0 15px; background:var(--accent-soft);}
+  .topicbox p.tb-label{font-family:var(--font-mono); font-size:11px; letter-spacing:.08em; color:var(--accent); font-weight:600; margin:0 0 8px;}
+
+  ol.qrows{margin:0; padding:0 0 0 22px;}
+  ol.qrows li{margin:0 0 9px; font-family:var(--font-read); font-size:1rem; display:flex; justify-content:space-between; gap:16px; align-items:baseline; border-bottom:1px dotted var(--border); padding-bottom:5px;}
+  ol.qrows li span.ans{flex:none; width:58px; border-bottom:1.5px solid var(--line); height:20px;}
+
+  ol.fill{margin:0; padding:0 0 0 22px;}
+  ol.fill li{margin:0 0 13px; font-size:1rem; font-family:var(--font-read);}
+  ol.fill li:last-child{margin-bottom:0;}
+  ol.fill .lines{margin-top:5px;}
+  ol.fill .qko{font-family:var(--font-ui); font-size:.85rem; color:var(--ink-soft); display:block;}
+
+  ul.mc{list-style:none; margin:0 0 6px; padding:0;}
+  ul.mc li{font-family:var(--font-read); font-size:.99rem; padding:4px 0 4px 32px; position:relative;}
+  ul.mc li::before{content:attr(data-opt); position:absolute; left:0; top:5px; width:21px; height:21px; border:1.5px solid var(--ink-soft); border-radius:50%; font-family:var(--font-mono); font-size:10.5px; display:flex; align-items:center; justify-content:center; color:var(--ink-soft);}
+
+  .boxrow{display:grid; gap:12px; margin:0 0 12px;}
+  .boxrow.two{grid-template-columns:1fr 1fr;}
+  .boxrow.three{grid-template-columns:repeat(3,1fr);}
+  @media (max-width:600px){ .boxrow.two,.boxrow.three{grid-template-columns:1fr;} }
+  .abox{border:1px solid var(--border); border-radius:4px; padding:10px 12px 6px;}
+  .abox h6{font-family:var(--font-mono); font-size:10.5px; letter-spacing:.06em; color:var(--accent); font-weight:600; margin:0 0 6px;}
+  .abox h6 span{font-family:var(--font-ui); color:var(--ink-soft); letter-spacing:0; font-weight:400;}
+  .abox .lines{background-image:repeating-linear-gradient(to bottom,transparent 0 28px,var(--line) 28px 29px);}
+
+  .plan{display:grid; border:1px solid var(--border); border-radius:4px; overflow:hidden;}
+  .plan-row{display:grid; grid-template-columns:152px 1fr; border-bottom:1px solid var(--border);}
+  .plan-row:last-child{border-bottom:none;}
+  @media (max-width:600px){ .plan-row{grid-template-columns:102px 1fr;} }
+  .plan-key{background:var(--accent-soft); padding:10px 12px; font-size:.84rem; font-weight:700; border-right:1px solid var(--border); line-height:1.45;}
+  .plan-key small{display:block; font-weight:400; color:var(--ink-soft);}
+  .plan-val{padding:6px 12px;}
+  .plan-val .lines{background-image:repeating-linear-gradient(to bottom,transparent 0 30px,var(--line) 30px 31px); min-height:31px;}
+
+  ul.checks{list-style:none; margin:0; padding:0;}
+  ul.checks li{position:relative; padding-left:29px; margin:0 0 9px; font-size:.96rem; line-height:1.5;}
+  ul.checks li::before{content:""; position:absolute; left:0; top:4px; width:16px; height:16px; border:1.5px solid var(--ink-soft); border-radius:3px;}
+  ul.checks li .cen{display:block; font-family:var(--font-read); font-size:.89rem; color:var(--accent);}
+
+  .chapclose{border:2px solid var(--accent); border-radius:5px; padding:14px 17px; margin:24px 0 0;}
+  .chapclose p.cc-label{font-family:var(--font-mono); font-size:10.5px; letter-spacing:.09em; color:var(--accent); font-weight:600; margin:0 0 9px;}
+
+  .tnote{margin:24px 0 0; padding:14px 16px; border:1px dashed var(--border); border-radius:4px; background:var(--page); font-size:.85rem; line-height:1.75; color:var(--ink-soft);}
+  .tnote b.tlabel{font-family:var(--font-mono); font-size:11px; letter-spacing:.08em; text-transform:uppercase; color:var(--mono-ink); display:block; margin:0 0 6px;}
+  .tnote p{margin:0 0 7px;}
+  .tnote p:last-child{margin:0;}
+  .tnote .ans{color:var(--correction); font-weight:700;}
+
+  .colophon{font-family:var(--font-mono); font-size:11px; color:var(--mono-ink); line-height:1.75; text-align:center; padding:6px 0 0;}
+
+  @media print{
+    body{background:#fff;}
+    .stack{max-width:none; padding:0; gap:0;}
+    .sheet{border:none; border-radius:0; padding:0 0 12mm; page-break-after:always; break-after:page;}
+    .sheet:last-of-type{page-break-after:auto; break-after:auto;}
+    .colophon{display:none;}
+    .passage{background:#fff; border-left:3px solid #1E6B49;}
+    .tnote, .rule{background:#fff;}
+    .chip, .topicbox, .chapbar{background:#fff;}
+    .chapbar{border:1px solid #D5CDB6;}
+    .pagemark{top:0; right:0;}
+    @page{size:A4; margin:16mm 14mm;}
+  }
+</style>
+
+<div class="stack">
+
+<!-- ================= COVER ================= -->
+<section class="sheet cover">
+  <span class="pagemark">3단계 · 1/15</span>
+  <p class="cover-eyebrow">구조적 글쓰기 · 3단계 워크시트</p>
+  <h1>문단의 발견</h1>
+  <p class="h1-en">Stage 3 · Finding the Paragraph</p>
+
+  <p class="blurb">
+    1·2단계에서는 문장을 순서대로 늘어놓았습니다.
+    이제부터는 문장을 <b>묶습니다.</b> 한 덩어리로 묶인 문장들을 문단이라고 부릅니다.
+    이 단계를 넘으면 글에 뼈대가 생깁니다.
+  </p>
+
+  <div class="bigidea">
+    <p class="ko">한 문단에는 한 가지 생각만</p>
+    <p class="en">One paragraph = one idea</p>
+  </div>
+
+  <div class="toc">
+    <p class="toc-label">차례 · 네 챕터를 지나며 도움이 조금씩 줄어듭니다</p>
+    <ol>
+      <li><span class="t">문단 알아보기 · 주제문 찾기</span><span class="pp">Kongi · 3–5쪽</span></li>
+      <li><span class="t">한 가지 생각만 · 끼어든 문장</span><span class="pp">Nabi &amp; kimchi · 6–8쪽</span></li>
+      <li><span class="t">나누고 짓기 · 주제문 만들기</span><span class="pp">our town &amp; a season · 9–11쪽</span></li>
+      <li><span class="t">문단 짓기 · 하나에서 둘로</span><span class="pp">내가 고른 소재 · 12–14쪽</span></li>
+    </ol>
+  </div>
+
+  <div class="namebar">
+    <label class="namefield"><span>이름 / NAME</span><i></i></label>
+    <label class="namefield"><span>학년 / CLASS</span><i></i></label>
+    <label class="namefield"><span>날짜 / DATE</span><i></i></label>
+  </div>
+
+  <div class="howto">
+    <b>챕터마다 같은 것을 배웁니다. 소재만 바뀝니다.</b>
+    <ol>
+      <li><b>보기</b> — 영어 문단을 읽고 생김새를 확인합니다.</li>
+      <li><b>나누기</b> — 영어를 쓰지 않고 구조만 다룹니다.</li>
+      <li><b>채우기 · 짓기</b> — 틀을 채우고, 스스로 씁니다.</li>
+    </ol>
+  </div>
+
+  <div class="tnote">
+    <b class="tlabel">선생님께</b>
+    <p>3단계는 6단계 전체의 <b>전환점</b>입니다. 여기서 문장이 문단으로 묶이지 않으면 4단계 이후가 모두 무너지므로, 네 챕터를 <b>모두</b> 하는 것을 권합니다.</p>
+    <p>챕터마다 <b>도움이 한 칸씩 줄어듭니다.</b> 1챕터는 밑줄만 그으면 되고, 4챕터는 백지에서 시작합니다.</p>
+    <p>한 챕터가 대략 <b>2차시</b> 분량입니다. 전체를 8~10차시로 잡으세요.</p>
+    <p>1챕터의 강아지 Kongi는 <b>2단계에서 이미 만난 강아지</b>입니다. 낱말이 겹치므로 첫 챕터의 문턱이 낮습니다.</p>
+  </div>
+</section>
+
+<!-- ================= WORD BANK ================= -->
+<section class="sheet">
+  <span class="pagemark">3단계 · 2/15</span>
+  <div class="step-head">
+    <div class="step-num">WORD BANK</div>
+    <div class="step-titles">
+      <h2>문단을 지을 때 쓰는 말</h2>
+      <p class="h2-en">Keep this page open — every chapter.</p>
+    </div>
+  </div>
+
+  <div class="bank">
+    <div class="bank-row">
+      <div class="bank-key">첫 문장 열기<small>topic sentence</small></div>
+      <div class="chips"><span class="chip">My ___ is ___.</span><span class="chip">I want to tell you about ___.</span><span class="chip">___ is the best ___.</span></div>
+    </div>
+    <div class="bank-row">
+      <div class="bank-key">내용 더하기<small>adding</small></div>
+      <div class="chips"><span class="chip">also</span><span class="chip">another</span><span class="chip">and</span><span class="chip">too</span></div>
+    </div>
+    <div class="bank-row">
+      <div class="bank-key">예를 들기<small>example</small></div>
+      <div class="chips"><span class="chip">for example</span><span class="chip">like</span></div>
+    </div>
+    <div class="bank-row">
+      <div class="bank-key">까닭 말하기<small>reason</small></div>
+      <div class="chips"><span class="chip">because</span><span class="chip">so</span></div>
+    </div>
+    <div class="bank-row">
+      <div class="bank-key">마무리하기<small>closing</small></div>
+      <div class="chips"><span class="chip">That is why ___.</span><span class="chip">Now you know ___.</span></div>
+    </div>
+  </div>
+
+  <div class="topicbox">
+    <p class="tb-label">MY SIX TOPICS · 1·2단계와 같은 여섯 가지입니다</p>
+    <div class="chips">
+      <span class="chip">my pet</span><span class="chip">our town</span><span class="chip">my favourite food</span>
+      <span class="chip">a season</span><span class="chip">a school day</span><span class="chip">an animal I know</span>
+    </div>
+  </div>
+
+  <div class="act">
+    <p class="act-label">연습 · PRACTICE</p>
+    <p class="act-prompt">빈칸에 알맞은 말을 워드뱅크에서 골라 쓰세요.</p>
+    <p class="act-en">Choose a word from the Word Bank for each blank.</p>
+    <ol class="fill">
+      <li>My cat is quiet. She is <span class="blank short"></span> very small.</li>
+      <li>I like winter <span class="blank short"></span> I can play in the snow.</li>
+      <li>Our town has many shops, <span class="blank"></span> a bakery and a bookshop.</li>
+      <li>Kongi runs fast. <span class="blank"></span> he always wins.</li>
+    </ol>
+  </div>
+
+  <div class="tnote">
+    <b class="tlabel">선생님께</b>
+    <p>정답 예시 — <span class="ans">1. also &nbsp; 2. because &nbsp; 3. for example &nbsp; 4. That is why</span></p>
+    <p>이 장은 <b>네 챕터 내내 책상에 펼쳐 둡니다.</b> 보고 베끼는 것을 허용하세요 — 표현을 외우는 것이 아니라 구조를 드러내는 낱말을 손에 익히는 것이 목표입니다.</p>
+  </div>
+</section>
+
+<!-- ============================================================ CH1 -->
+<section class="sheet">
+  <span class="pagemark">3단계 · 3/15</span>
+  <div class="chapbar">
+    <span class="chapnum">CHAPTER 1</span><span class="chaptitle">문단 알아보기</span>
+    <span class="chaptopic">Kongi</span>
+    <span class="scaffold"><b>도움</b><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i></span>
+  </div>
+  <div class="step-head">
+    <div class="step-num">보기 SEE</div>
+    <div class="step-titles"><h2>문단은 이렇게 생겼습니다</h2><p class="h2-en">What a paragraph looks like</p></div>
+  </div>
+
+  <p class="act-hint">문단의 <b>첫 문장</b>은 “이 문단이 무엇에 대한 글인지” 알려 줍니다. 이 문장을 <b>주제문(topic sentence)</b>이라고 합니다. 나머지 문장은 주제문을 도와줍니다.</p>
+
+  <div class="passage spaced">
+    <h5>PARAGRAPH A</h5>
+    <p>My dog Kongi is a very friendly dog. He runs to the door when someone comes. He never barks at children. He also likes to sit next to my little sister.</p>
+  </div>
+  <div class="passage spaced">
+    <h5>PARAGRAPH B</h5>
+    <p>Autumn is the best season in our town. The air is cool and dry. The trees on our street turn red and yellow. Many families walk in the park after dinner.</p>
+  </div>
+
+  <div class="act">
+    <p class="act-label">활동 1 · ACTIVITY 1</p>
+    <p class="act-prompt">각 문단의 주제문에 밑줄을 그으세요.</p>
+    <p class="act-en">Underline the topic sentence in each paragraph.</p>
+  </div>
+
+  <div class="act">
+    <p class="act-label">활동 2 · ACTIVITY 2</p>
+    <p class="act-prompt">주제문을 도와주는 문장이 몇 개인가요?</p>
+    <p class="act-en">How many sentences help the topic sentence?</p>
+    <ol class="fill">
+      <li>Paragraph A <span class="blank short"></span></li>
+      <li>Paragraph B <span class="blank short"></span></li>
+    </ol>
+  </div>
+
+  <div class="act">
+    <p class="act-label">활동 3 · ACTIVITY 3</p>
+    <p class="act-prompt">각 문단은 무엇에 대한 글인가요? 한 낱말로 쓰세요.</p>
+    <p class="act-en">What is each paragraph about? Write ONE word.</p>
+    <ol class="fill">
+      <li>Paragraph A is about <span class="blank"></span>.</li>
+      <li>Paragraph B is about <span class="blank"></span>.</li>
+    </ol>
+  </div>
+
+  <div class="tnote">
+    <b class="tlabel">선생님께</b>
+    <p>정답 — 활동 2: <span class="ans">둘 다 3개</span>. 활동 3: <span class="ans">A — Kongi (my dog) / B — autumn</span></p>
+    <p>“주제문이 항상 첫 문장인가요?”라는 질문이 나오면 <b>“3단계에서는 항상 첫 문장에 씁니다”</b>라고 못 박아 주세요. 위치를 바꾸는 것은 훨씬 뒤의 일입니다.</p>
+    <p>Kongi는 2단계 2챕터에 나왔던 강아지입니다. “또 만났네”라고 짚어 주면 학생이 반가워합니다.</p>
+  </div>
+</section>
+
+<section class="sheet">
+  <span class="pagemark">3단계 · 4/15</span>
+  <div class="chapbar">
+    <span class="chapnum">CHAPTER 1</span><span class="chaptitle">문단 알아보기</span>
+    <span class="chaptopic">네 개 더</span>
+    <span class="scaffold"><b>도움</b><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i></span>
+  </div>
+  <div class="step-head">
+    <div class="step-num">나누기 SORT</div>
+    <div class="step-titles"><h2>주제문 찾기 · 네 번 더</h2><p class="h2-en">Find four more topic sentences</p></div>
+  </div>
+
+  <p class="act-hint">이 장에서는 영어를 쓰지 않습니다. 밑줄만 그으면 됩니다.</p>
+
+  <div class="act">
+    <p class="act-label">활동 1 · ACTIVITY 1</p>
+    <p class="act-prompt">네 문단의 주제문에 각각 밑줄을 그으세요.</p>
+    <p class="act-en">Underline the topic sentence in each paragraph.</p>
+
+    <div class="passage spaced"><h5>A</h5><p>Winter mornings are very cold in our town. The windows have ice on them. My mother wears two coats. The dog does not want to go outside.</p></div>
+    <div class="passage spaced"><h5>B</h5><p>Kimchi is easy to find in Korea. Every shop sells it. Every restaurant gives it for free. Most families make it at home.</p></div>
+    <div class="passage spaced"><h5>C</h5><p>Our school library is a quiet place. Nobody runs inside. People read at small tables. The teacher speaks in a soft voice.</p></div>
+    <div class="passage spaced"><h5>D</h5><p>Elephants are the largest animals on land. An adult elephant can weigh six tonnes. Its ears are as wide as a door. Even a baby elephant is taller than a child.</p></div>
+  </div>
+
+  <div class="act">
+    <p class="act-label">활동 2 · ACTIVITY 2</p>
+    <p class="act-prompt">네 문단의 <b>같은 점</b>은 무엇인가요?</p>
+    <p class="act-en">What is the same in all four paragraphs?</p>
+    <ul class="mc">
+      <li data-opt="a">주제문이 모두 <b>첫 문장</b>이다.</li>
+      <li data-opt="b">주제문이 모두 <b>마지막 문장</b>이다.</li>
+      <li data-opt="c">문장이 모두 다섯 개다.</li>
+    </ul>
+  </div>
+
+  <div class="act">
+    <p class="act-label">활동 3 · ACTIVITY 3</p>
+    <p class="act-prompt">각 문단은 무엇에 대한 글인가요? 한 낱말로 쓰세요.</p>
+    <p class="act-en">Write ONE word for each.</p>
+    <ol class="fill">
+      <li>A <span class="blank short"></span> &nbsp; B <span class="blank short"></span> &nbsp; C <span class="blank short"></span> &nbsp; D <span class="blank short"></span></li>
+    </ol>
+  </div>
+
+  <div class="tnote">
+    <b class="tlabel">선생님께</b>
+    <p>정답 — 활동 1: 네 문단 모두 <span class="ans">첫 문장</span>. 활동 2: <span class="ans">a</span>. 활동 3: <span class="ans">winter · kimchi · library · elephants</span></p>
+    <p>3쪽에서 두 번, 여기서 네 번 — <b>여섯 번 반복</b>하면 주제문 개념이 자리 잡습니다. 한 번의 설명으로 되지 않으므로 이 장을 건너뛰지 마세요.</p>
+    <p>D의 elephants는 <b>여섯 소재의 “an animal I know”</b>에 해당합니다. 4단계·6단계의 동물 리포트로 이어집니다.</p>
+  </div>
+</section>
+
+<section class="sheet">
+  <span class="pagemark">3단계 · 5/15</span>
+  <div class="chapbar">
+    <span class="chapnum">CHAPTER 1</span><span class="chaptitle">문단 알아보기</span>
+    <span class="chaptopic">주제문 넣기</span>
+    <span class="scaffold"><b>도움</b><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i></span>
+  </div>
+  <div class="step-head">
+    <div class="step-num">채우기 FRAME</div>
+    <div class="step-titles"><h2>빠진 주제문 넣기</h2><p class="h2-en">Put the topic sentence back</p></div>
+  </div>
+
+  <div class="act">
+    <p class="act-label">활동 1 · ACTIVITY 1</p>
+    <p class="act-prompt">주제문이 사라졌습니다. 아래에서 골라 번호를 쓰세요.</p>
+    <p class="act-en">The topic sentence is missing. Choose one and write its number.</p>
+
+    <div class="passage spaced">
+      <h5>A</h5>
+      <p><span class="blank long"></span> It has a big playground. It has a small library. There are twelve classrooms.</p>
+    </div>
+    <div class="passage spaced">
+      <h5>B</h5>
+      <p><span class="blank long"></span> He runs to the door when someone comes. He never barks at children. He likes my little sister.</p>
+    </div>
+    <div class="topicbox">
+      <p class="tb-label">CHOOSE FROM HERE</p>
+      <div class="chips"><span class="chip">1. My dog Kongi is a friendly dog.</span><span class="chip">2. My school has many places to use.</span></div>
+    </div>
+  </div>
+
+  <div class="act">
+    <p class="act-label">활동 2 · ACTIVITY 2</p>
+    <p class="act-prompt">이번에는 직접 써 보세요. 주제문 한 문장을 쓰세요.</p>
+    <p class="act-en">Now write the topic sentence yourself.</p>
+    <div class="passage spaced">
+      <h5>C</h5>
+      <p><span class="blank long"></span> The air is cool and dry. The trees turn red and yellow. Families walk in the park after dinner.</p>
+    </div>
+    <p class="act-hint">3쪽 Paragraph B를 보면 도움이 됩니다.</p>
+  </div>
+
+  <div class="act">
+    <p class="act-label">활동 3 · ACTIVITY 3</p>
+    <p class="act-prompt">완성된 문단 하나를 골라 소리 내어 읽으세요.</p>
+    <p class="act-en">Read one finished paragraph out loud.</p>
+    <ul class="checks">
+      <li>소리 내어 읽었다<span class="cen">I read it out loud.</span></li>
+    </ul>
+  </div>
+
+  <div class="chapclose">
+    <p class="cc-label">CHAPTER 1 · 다 했으면 표시하세요</p>
+    <ul class="checks">
+      <li>문단에서 주제문을 찾을 수 있다<span class="cen">I can find the topic sentence.</span></li>
+      <li>주제문은 문단의 첫 문장이라는 것을 안다<span class="cen">I know the topic sentence comes first.</span></li>
+    </ul>
+  </div>
+
+  <div class="tnote">
+    <b class="tlabel">선생님께</b>
+    <p>정답 — 활동 1: <span class="ans">A는 2번, B는 1번</span>. 활동 2 예시: <span class="ans">Autumn is the best season in our town.</span></p>
+    <p>고르기(활동 1) → 쓰기(활동 2) 순서가 중요합니다. 고르는 것을 먼저 해야 <b>주제문의 모양</b>이 손에 남습니다.</p>
+  </div>
+</section>
+
+<!-- ============================================================ CH2 -->
+<section class="sheet">
+  <span class="pagemark">3단계 · 6/15</span>
+  <div class="chapbar">
+    <span class="chapnum">CHAPTER 2</span><span class="chaptitle">한 가지 생각만</span>
+    <span class="chaptopic">Nabi</span>
+    <span class="scaffold"><b>도움</b><i class="on"></i><i class="on"></i><i class="on"></i><i></i></span>
+  </div>
+  <div class="step-head">
+    <div class="step-num">보기 SEE</div>
+    <div class="step-titles"><h2>어울리는 문단, 어색한 문단</h2><p class="h2-en">One idea, or two?</p></div>
+  </div>
+
+  <p class="act-hint">아래 두 문단은 거의 같습니다. 그런데 하나는 읽기 편하고, 하나는 어딘가 걸립니다.</p>
+
+  <div class="compare">
+    <div class="passage">
+      <h5>A</h5>
+      <p>Nabi is my cat. She sleeps on my bed in the morning. She sleeps under the table after lunch. She even sleeps when I play music.</p>
+    </div>
+    <div class="passage">
+      <h5>B</h5>
+      <p>Nabi is my cat. She sleeps on my bed in the morning. My brother plays soccer on Saturday. She sleeps under the table after lunch.</p>
+    </div>
+  </div>
+
+  <div class="act">
+    <p class="act-label">활동 1 · ACTIVITY 1</p>
+    <p class="act-prompt">어느 쪽이 읽기 편한가요? 하나에 ○ 하세요.</p>
+    <p class="act-en">Which one is easier to read? Circle one.</p>
+    <ol class="fill"><li>A &nbsp;/&nbsp; B</li></ol>
+  </div>
+
+  <div class="act">
+    <p class="act-label">활동 2 · ACTIVITY 2</p>
+    <p class="act-prompt">B에서 걸리는 문장에 ✗ 표를 하세요.</p>
+    <p class="act-en">Cross out the sentence that does not belong in B.</p>
+  </div>
+
+  <div class="act">
+    <p class="act-label">활동 3 · ACTIVITY 3</p>
+    <p class="act-prompt">그 문장은 왜 어울리지 않나요? 빈칸을 채우세요.</p>
+    <p class="act-en">Why does it not belong?</p>
+    <ul class="frames">
+      <li>It is not about <span class="blank"></span>.</li>
+    </ul>
+  </div>
+
+  <div class="rule">
+    <b>THE RULE ·</b> 한 문단에는 <b>한 가지 생각</b>만 들어갑니다. 다른 생각은 다른 문단으로 갑니다.
+  </div>
+
+  <div class="tnote">
+    <b class="tlabel">선생님께</b>
+    <p>정답 — 활동 1: <span class="ans">A</span>. 활동 2: <span class="ans">My brother plays soccer on Saturday.</span> 활동 3: <span class="ans">Nabi / my cat</span></p>
+    <p>두 문단을 <b>나란히</b> 놓은 것이 이 장의 설계입니다. 틀린 것만 보여 주면 무엇이 옳은지 모릅니다. 두 개를 견주면 차이가 즉시 보입니다.</p>
+  </div>
+</section>
+
+<section class="sheet">
+  <span class="pagemark">3단계 · 7/15</span>
+  <div class="chapbar">
+    <span class="chapnum">CHAPTER 2</span><span class="chaptitle">한 가지 생각만</span>
+    <span class="chaptopic">다섯 번 더</span>
+    <span class="scaffold"><b>도움</b><i class="on"></i><i class="on"></i><i class="on"></i><i></i></span>
+  </div>
+  <div class="step-head">
+    <div class="step-num">나누기 SORT</div>
+    <div class="step-titles"><h2>끼어든 문장 찾기</h2><p class="h2-en">Find the sentence that does not belong</p></div>
+  </div>
+
+  <p class="act-hint">다섯 문단에 각각 <b>다른 이야기를 하는 문장</b>이 하나씩 숨어 있습니다. 영어를 쓰지 않습니다.</p>
+
+  <div class="act">
+    <p class="act-label">활동 1 · ACTIVITY 1</p>
+    <p class="act-prompt">어울리지 않는 문장에 ✗ 표를 하세요.</p>
+    <p class="act-en">Cross out the sentence that does not belong.</p>
+
+    <div class="passage spaced"><h5>A</h5><p>Kimchi is a famous Korean food. People make it with cabbage and red pepper. It is a little spicy. I have a blue bicycle. My grandmother makes the best kimchi.</p></div>
+    <div class="passage spaced"><h5>B</h5><p>Our school day starts at nine o'clock. First, we have a short morning meeting. Then we have four classes before lunch. Whales live in the ocean. We go home at two o'clock.</p></div>
+    <div class="passage spaced"><h5>C</h5><p>Autumn is beautiful in our town. The trees turn red and yellow. The air is cool in the evening. I want a new bicycle for my birthday. Many families walk in the park.</p></div>
+    <div class="passage spaced"><h5>D</h5><p>Elephants eat only plants. They pull grass with their trunks. They also eat leaves and fruit. Lions hunt other animals. An adult elephant eats for many hours each day.</p></div>
+    <div class="passage spaced"><h5>E</h5><p>Kongi is a very fast runner. He reaches the gate before me every time. He can catch a ball in the air. My sister does not like running.</p></div>
+  </div>
+
+  <div class="act">
+    <p class="act-label">활동 2 · ACTIVITY 2</p>
+    <p class="act-prompt">각 문단이 무엇에 대한 글인지 쓰세요. 그러면 왜 안 어울리는지 보입니다.</p>
+    <p class="act-en">Write what each paragraph is about.</p>
+    <ol class="fill">
+      <li>A는 <span class="blank"></span>에 대한 글이다.</li>
+      <li>C는 <span class="blank"></span>에 대한 글이다.</li>
+      <li>D는 <span class="blank"></span>에 대한 글이다.</li>
+    </ol>
+  </div>
+
+  <div class="tnote">
+    <b class="tlabel">선생님께</b>
+    <p>정답 — <span class="ans">A: I have a blue bicycle. / B: Whales live in the ocean. / C: I want a new bicycle for my birthday. / D: Lions hunt other animals. / E: My sister does not like running.</span></p>
+    <p><b>C와 D와 E가 어렵습니다.</b> A·B의 끼어든 문장은 완전히 딴소리라 쉽게 보이지만, C는 “자전거”가 앞 문단(A)에도 나와 헷갈리고, D는 <b>같은 동물 이야기</b>라 그럴듯해 보이며, E는 <b>같은 사람(가족) 이야기</b>라 더 그럴듯합니다.</p>
+    <p>D·E에서 틀리는 학생이 많으면 활동 2로 돌아가세요 — <b>“이 문단은 무엇에 대한 글이지?”</b>를 먼저 정하면 답이 보입니다.</p>
+  </div>
+</section>
+
+<section class="sheet">
+  <span class="pagemark">3단계 · 8/15</span>
+  <div class="chapbar">
+    <span class="chapnum">CHAPTER 2</span><span class="chaptitle">한 가지 생각만</span>
+    <span class="chaptopic">빈자리 메우기</span>
+    <span class="scaffold"><b>도움</b><i class="on"></i><i class="on"></i><i class="on"></i><i></i></span>
+  </div>
+  <div class="step-head">
+    <div class="step-num">채우기 FRAME</div>
+    <div class="step-titles"><h2>빼고, 대신 넣기</h2><p class="h2-en">Take it out, put a better one in</p></div>
+  </div>
+
+  <p class="act-hint">끼어든 문장을 빼면 자리가 빕니다. 그 자리에 <b>어울리는 문장</b>을 넣어 봅니다.</p>
+
+  <div class="act">
+    <p class="act-label">활동 1 · ACTIVITY 1</p>
+    <p class="act-prompt">빈자리에 어울리는 문장을 아래에서 골라 번호를 쓰세요.</p>
+    <p class="act-en">Choose a sentence that fits.</p>
+    <div class="passage spaced">
+      <h5>A · 김치</h5>
+      <p>Kimchi is a famous Korean food. People make it with cabbage and red pepper. It is a little spicy. <span class="blank long"></span> My grandmother makes the best kimchi.</p>
+    </div>
+    <div class="topicbox">
+      <p class="tb-label">CHOOSE FROM HERE</p>
+      <div class="chips"><span class="chip">1. My bicycle is blue.</span><span class="chip">2. Koreans eat it with almost every meal.</span><span class="chip">3. Winter is cold.</span></div>
+    </div>
+  </div>
+
+  <div class="act">
+    <p class="act-label">활동 2 · ACTIVITY 2</p>
+    <p class="act-prompt">이번에는 직접 써 보세요. 어울리는 문장 한 개를 쓰세요.</p>
+    <p class="act-en">Now write a sentence that fits.</p>
+    <div class="passage spaced">
+      <h5>B · 가을</h5>
+      <p>Autumn is beautiful in our town. The trees turn red and yellow. The air is cool in the evening. <span class="blank long"></span> Many families walk in the park.</p>
+    </div>
+  </div>
+
+  <div class="act">
+    <p class="act-label">활동 3 · ACTIVITY 3</p>
+    <p class="act-prompt">D 문단(코끼리)에도 어울리는 문장 한 개를 써 넣으세요.</p>
+    <p class="act-en">Write one more, for the elephant paragraph.</p>
+    <div class="passage spaced">
+      <h5>C · 코끼리</h5>
+      <p>Elephants eat only plants. They pull grass with their trunks. They also eat leaves and fruit. <span class="blank long"></span> An adult elephant eats for many hours each day.</p>
+    </div>
+  </div>
+
+  <div class="chapclose">
+    <p class="cc-label">CHAPTER 2 · 다 했으면 표시하세요</p>
+    <ul class="checks">
+      <li>어울리지 않는 문장을 찾을 수 있다<span class="cen">I can find the sentence that does not belong.</span></li>
+      <li>왜 어울리지 않는지 말할 수 있다<span class="cen">I can say why it does not belong.</span></li>
+    </ul>
+  </div>
+
+  <div class="tnote">
+    <b class="tlabel">선생님께</b>
+    <p>정답 — 활동 1: <span class="ans">2번</span>. 활동 2·3은 정답이 여럿입니다 — <b>그 문단의 주제와 이어지기만 하면</b> 모두 인정하세요. 예: “The sky is very blue in autumn.” / “They drink a lot of water too.”</p>
+    <p>찾아내는 것(7쪽)과 채워 넣는 것(8쪽)은 다른 능력입니다. <b>채워 넣기가 훨씬 어렵습니다</b> — 주제를 이해해야만 되기 때문입니다. 여기가 2챕터의 도약 지점입니다.</p>
+  </div>
+</section>
+
+<!-- ============================================================ CH3 -->
+<section class="sheet">
+  <span class="pagemark">3단계 · 9/15</span>
+  <div class="chapbar">
+    <span class="chapnum">CHAPTER 3</span><span class="chaptitle">나누고 짓기</span>
+    <span class="chaptopic">문단 나누기</span>
+    <span class="scaffold"><b>도움</b><i class="on"></i><i class="on"></i><i></i><i></i></span>
+  </div>
+  <div class="step-head">
+    <div class="step-num">나누기 SORT</div>
+    <div class="step-titles"><h2>문단 나눌 자리 찾기</h2><p class="h2-en">Where does the new paragraph start?</p></div>
+  </div>
+
+  <p class="act-hint">아래 글은 <b>두 가지</b>를 이야기하는데 한 덩어리로 붙어 있습니다. 이야기가 바뀌는 자리에 <b>//</b> 를 그으세요.</p>
+
+  <div class="act">
+    <p class="act-label">활동 1 · ACTIVITY 1</p>
+    <p class="act-prompt">세 글 모두에 <b>//</b> 를 그으세요.</p>
+    <p class="act-en">Draw <b>//</b> where the new paragraph should start.</p>
+
+    <div class="passage spaced"><h5>TEXT 1</h5><p>My dog Kongi is small and white. He has short legs and big brown eyes. His tail is very fluffy. Kongi loves to run in the park. He plays with a red ball every day. He also likes to swim in the river.</p></div>
+    <div class="passage spaced"><h5>TEXT 2</h5><p>Our school day starts at nine o'clock. We have a morning meeting first. Then we study math and Korean. In the afternoon, we eat lunch in the classroom. After lunch, we have art or music. We go home at two o'clock.</p></div>
+    <div class="passage spaced"><h5>TEXT 3</h5><p>Kimchi is a famous Korean food. People make it with cabbage and red pepper. It is a little spicy. My grandmother makes kimchi every autumn. She uses her mother's recipe. The whole family helps her.</p></div>
+  </div>
+
+  <div class="act">
+    <p class="act-label">활동 2 · ACTIVITY 2</p>
+    <p class="act-prompt">나뉜 두 부분은 각각 무엇에 대한 이야기인가요?</p>
+    <p class="act-en">What is each part about?</p>
+    <div class="boxrow two">
+      <div class="abox"><h6>TEXT 1 · PART 1</h6><div class="lines l1"></div></div>
+      <div class="abox"><h6>TEXT 1 · PART 2</h6><div class="lines l1"></div></div>
+      <div class="abox"><h6>TEXT 3 · PART 1</h6><div class="lines l1"></div></div>
+      <div class="abox"><h6>TEXT 3 · PART 2</h6><div class="lines l1"></div></div>
+    </div>
+  </div>
+
+  <div class="tnote">
+    <b class="tlabel">선생님께</b>
+    <p>정답 — <span class="ans">TEXT 1: “Kongi loves to run…” 앞 / TEXT 2: “In the afternoon…” 앞 / TEXT 3: “My grandmother makes kimchi…” 앞</span></p>
+    <p>TEXT 2에는 “In the afternoon”이라는 <b>신호어</b>가 있지만 TEXT 1과 3에는 없습니다. “신호어가 없을 때는 무엇을 보고 알았니?”라고 물어 주세요 — <b>내용이 바뀌는 것</b>이 진짜 기준이라는 것을 학생이 스스로 말하게 하는 것이 목표입니다.</p>
+    <p>TEXT 3이 가장 어렵습니다. <b>“김치가 무엇인가” → “누가 만드는가”</b>로 초점이 옮겨 갑니다.</p>
+  </div>
+</section>
+
+<section class="sheet">
+  <span class="pagemark">3단계 · 10/15</span>
+  <div class="chapbar">
+    <span class="chapnum">CHAPTER 3</span><span class="chaptitle">나누고 짓기</span>
+    <span class="chaptopic">주제문 고르기</span>
+    <span class="scaffold"><b>도움</b><i class="on"></i><i class="on"></i><i></i><i></i></span>
+  </div>
+  <div class="step-head">
+    <div class="step-num">채우기 FRAME ①</div>
+    <div class="step-titles"><h2>알맞은 주제문 고르기</h2><p class="h2-en">Choose the best topic sentence</p></div>
+  </div>
+
+  <div class="act">
+    <p class="act-label">활동 1 · ACTIVITY 1</p>
+    <p class="act-prompt">아래 세 문장에 가장 알맞은 주제문 하나에 ○ 하세요.</p>
+    <p class="act-en">Circle the best topic sentence.</p>
+    <div class="passage"><h5>SUPPORTING SENTENCES</h5><p>It has a big playground. It has a small library. There are twelve classrooms.</p></div>
+    <ul class="mc">
+      <li data-opt="a">I like my teacher.</li>
+      <li data-opt="b">My school has many places to use.</li>
+      <li data-opt="c">Schools are in every town.</li>
+    </ul>
+  </div>
+
+  <div class="act">
+    <p class="act-label">활동 2 · ACTIVITY 2</p>
+    <p class="act-prompt">이번에도 하나만 고르세요.</p>
+    <p class="act-en">Circle ONE again.</p>
+    <div class="passage"><h5>SUPPORTING SENTENCES</h5><p>It is cold outside. We wear thick coats. Sometimes it snows in the morning.</p></div>
+    <ul class="mc">
+      <li data-opt="a">Winter in our town is very cold.</li>
+      <li data-opt="b">I like summer best.</li>
+      <li data-opt="c">My coat is blue.</li>
+    </ul>
+  </div>
+
+  <div class="act">
+    <p class="act-label">활동 3 · ACTIVITY 3</p>
+    <p class="act-prompt">한 번 더 고르세요.</p>
+    <p class="act-en">One more.</p>
+    <div class="passage"><h5>SUPPORTING SENTENCES</h5><p>Dogs need a walk every day. They need fresh water. They also need someone to play with.</p></div>
+    <ul class="mc">
+      <li data-opt="a">I have a dog named Kongi.</li>
+      <li data-opt="b">Taking care of a dog takes work.</li>
+      <li data-opt="c">Dogs are animals.</li>
+    </ul>
+  </div>
+
+  <div class="rule">
+    <b>THE RULE ·</b> 주제문은 <b>너무 넓어도</b> 안 되고 <b>너무 좁아도</b> 안 됩니다. 뒷받침 문장 셋을 딱 감싸는 크기여야 합니다.
+  </div>
+
+  <div class="tnote">
+    <b class="tlabel">선생님께</b>
+    <p>정답 — <span class="ans">1: b &nbsp; 2: a &nbsp; 3: b</span></p>
+    <p>오답의 성격이 서로 다릅니다. <b>“너무 넓은” 오답</b>은 1-c(어느 학교에나 해당)와 3-c(어느 개에게나 해당), <b>“너무 좁은” 오답</b>은 2-c(세부 문장 하나)와 3-a(내 개 한 마리 이야기), 나머지는 주제에서 벗어난 경우입니다.</p>
+    <p>세 문항을 푼 뒤 <b>“왜 c는 안 될까?”</b>를 문항마다 물어 주세요. 넓어도 좁아도 안 된다는 것을 세 번 겪어야 크기 감각이 잡힙니다.</p>
+  </div>
+</section>
+
+<section class="sheet">
+  <span class="pagemark">3단계 · 11/15</span>
+  <div class="chapbar">
+    <span class="chapnum">CHAPTER 3</span><span class="chaptitle">나누고 짓기</span>
+    <span class="chaptopic">주제문 쓰기</span>
+    <span class="scaffold"><b>도움</b><i class="on"></i><i class="on"></i><i></i><i></i></span>
+  </div>
+  <div class="step-head">
+    <div class="step-num">채우기 FRAME ②</div>
+    <div class="step-titles"><h2>주제문 직접 쓰기</h2><p class="h2-en">Write the topic sentence yourself</p></div>
+  </div>
+
+  <p class="act-hint">이번에는 고르는 것이 아니라 <b>쓰는 것</b>입니다. 워드뱅크(2쪽)의 틀을 써도 좋습니다.</p>
+
+  <div class="act">
+    <p class="act-label">활동 1 · ACTIVITY 1</p>
+    <p class="act-prompt">뒷받침 문장 셋을 읽고 주제문을 쓰세요.</p>
+    <p class="act-en">Read the three sentences. Write a topic sentence.</p>
+
+    <div class="passage"><h5>A</h5><p>It sells fresh bread every morning. It has a small table by the window. The owner knows my name.</p></div>
+    <div class="lines l1" style="margin-bottom:18px;"></div>
+
+    <div class="passage"><h5>B</h5><p>She sleeps all morning. She wakes up only when I open a can. She sleeps again after lunch.</p></div>
+    <div class="lines l1" style="margin-bottom:18px;"></div>
+
+    <div class="passage"><h5>C</h5><p>They can hear sounds from far away. They use their trunks to smell. They remember places for many years.</p></div>
+    <div class="lines l1"></div>
+  </div>
+
+  <div class="act">
+    <p class="act-label">활동 2 · ACTIVITY 2</p>
+    <p class="act-prompt">쓴 주제문이 <b>너무 넓지도 좁지도 않은지</b> 확인하세요.</p>
+    <p class="act-en">Check your topic sentences.</p>
+    <ul class="checks">
+      <li>뒷받침 문장 셋이 모두 내 주제문을 도와준다<span class="cen">All three sentences help my topic sentence.</span></li>
+      <li>주제문이 문단에 없는 이야기를 하지 않는다<span class="cen">My topic sentence does not say anything new.</span></li>
+    </ul>
+  </div>
+
+  <div class="chapclose">
+    <p class="cc-label">CHAPTER 3 · 다 했으면 표시하세요</p>
+    <ul class="checks">
+      <li>문단 나눌 자리를 찾을 수 있다<span class="cen">I can find where a new paragraph starts.</span></li>
+      <li>주제문을 직접 쓸 수 있다<span class="cen">I can write a topic sentence myself.</span></li>
+    </ul>
+  </div>
+
+  <div class="tnote">
+    <b class="tlabel">선생님께</b>
+    <p>정답 예시 — A: <span class="ans">The bakery near our house is a nice place.</span> B: <span class="ans">My cat Nabi sleeps a lot.</span> C: <span class="ans">Elephants have very good senses.</span></p>
+    <p>C가 가장 어렵습니다 — <b>세 문장을 하나로 묶는 낱말(senses)</b>을 찾아야 하기 때문입니다. 못 찾으면 “듣기·냄새·기억, 이 셋을 한꺼번에 뭐라고 할까?”로 유도해 주세요. 한국어로 답해도 좋습니다.</p>
+  </div>
+</section>
+
+<!-- ============================================================ CH4 -->
+<section class="sheet">
+  <span class="pagemark">3단계 · 12/15</span>
+  <div class="chapbar">
+    <span class="chapnum">CHAPTER 4</span><span class="chaptitle">문단 짓기</span>
+    <span class="chaptopic">내가 고른 소재</span>
+    <span class="scaffold"><b>도움</b><i class="on"></i><i></i><i></i><i></i></span>
+  </div>
+  <div class="step-head">
+    <div class="step-num">계획 PLAN</div>
+    <div class="step-titles"><h2>스스로 계획하기</h2><p class="h2-en">Plan it yourself</p></div>
+  </div>
+
+  <div class="topicbox">
+    <p class="tb-label">MY SIX TOPICS · 여기서 하나를 고르세요</p>
+    <div class="chips">
+      <span class="chip">my pet</span><span class="chip">our town</span><span class="chip">my favourite food</span>
+      <span class="chip">a season</span><span class="chip">a school day</span><span class="chip">an animal I know</span>
+    </div>
+  </div>
+
+  <div class="act">
+    <p class="act-label">활동 1 · ACTIVITY 1</p>
+    <p class="act-prompt">소재를 고르고 주제문을 쓰세요.</p>
+    <p class="act-en">Choose a topic. Write your topic sentence.</p>
+    <div class="plan">
+      <div class="plan-row"><div class="plan-key">고른 소재<small>topic</small></div><div class="plan-val"><div class="lines"></div></div></div>
+      <div class="plan-row"><div class="plan-key">주제문<small>topic sentence</small></div><div class="plan-val"><div class="lines"></div></div></div>
+      <div class="plan-row"><div class="plan-key">뒷받침 1<small>detail 1</small></div><div class="plan-val"><div class="lines"></div></div></div>
+      <div class="plan-row"><div class="plan-key">뒷받침 2<small>detail 2</small></div><div class="plan-val"><div class="lines"></div></div></div>
+      <div class="plan-row"><div class="plan-key">뒷받침 3<small>detail 3</small></div><div class="plan-val"><div class="lines"></div></div></div>
+    </div>
+  </div>
+
+  <div class="act">
+    <p class="act-label">활동 2 · ACTIVITY 2</p>
+    <p class="act-prompt">뒷받침 문장 셋이 모두 주제문을 도와주는지 확인하세요.</p>
+    <p class="act-en">Check that all three details help the topic sentence.</p>
+    <ul class="checks">
+      <li>셋 다 같은 것에 대한 이야기다<span class="cen">All three are about the same thing.</span></li>
+      <li>끼어든 문장이 없다<span class="cen">Nothing does not belong.</span></li>
+    </ul>
+  </div>
+
+  <div class="act">
+    <p class="act-label">활동 3 · ACTIVITY 3</p>
+    <p class="act-prompt">계획한 네 문장을 짝에게 <b>소리 내어</b> 말하세요.</p>
+    <p class="act-en">Say your four sentences out loud to your partner.</p>
+    <ul class="checks">
+      <li>짝에게 네 문장을 말했다<span class="cen">I said all four sentences out loud.</span></li>
+      <li>짝이 “무엇에 대한 글이야?”에 답할 수 있었다<span class="cen">My partner could say what it was about.</span></li>
+    </ul>
+  </div>
+
+  <div class="tnote">
+    <b class="tlabel">선생님께</b>
+    <p>활동 3의 두 번째 항목이 좋은 진단입니다. 짝이 주제를 못 맞히면 <b>문단이 아직 한 가지 생각으로 묶이지 않은 것</b>이므로, 쓰기 전에 계획을 고치게 하세요.</p>
+    <p>계획을 건너뛰고 바로 쓰려는 학생이 반드시 나옵니다. 계획 없이 쓴 문단은 대개 두 번째 문장에서 주제를 벗어납니다.</p>
+  </div>
+</section>
+
+<section class="sheet">
+  <span class="pagemark">3단계 · 13/15</span>
+  <div class="chapbar">
+    <span class="chapnum">CHAPTER 4</span><span class="chaptitle">문단 짓기</span>
+    <span class="chaptopic">한 문단</span>
+    <span class="scaffold"><b>도움</b><i class="on"></i><i></i><i></i><i></i></span>
+  </div>
+  <div class="step-head">
+    <div class="step-num">짓기 BUILD ①</div>
+    <div class="step-titles"><h2>한 문단 쓰기</h2><p class="h2-en">Write one paragraph</p></div>
+  </div>
+
+  <div class="act">
+    <p class="act-label">활동 1 · ACTIVITY 1</p>
+    <p class="act-prompt">12쪽 계획을 보고, 네 문장을 이어서 <b>하나의 문단</b>으로 쓰세요.</p>
+    <p class="act-en">Write your four sentences together as ONE paragraph.</p>
+    <div class="lines l4"></div>
+  </div>
+
+  <div class="act">
+    <p class="act-label">활동 2 · ACTIVITY 2</p>
+    <p class="act-prompt">워드뱅크의 낱말을 두 개 이상 넣어 문단을 다듬으세요.</p>
+    <p class="act-en">Add two or more words from the Word Bank.</p>
+    <p class="act-hint">also · another · because · for example · That is why</p>
+    <ol class="fill">
+      <li>내가 넣은 낱말: <span class="blank short"></span> &nbsp; <span class="blank short"></span></li>
+    </ol>
+  </div>
+
+  <div class="act">
+    <p class="act-label">활동 3 · 스스로 점검 · CHECK YOURSELF</p>
+    <ul class="checks">
+      <li>내 문단은 한 가지만 이야기한다<span class="cen">My paragraph is about ONE thing.</span></li>
+      <li>첫 문장이 주제문이다<span class="cen">My first sentence is the topic sentence.</span></li>
+      <li>뒷받침 문장이 세 개 있다<span class="cen">I wrote three supporting sentences.</span></li>
+      <li>워드뱅크 낱말을 두 개 이상 썼다<span class="cen">I used two or more Word Bank words.</span></li>
+    </ul>
+  </div>
+
+  <div class="tnote">
+    <b class="tlabel">선생님께</b>
+    <p>문법 오류는 이 장에서 <b>고치지 마세요.</b> 3단계의 평가 대상은 문단의 구조이지 영어의 정확성이 아닙니다. 주제문이 있고 뒷받침 셋이 모두 주제문을 향하고 있으면 성공입니다.</p>
+    <p>네 개의 점검 항목이 곧 <b>채점 기준</b>입니다.</p>
+  </div>
+</section>
+
+<section class="sheet">
+  <span class="pagemark">3단계 · 14/15</span>
+  <div class="chapbar">
+    <span class="chapnum">CHAPTER 4</span><span class="chaptitle">문단 짓기</span>
+    <span class="chaptopic">두 문단</span>
+    <span class="scaffold"><b>도움</b><i class="on"></i><i></i><i></i><i></i></span>
+  </div>
+  <div class="step-head">
+    <div class="step-num">짓기 BUILD ②</div>
+    <div class="step-titles"><h2>하나에서 둘로</h2><p class="h2-en">From one paragraph to two</p></div>
+  </div>
+
+  <p class="act-hint">문단 하나를 쓸 수 있게 되었으니, 이제 <b>둘</b>을 씁니다. 문단이 둘 이상 있어야 “글을 조직했다”고 말할 수 있습니다.</p>
+
+  <div class="act">
+    <p class="act-label">활동 1 · ACTIVITY 1</p>
+    <p class="act-prompt">같은 소재를 두 부분으로 나눌 소제목을 정하세요.</p>
+    <p class="act-en">Choose two headings for your topic.</p>
+    <div class="topicbox">
+      <p class="tb-label">HEADING IDEAS · 소제목 예시</p>
+      <div class="chips">
+        <span class="chip">How it looks</span><span class="chip">What it does</span><span class="chip">In the morning</span>
+        <span class="chip">In the afternoon</span><span class="chip">Where it is</span><span class="chip">Why I like it</span>
+      </div>
+    </div>
+    <div class="plan">
+      <div class="plan-row"><div class="plan-key">글 제목<small>title</small></div><div class="plan-val"><div class="lines"></div></div></div>
+      <div class="plan-row"><div class="plan-key">소제목 1<small>heading 1</small></div><div class="plan-val"><div class="lines"></div></div></div>
+      <div class="plan-row"><div class="plan-key">소제목 2<small>heading 2</small></div><div class="plan-val"><div class="lines"></div></div></div>
+    </div>
+  </div>
+
+  <div class="act">
+    <p class="act-label">활동 2 · ACTIVITY 2</p>
+    <p class="act-prompt">각 칸에 문단을 하나씩 쓰세요. 문단마다 주제문으로 시작합니다.</p>
+    <p class="act-en">Write one paragraph in each box. Start each with a topic sentence.</p>
+    <div class="abox" style="margin-bottom:12px;"><h6>PARAGRAPH 1 <span>· 소제목 1</span></h6><div class="lines l3"></div></div>
+    <div class="abox"><h6>PARAGRAPH 2 <span>· 소제목 2</span></h6><div class="lines l3"></div></div>
+  </div>
+
+  <div class="chapclose">
+    <p class="cc-label">CHAPTER 4 · 3단계를 마쳤습니다</p>
+    <ul class="checks">
+      <li>두 문단은 서로 <b>다른</b> 것을 이야기한다<span class="cen">My two paragraphs are about different things.</span></li>
+      <li>소제목만 읽어도 무슨 내용인지 알 수 있다<span class="cen">You can guess the content from the headings.</span></li>
+      <li>왜 여기서 문단이 나뉘는지 설명할 수 있다<span class="cen">I can explain why the paragraph changes here.</span></li>
+    </ul>
+  </div>
+
+  <div class="tnote">
+    <b class="tlabel">선생님께</b>
+    <p>마지막 체크 항목(<b>왜 여기서 나뉘는지 설명하기</b>)이 3단계 통과의 진짜 기준입니다. <b>한국어로 설명해도 통과입니다</b> — 3단계에서 확인할 것은 구조 이해이지 영어 설명력이 아닙니다.</p>
+    <p>세 문단 이상, 서론·본론·결론을 갖춘 글은 <b>4단계</b>의 목표입니다. 여기서 무리하게 늘리지 마세요.</p>
+  </div>
+</section>
+
+<!-- ================= CAPSTONE ================= -->
+<section class="sheet">
+  <span class="pagemark">3단계 · 15/15</span>
+  <div class="step-head">
+    <div class="step-num">완성 과제</div>
+    <div class="step-titles"><h2>바꿔 읽고 고치기</h2><p class="h2-en">Swap, check, and fix</p></div>
+  </div>
+
+  <p class="act-hint">네 챕터를 모두 마친 뒤에 합니다. 이번에는 <b>짝의 글</b>을 읽습니다. 남의 글에서 보이는 것이 내 글에서도 보이게 됩니다.</p>
+
+  <div class="act">
+    <p class="act-label">활동 1 · SWAP</p>
+    <p class="act-prompt">짝과 14쪽을 바꿔 읽으세요. 그리고 아래에 답하세요.</p>
+    <p class="act-en">Swap page 14 with your partner. Then answer.</p>
+    <div class="plan">
+      <div class="plan-row"><div class="plan-key">짝의 이름</div><div class="plan-val"><div class="lines"></div></div></div>
+      <div class="plan-row"><div class="plan-key">첫 문단은<br>무엇에 대한 글?</div><div class="plan-val"><div class="lines"></div></div></div>
+      <div class="plan-row"><div class="plan-key">둘째 문단은<br>무엇에 대한 글?</div><div class="plan-val"><div class="lines"></div></div></div>
+    </div>
+  </div>
+
+  <div class="act">
+    <p class="act-label">활동 2 · CHECK</p>
+    <p class="act-prompt">짝의 글을 점검해 주세요.</p>
+    <p class="act-en">Check your partner's writing.</p>
+    <ul class="checks">
+      <li>두 문단이 서로 다른 것을 이야기한다<span class="cen">The two paragraphs are about different things.</span></li>
+      <li>문단마다 첫 문장이 주제문이다<span class="cen">Each paragraph starts with a topic sentence.</span></li>
+      <li>끼어든 문장이 없다<span class="cen">No sentence is out of place.</span></li>
+    </ul>
+    <p class="act-hint">✓가 아닌 항목이 있으면 짝에게 <b>어디가 그런지</b> 손가락으로 짚어 주세요.</p>
+  </div>
+
+  <div class="act">
+    <p class="act-label">활동 3 · FIX</p>
+    <p class="act-prompt">내 글을 돌려받아 <b>한 군데</b> 고치세요. 무엇을 고쳤는지 쓰세요.</p>
+    <p class="act-en">Take your writing back. Fix one thing.</p>
+    <ol class="fill">
+      <li>내가 고친 곳: <span class="blank long"></span></li>
+      <li>고친 까닭: <span class="blank long"></span></li>
+    </ol>
+  </div>
+
+  <div class="act">
+    <p class="act-label">활동 4 · 마지막 점검</p>
+    <ul class="checks">
+      <li>짝의 글에서 주제를 찾아낼 수 있었다<span class="cen">I could find the topic in my partner's writing.</span></li>
+      <li>내 글을 스스로 한 군데 고쳤다<span class="cen">I fixed one thing in my own writing.</span></li>
+    </ul>
+  </div>
+
+  <div class="tnote">
+    <b class="tlabel">선생님께</b>
+    <p>이 장은 원본 데이터의 <b>“글을 다시 보고 효과적으로 고치기”</b>에 해당합니다. 자기 글의 문제는 잘 안 보이지만 <b>남의 글에서는 보입니다</b> — 짝의 글을 먼저 점검하게 한 뒤 자기 글로 돌아가는 순서가 그래서 중요합니다.</p>
+    <p>활동 1이 진짜 평가입니다. 짝이 <b>“무엇에 대한 글인지” 한 낱말로 답할 수 있으면</b> 그 문단은 성공한 것입니다. 못 답하면 쓴 사람에게 고칠 곳이 있습니다.</p>
+    <p>모두 마쳤다면 4단계 「글쓰기의 언어」로 넘어갑니다. 3쪽의 Kongi 문단이 4단계 첫 장에서 <b>한 편의 글로 자라</b> 다시 나옵니다.</p>
+  </div>
+</section>
+
+<p class="colophon">
+  구조적 글쓰기 6단계 · 3단계 워크시트 (4개 챕터 · 15장)<br>
+  Marble Skill Taxonomy (v1) · © Generative Spark, Inc. (Marble) · https://withmarble.com<br>
+  licensed under ODbL 1.0 (database) and CC BY-SA 4.0 (content)
+</p>
+
+</div>

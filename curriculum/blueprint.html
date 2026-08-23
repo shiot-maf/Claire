@@ -1,0 +1,1095 @@
+<title>글쓰기 설계도</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Song+Myung&family=Noto+Serif+KR:wght@400;500;600;700&family=Noto+Sans+KR:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap">
+<style>
+  :root{
+    --paper:#F5F2E7;
+    --paper-raised:#FFFFFF;
+    --ink:#262A1F;
+    --ink-soft:#5B5D4C;
+    --rule:#E3B7B6;
+    --rule-soft:#EEDAD3;
+    --accent:#1E6B49;
+    --accent-soft:#DEEAE2;
+    --accent-ink:#F4FBF6;
+    --correction:#B23B32;
+    --correction-soft:#F5DED9;
+    --border:#D9D2BE;
+    --mono-ink:#726F5D;
+    --font-display:'Song Myung','Noto Serif KR',serif;
+    --font-body:'Noto Serif KR',Georgia,'Times New Roman',serif;
+    --font-ui:'Noto Sans KR',-apple-system,BlinkMacSystemFont,sans-serif;
+    --font-mono:'JetBrains Mono',ui-monospace,'SF Mono',Consolas,monospace;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --paper:#1B211B;
+      --paper-raised:#212820;
+      --ink:#ECE7D6;
+      --ink-soft:#B7B4A0;
+      --rule:#3A4A3C;
+      --rule-soft:#2B352C;
+      --accent:#6FC79A;
+      --accent-soft:#243528;
+      --accent-ink:#0D1611;
+      --correction:#E2897C;
+      --correction-soft:#3A2420;
+      --border:#333B30;
+      --mono-ink:#8B9083;
+    }
+  }
+  :root[data-theme="dark"]{
+    --paper:#1B211B;
+    --paper-raised:#212820;
+    --ink:#ECE7D6;
+    --ink-soft:#B7B4A0;
+    --rule:#3A4A3C;
+    --rule-soft:#2B352C;
+    --accent:#6FC79A;
+    --accent-soft:#243528;
+    --accent-ink:#0D1611;
+    --correction:#E2897C;
+    --correction-soft:#3A2420;
+    --border:#333B30;
+    --mono-ink:#8B9083;
+  }
+
+  *{box-sizing:border-box;}
+  @media (prefers-reduced-motion: reduce){
+    *{transition:none !important; scroll-behavior:auto !important;}
+  }
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:var(--font-body);
+    font-size:17px;
+    line-height:1.75;
+    -webkit-font-smoothing:antialiased;
+  }
+  a{color:var(--accent);}
+  a:focus-visible, button:focus-visible, .navchip:focus-visible{
+    outline:2px solid var(--correction);
+    outline-offset:3px;
+  }
+
+  .wrap{max-width:880px;margin:0 auto;padding:64px 28px 96px;}
+
+  /* ---------- masthead ---------- */
+  .eyebrow{
+    font-family:var(--font-mono);
+    font-size:12.5px;
+    letter-spacing:.12em;
+    text-transform:uppercase;
+    color:var(--correction);
+    margin:0 0 14px;
+  }
+  h1.title{
+    font-family:var(--font-display);
+    font-weight:400;
+    font-size:clamp(2.4rem,6vw,3.4rem);
+    line-height:1.15;
+    margin:0 0 20px;
+    text-wrap:balance;
+    color:var(--ink);
+  }
+  .lede{
+    font-size:1.05rem;
+    max-width:62ch;
+    color:var(--ink-soft);
+    margin:0 0 14px;
+  }
+  .lede:last-of-type{margin-bottom:8px;}
+  .lede strong{color:var(--ink); font-weight:600;}
+  .source-line{
+    font-family:var(--font-mono);
+    font-size:12.5px;
+    color:var(--mono-ink);
+    margin:18px 0 0;
+  }
+
+  /* ---------- staircase ---------- */
+  .stair{
+    display:flex;
+    align-items:flex-end;
+    gap:6px;
+    margin:44px 0 8px;
+    padding:0 2px;
+  }
+  .step{
+    flex:1;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:10px;
+  }
+  .step-bar{
+    width:100%;
+    background:var(--accent-soft);
+    border:1px solid var(--border);
+    border-bottom:3px solid var(--accent);
+    border-radius:3px 3px 0 0;
+    display:flex;
+    align-items:flex-start;
+    justify-content:center;
+    padding-top:6px;
+  }
+  .step-bar span{
+    font-family:var(--font-mono);
+    font-size:13px;
+    font-weight:600;
+    color:var(--accent);
+  }
+  .step:nth-child(1) .step-bar{height:34px;}
+  .step:nth-child(2) .step-bar{height:50px;}
+  .step:nth-child(3) .step-bar{height:66px;}
+  .step:nth-child(4) .step-bar{height:82px;}
+  .step:nth-child(5) .step-bar{height:98px;}
+  .step:nth-child(6) .step-bar{height:114px;}
+  .step-label{
+    font-family:var(--font-ui);
+    font-size:12.5px;
+    text-align:center;
+    color:var(--ink-soft);
+    line-height:1.4;
+  }
+  .stair-base{
+    height:2px;
+    background:var(--border);
+    margin:0 0 56px;
+  }
+
+  /* ---------- quick nav ---------- */
+  .quicknav{
+    position:sticky;
+    top:0;
+    z-index:5;
+    display:flex;
+    gap:6px;
+    flex-wrap:wrap;
+    padding:12px 0;
+    margin:0 0 40px;
+    background:var(--paper);
+    border-bottom:1px solid var(--border);
+  }
+  .navchip{
+    font-family:var(--font-ui);
+    font-size:13px;
+    font-weight:600;
+    color:var(--ink-soft);
+    text-decoration:none;
+    padding:6px 13px;
+    border:1px solid var(--border);
+    border-radius:999px;
+    background:var(--paper-raised);
+    transition:color .15s, border-color .15s, background .15s;
+  }
+  .navchip:hover{color:var(--accent); border-color:var(--accent);}
+
+  /* ---------- legend ---------- */
+  .legend{
+    display:flex;
+    flex-wrap:wrap;
+    gap:18px;
+    font-family:var(--font-ui);
+    font-size:13px;
+    color:var(--ink-soft);
+    margin:0 0 56px;
+    padding:16px 18px;
+    border:1px dashed var(--border);
+    border-radius:8px;
+    background:var(--paper-raised);
+  }
+  .legend-item{display:flex; align-items:center; gap:8px;}
+  .dot{width:9px; height:9px; border-radius:2px; flex:none;}
+  .dot.write{background:var(--accent);}
+  .dot.read{background:var(--mono-ink);}
+  .dot.grammar{background:#8C7A4E;}
+  .dot.cap{background:var(--correction);}
+
+  /* ---------- worksheet index ---------- */
+  .packs{
+    border:1px solid var(--border);
+    border-radius:6px;
+    background:var(--paper-raised);
+    padding:24px 26px 22px;
+    margin:0 0 56px;
+  }
+  .packs-label{
+    font-family:var(--font-mono);
+    font-size:11.5px;
+    letter-spacing:.12em;
+    text-transform:uppercase;
+    color:var(--correction);
+    margin:0 0 6px;
+  }
+  .packs h2{
+    font-family:var(--font-ui);
+    font-weight:700;
+    font-size:1.1rem;
+    margin:0 0 16px;
+    color:var(--ink);
+  }
+  ul.packlist{list-style:none; margin:0; padding:0;}
+  ul.packlist li{
+    display:flex;
+    align-items:baseline;
+    gap:12px;
+    padding:8px 0;
+    border-bottom:1px dashed var(--border);
+    font-family:var(--font-ui);
+    font-size:.93rem;
+  }
+  ul.packlist li:last-child{border-bottom:none;}
+  ul.packlist li .nm{flex:1; min-width:0;}
+  ul.packlist li a{font-weight:600; text-decoration:none;}
+  ul.packlist li a:hover{text-decoration:underline;}
+  ul.packlist li .pending{color:var(--ink-soft);}
+  ul.packlist li .meta{
+    font-family:var(--font-mono);
+    font-size:11px;
+    color:var(--mono-ink);
+    white-space:nowrap;
+  }
+  ul.packlist li .meta.soon{color:var(--correction);}
+
+  /* ---------- entry track ---------- */
+  .track{
+    border:1px solid var(--accent);
+    border-radius:6px;
+    background:var(--paper-raised);
+    padding:30px 30px 34px;
+    margin:0 0 60px;
+  }
+  .track-eyebrow{
+    font-family:var(--font-mono);
+    font-size:11.5px;
+    letter-spacing:.12em;
+    text-transform:uppercase;
+    color:var(--accent);
+    margin:0 0 10px;
+  }
+  .track h2{
+    font-family:var(--font-display);
+    font-weight:400;
+    font-size:1.85rem;
+    line-height:1.25;
+    margin:0 0 12px;
+    color:var(--ink);
+  }
+  .track-intro{
+    font-size:.97rem;
+    color:var(--ink-soft);
+    margin:0;
+    max-width:60ch;
+  }
+  .track-intro strong{color:var(--ink); font-weight:600;}
+  ol.track-steps{
+    list-style:none;
+    counter-reset:trackstep -1;
+    margin:28px 0 0;
+    padding:0 0 0 46px;
+    position:relative;
+  }
+  ol.track-steps::before{
+    content:"";
+    position:absolute;
+    left:15px;
+    top:12px;
+    bottom:14px;
+    width:2px;
+    background:var(--border);
+  }
+  li.track-step{
+    counter-increment:trackstep;
+    position:relative;
+    margin:0 0 22px;
+  }
+  li.track-step:last-child{margin-bottom:0;}
+  li.track-step::before{
+    content:counter(trackstep);
+    position:absolute;
+    left:-46px;
+    top:0;
+    width:32px;
+    height:32px;
+    border-radius:50%;
+    background:var(--accent);
+    color:var(--accent-ink);
+    font-family:var(--font-mono);
+    font-size:14px;
+    font-weight:600;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+  }
+  li.track-step.is-optional::before{
+    background:var(--paper-raised);
+    color:var(--ink-soft);
+    border:2px dashed var(--border);
+  }
+  .track-step h4{
+    font-family:var(--font-ui);
+    font-weight:700;
+    font-size:1.02rem;
+    margin:4px 0 3px;
+    color:var(--ink);
+  }
+  .track-step .track-meta{
+    font-family:var(--font-mono);
+    font-size:11.5px;
+    color:var(--mono-ink);
+    margin:0 0 6px;
+  }
+  .track-step .track-why{
+    font-size:.92rem;
+    color:var(--ink-soft);
+    margin:0;
+  }
+  .tag{
+    display:inline-block;
+    font-family:var(--font-mono);
+    font-size:10.5px;
+    letter-spacing:.06em;
+    border-radius:999px;
+    padding:1px 8px;
+    margin-left:7px;
+    vertical-align:2px;
+    white-space:nowrap;
+    color:var(--mono-ink);
+    border:1px solid var(--border);
+  }
+
+  /* ---------- stage section ---------- */
+  section.grade{
+    padding:40px 0 44px;
+    border-top:1px solid var(--border);
+    scroll-margin-top:64px;
+  }
+  section.grade.pivot{
+    background:linear-gradient(180deg, var(--correction-soft) 0%, transparent 120px);
+    margin:0 -28px;
+    padding-left:28px;
+    padding-right:28px;
+    border-radius:0;
+  }
+  .grade-head{
+    display:flex;
+    gap:20px;
+    align-items:baseline;
+    margin:0 0 6px;
+  }
+  .grade-num{
+    font-family:var(--font-display);
+    font-size:2.6rem;
+    line-height:1;
+    color:var(--accent);
+    flex:none;
+    min-width:1.4ch;
+  }
+  .grade-titles h3{
+    font-family:var(--font-ui);
+    font-weight:700;
+    font-size:1.32rem;
+    margin:0 0 4px;
+    color:var(--ink);
+  }
+  .grade-thesis{
+    font-family:var(--font-ui);
+    font-size:.98rem;
+    color:var(--correction);
+    font-weight:600;
+    margin:0 0 28px 0;
+  }
+  .pivot-badge{
+    display:inline-block;
+    font-family:var(--font-mono);
+    font-size:11px;
+    letter-spacing:.08em;
+    color:var(--correction);
+    border:1px solid var(--correction);
+    border-radius:999px;
+    padding:2px 9px;
+    margin-left:10px;
+    vertical-align:middle;
+  }
+
+  .grade-body{
+    display:grid;
+    grid-template-columns:1.55fr 1fr;
+    gap:36px;
+    align-items:start;
+  }
+  @media (max-width:640px){
+    .grade-body{grid-template-columns:1fr;}
+  }
+  .col-label{
+    font-family:var(--font-ui);
+    font-size:12px;
+    font-weight:700;
+    letter-spacing:.08em;
+    text-transform:uppercase;
+    color:var(--ink-soft);
+    margin:0 0 14px;
+    display:flex;
+    align-items:center;
+    gap:7px;
+  }
+  .col-label .dot{width:8px;height:8px;}
+  .col-support .col-label{margin-top:26px;}
+  .col-support .col-label:first-child{margin-top:0;}
+
+  .unit{margin:0 0 22px;}
+  .unit:last-child{margin-bottom:0;}
+  .unit-title{
+    font-family:var(--font-ui);
+    font-weight:700;
+    font-size:1.02rem;
+    margin:0 0 3px;
+    color:var(--ink);
+  }
+  .unit-meta{
+    font-family:var(--font-mono);
+    font-size:11.5px;
+    color:var(--mono-ink);
+    margin:0 0 8px;
+  }
+  .unit-desc{
+    margin:0 0 8px;
+    color:var(--ink-soft);
+    font-size:.98rem;
+  }
+  ul.unit-check{
+    margin:0;
+    padding:0;
+    list-style:none;
+  }
+  ul.unit-check li{
+    font-family:var(--font-ui);
+    font-size:.88rem;
+    color:var(--ink-soft);
+    padding-left:20px;
+    position:relative;
+    margin:0 0 5px;
+  }
+  ul.unit-check li::before{
+    content:"✓";
+    position:absolute;
+    left:0;
+    top:0;
+    color:var(--accent);
+    font-weight:700;
+    font-size:.85em;
+  }
+
+  .support-item{margin:0 0 16px;}
+  .support-item:last-child{margin-bottom:0;}
+  .support-title{
+    font-family:var(--font-ui);
+    font-weight:600;
+    font-size:.92rem;
+    margin:0 0 2px;
+    color:var(--ink);
+  }
+  .support-meta{
+    font-family:var(--font-mono);
+    font-size:11px;
+    color:var(--mono-ink);
+    margin:0 0 4px;
+  }
+  .support-desc{
+    font-size:.88rem;
+    color:var(--ink-soft);
+    margin:0;
+  }
+
+  .capstone{
+    margin-top:30px;
+    border:1px solid var(--correction);
+    border-radius:4px;
+    background:var(--paper-raised);
+    padding:18px 22px;
+    position:relative;
+  }
+  .capstone-label{
+    font-family:var(--font-mono);
+    font-size:11px;
+    letter-spacing:.1em;
+    text-transform:uppercase;
+    color:var(--correction);
+    font-weight:600;
+    margin:0 0 8px;
+  }
+  .capstone p.capstone-body{
+    margin:0;
+    font-size:.98rem;
+    color:var(--ink);
+  }
+
+  /* ---------- footer ---------- */
+  footer{
+    margin-top:20px;
+    padding-top:36px;
+    border-top:1px solid var(--border);
+    font-family:var(--font-ui);
+    font-size:.85rem;
+    color:var(--ink-soft);
+  }
+  footer p{margin:0 0 10px; max-width:64ch;}
+  footer .cite{
+    font-family:var(--font-mono);
+    font-size:11.5px;
+    color:var(--mono-ink);
+    line-height:1.7;
+  }
+</style>
+
+<div class="wrap">
+
+  <header class="masthead">
+    <p class="eyebrow">구조적 글쓰기 커리큘럼 · 6단계</p>
+    <h1 class="title">글쓰기 설계도</h1>
+    <p class="lede">
+      한 문장을 소리 내어 말해보는 것부터, 여러 문단이 서로 근거를 주고받는 한 편의 글을 완성하는 것까지 —
+      <strong>여섯 단계에 걸쳐 "구조"가 자라나는 순서</strong>를 보여주는 지도입니다.
+      Marble Skill Taxonomy가 정리한 학습 주제 1,590개와 선수학습 관계 3,221개 가운데,
+      글의 뼈대를 세우는 데 필요한 43개 주제를 골라 선수학습 순서를 따라 다시 엮었습니다.
+    </p>
+    <p class="lede">
+      나이는 기준이 아닙니다. <strong>누구나 1단계부터 시작할 수 있고, 단계를 건너뛰지 않을 때 가장 잘 자랍니다.</strong>
+      각 단계는 앞 단계에서 익힌 것을 재료로 삼도록 짜여 있어, 앞이 비어 있으면 뒤가 무너집니다.
+    </p>
+    <p class="source-line">source · data/os-taxonomy/data/topics.json, dependencies.json (Marble Skill Taxonomy v1)</p>
+  </header>
+
+  <div class="stair" aria-hidden="true">
+    <div class="step"><div class="step-bar"><span>1</span></div><div class="step-label">문장을<br>말로 짓기</div></div>
+    <div class="step"><div class="step-bar"><span>2</span></div><div class="step-label">목적 따라<br>길게 쓰기</div></div>
+    <div class="step"><div class="step-bar"><span>3</span></div><div class="step-label">문단으로<br>조직하기</div></div>
+    <div class="step"><div class="step-bar"><span>4</span></div><div class="step-label">문단 안<br>응집성</div></div>
+    <div class="step"><div class="step-bar"><span>5</span></div><div class="step-label">근거로<br>문단 잇기</div></div>
+    <div class="step"><div class="step-bar"><span>6</span></div><div class="step-label">긴 글<br>요약·구조화</div></div>
+  </div>
+  <div class="stair-base"></div>
+
+  <nav class="quicknav" aria-label="단계 바로가기">
+    <a class="navchip" href="#packs">학습지</a>
+    <a class="navchip" href="#entry">입문 트랙</a>
+    <a class="navchip" href="#g1">1단계</a>
+    <a class="navchip" href="#g2">2단계</a>
+    <a class="navchip" href="#g3">3단계 · 전환점</a>
+    <a class="navchip" href="#g4">4단계</a>
+    <a class="navchip" href="#g5">5단계</a>
+    <a class="navchip" href="#g6">6단계</a>
+  </nav>
+
+  <div class="legend">
+    <span class="legend-item"><span class="dot write"></span>쓰기 단원</span>
+    <span class="legend-item"><span class="dot read"></span>읽기 연계</span>
+    <span class="legend-item"><span class="dot grammar"></span>문법·응집성 지원</span>
+    <span class="legend-item"><span class="dot cap"></span>완성 과제</span>
+  </div>
+
+  <!-- ============ WORKSHEET INDEX ============ -->
+  <section class="packs" id="packs">
+    <p class="packs-label">교재 · 인쇄용 워크시트</p>
+    <h2>이 지도에 딸린 학습지</h2>
+    <ul class="packlist">
+      <li><span class="nm"><a href="https://claude.ai/code/artifact/4604c09f-6060-4de7-bd12-2c837b0053fb">글쓰기 첫걸음</a> — 입문 트랙 여덟 걸음</span><span class="meta">한국어 · 9장</span></li>
+      <li><span class="nm"><a href="https://claude.ai/code/artifact/a0634eda-499d-48e5-bc55-4cd85471e77c">Write It in English</a> — 같은 내용을 영어로</span><span class="meta">영어 · 7장</span></li>
+      <li><span class="nm"><a href="https://claude.ai/code/artifact/ec9d1b4b-9cff-4f0f-95df-3ea949b504bd">1단계 · 말에서 글로</a></span><span class="meta">7장</span></li>
+      <li><span class="nm"><a href="https://claude.ai/code/artifact/442c3371-4244-4ddc-b176-4d605cce8282">2단계 · 목적을 가진 글</a></span><span class="meta">15장</span></li>
+      <li><span class="nm"><a href="https://claude.ai/code/artifact/f6e75bd2-ea32-47f3-bdd7-881a69b1f177">3단계 · 문단의 발견</a></span><span class="meta">15장</span></li>
+      <li><span class="nm"><a href="https://claude.ai/code/artifact/788e3be7-76eb-423d-8a46-63eb0094fa2b">4단계 · 글쓰기의 언어</a></span><span class="meta">9장</span></li>
+      <li><span class="nm"><a href="https://claude.ai/code/artifact/fcc16c07-a6d5-4dc3-b3c3-e266d7a52217">5단계 · 독자와 근거</a></span><span class="meta">9장</span></li>
+      <li><span class="nm"><a href="https://claude.ai/code/artifact/f98fe4e0-e2b9-4937-86be-4b3e6332474e">6단계 · 긴 글 다루기</a></span><span class="meta">9장</span></li>
+      <li style="border-top:1px solid var(--border); margin-top:6px; padding-top:12px;"><span class="nm"><a href="https://claude.ai/code/artifact/8b5fed0a-c57a-47d9-b6e3-a4c90868b544">수업 운영 노트</a> — 교사용 · 차시 계획과 진단 기록 (2·3단계)</span><span class="meta">9장</span></li>
+    </ul>
+  </section>
+
+  <!-- ============ ENTRY TRACK ============ -->
+  <section class="track" id="entry">
+    <p class="track-eyebrow">입문 트랙 · 1단계로 들어가기 전에</p>
+    <h2>구조적 글쓰기를 처음 하는 학생을 위한 여덟 걸음</h2>
+    <p class="track-intro">
+      1단계에 바로 들어가기 어려운 학생을 위한 준비 과정입니다.
+      <strong>읽기로 구조를 눈에 익힌 뒤, 같은 구조를 쓰기로 재현하는</strong> 흐름이며,
+      각 걸음은 dependencies.json에서 확인된 선수 관계를 따릅니다.
+      여덟 걸음을 마치면 1단계부터 순서대로 이어 가면 됩니다.
+    </p>
+
+    <ol class="track-steps">
+      <li class="track-step">
+        <h4>글쓰기 낱말 익히기</h4>
+        <p class="track-why">계획·초고·고쳐쓰기라는 말부터. 데이터 전체에서 하드 선수 간선이 8개로 가장 많은 노드 — 이 말을 모르면 이후 모든 지시가 막힙니다.</p>
+      </li>
+      <li class="track-step">
+        <h4>이야기 순서와 중심 주제 찾기</h4>
+        <p class="track-why">처음·중간·끝은 학생이 가장 직관적으로 잡는 구조이고, 설명글 요약의 하드 선수 조건이기도 합니다.</p>
+      </li>
+      <li class="track-step">
+        <h4>설명글의 구조 알기</h4>
+        <p class="track-why">차례·소제목·찾아보기가 정보를 어떻게 나누어 담는지 눈으로 확인하는 단계.</p>
+      </li>
+      <li class="track-step">
+        <h4>중심생각과 세부내용 정리하기</h4>
+        <p class="track-why">문단마다 중심 생각 한 문장. 다음 걸음(구조 파악)의 근거가 되는 핵심 단계입니다.</p>
+      </li>
+      <li class="track-step is-optional">
+        <h4>구조 파악해보기<span class="tag">앞 걸음이 익숙해진 뒤</span></h4>
+        <p class="track-why">시간순·비교·원인결과·문제해결을 신호어로 구분합니다. 여덟 걸음 중 가장 까다로운 자리라, 앞 걸음이 아직 불안하면 건너뛰었다가 나중에 돌아와도 됩니다.</p>
+      </li>
+      <li class="track-step">
+        <h4>나의 생각 정리하기 (쓰기 전 계획)</h4>
+        <p class="track-why">여기서 읽기가 쓰기로 넘어갑니다. 핵심 낱말을 적고 처음·중간·끝을 미리 정해 두는 단계.</p>
+      </li>
+      <li class="track-step">
+        <h4>짧게 알리는 글 쓰기</h4>
+        <p class="track-why">주제 한 줄 + 사실 2~3개. 마지막 걸음으로 가기 전에 반드시 필요한 발판입니다 — 데이터상 <code>Writing to inform</code>은 <code>Basic Informational Writing</code>의 하드 선수 조건입니다.</p>
+      </li>
+      <li class="track-step">
+        <h4>설명글의 구조대로 써보기</h4>
+        <p class="track-why">주제 소개 → 사실로 전개 → 마무리. 1번에서 읽었던 구조를 이제 자기 손으로 세웁니다.</p>
+      </li>
+    </ol>
+  </section>
+
+  <!-- ============ STAGE 1 ============ -->
+  <section class="grade" id="g1">
+    <div class="grade-head">
+      <span class="grade-num">1</span>
+      <div class="grade-titles">
+        <h3>1단계 · 말에서 글로</h3>
+      </div>
+    </div>
+    <p class="grade-thesis">말로 먼저 짓고, 처음·중간·끝이 있는 짧은 글로 옮기기</p>
+
+    <div class="grade-body">
+      <div class="col-writing">
+        <p class="col-label"><span class="dot write"></span>쓰기 단원</p>
+
+        <article class="unit">
+          <h4 class="unit-title">말로 문장 완성하기</h4>
+          <p class="unit-desc">쓰기 전에 문장을 소리 내어 말해보고, 그 소리가 자연스러운지 스스로 점검하는 습관을 들입니다.</p>
+          <ul class="unit-check">
+            <li>문장을 쓰기 전에 소리 내어 먼저 말해본다</li>
+            <li>기억하기 위해 문장을 두 번 이상 되뇐다</li>
+          </ul>
+        </article>
+
+        <article class="unit">
+          <h4 class="unit-title">처음·중간·끝이 있는 짧은 이야기 쓰기</h4>
+          <p class="unit-desc">겪은 일을 순서대로 나열해 짧은 이야기를 쓰고, "먼저·그다음·마지막으로" 같은 시간어로 사건을 잇습니다.</p>
+          <ul class="unit-check">
+            <li>순서가 있는 문장 3개 이상으로 짧은 이야기를 쓴다</li>
+            <li>이야기 끝에 느낌이나 결과를 한 문장 덧붙인다</li>
+          </ul>
+        </article>
+
+        <article class="unit">
+          <h4 class="unit-title">생각과 정보를 짧게 담아 쓰기</h4>
+          <p class="unit-desc">좋아하는 것에 대한 의견을 이유와 함께 말하거나, 알고 있는 주제에 대한 사실 몇 가지를 소개합니다.</p>
+          <ul class="unit-check">
+            <li>의견을 한 문장으로 말하고 이유를 하나 든다</li>
+            <li>주제를 정하고 관련된 사실 2~3가지를 쓴다</li>
+          </ul>
+        </article>
+      </div>
+
+      <div class="col-support">
+        <p class="col-label"><span class="dot grammar"></span>말하기 지원</p>
+        <div class="support-item">
+          <p class="support-title">글쓰기 낱말 알기</p>
+          <p class="support-desc">계획하다·초고를 쓰다·고쳐쓰다 같은, 글쓰기의 각 단계를 가리키는 낱말을 익혀 두면 이후 단계의 지시어를 이해하는 바탕이 됩니다.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="capstone">
+      <p class="capstone-label">완성 과제</p>
+      <p class="capstone-body">"나의 하루"를 처음·중간·끝이 있는 3~4문장으로 쓰고, 쓰기 전에 각 문장을 먼저 소리 내어 말해본 뒤 옮겨 적기.</p>
+    </div>
+  </section>
+
+  <!-- ============ STAGE 2 ============ -->
+  <section class="grade" id="g2">
+    <div class="grade-head">
+      <span class="grade-num">2</span>
+      <div class="grade-titles">
+        <h3>2단계 · 목적을 가진 글</h3>
+      </div>
+    </div>
+    <p class="grade-thesis">여러 목적의 글을 써보고, 쓴 글을 스스로 점검하기 시작</p>
+
+    <div class="grade-body">
+      <div class="col-writing">
+        <p class="col-label"><span class="dot write"></span>쓰기 단원</p>
+
+        <article class="unit">
+          <h4 class="unit-title">여러 목적으로 오래 써보기</h4>
+          <p class="unit-desc">실제 겪은 일을 기록문으로 쓰거나 순서가 있는 설명서를 쓰는 등, 다양한 목적의 글을 한 편 끝까지 써내는 힘을 기릅니다.</p>
+          <ul class="unit-check">
+            <li>시간 연결어를 사용해 현장학습 기록문을 쓴다</li>
+            <li>번호를 매긴 간단한 설명서(놀이 방법 등)를 쓴다</li>
+          </ul>
+        </article>
+
+        <article class="unit">
+          <h4 class="unit-title">소리 내어 점검하고 고쳐쓰기</h4>
+          <p class="unit-desc">쓴 글을 다시 읽고 띄어쓰기·문장부호·시제가 맞는지 스스로 점검한 뒤, 친구와 의견을 나누어 한 군데 이상 고칩니다.</p>
+          <ul class="unit-check">
+            <li>다시 읽고 빠진 문장부호를 스스로 찾아낸다</li>
+            <li>친구와 의견을 나눈 뒤 한 군데 이상 고쳐 쓴다</li>
+          </ul>
+        </article>
+
+        <article class="unit">
+          <h4 class="unit-title">쓰기 전에 미리 계획하기</h4>
+          <p class="unit-desc">쓰기 전에 핵심 낱말을 적거나 간단한 이야기 지도를 그려, 처음·중간·끝을 미리 정해 두고 씁니다.</p>
+          <ul class="unit-check">
+            <li>쓰기 전에 핵심 낱말이나 아이디어를 적어 둔다</li>
+            <li>처음·중간·끝이 있는 간단한 이야기 계획을 세운다</li>
+          </ul>
+        </article>
+      </div>
+
+      <div class="col-support">
+        <p class="col-label"><span class="dot read"></span>읽기 연계</p>
+        <div class="support-item">
+          <p class="support-title">구조를 살려 이야기 다시 말하기</p>
+          <p class="support-desc">이야기의 처음이 인물과 배경을 어떻게 소개하고, 끝이 사건을 어떻게 마무리하는지 근거를 들어 설명합니다.</p>
+        </div>
+        <div class="support-item">
+          <p class="support-title">이야기 순서와 중심 생각</p>
+          <p class="support-desc">처음·중간·끝을 순서대로 다시 말하고, 이야기가 전하려는 중심 생각을 짚어냅니다.</p>
+        </div>
+        <div class="support-item">
+          <p class="support-title">중심 주제와 세부 내용 찾기</p>
+          <p class="support-desc">여러 문단으로 된 설명글에서 전체 주제와 문단별 초점을 구분해 찾아냅니다.</p>
+        </div>
+        <div class="support-item">
+          <p class="support-title">설명글의 구조 알기</p>
+          <p class="support-desc">차례·찾아보기 같은 장치가 정보를 어떻게 조직하는지 이해합니다.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="capstone">
+      <p class="capstone-label">완성 과제</p>
+      <p class="capstone-body">읽은 책 한 권을 처음·중간·끝 순서로 다시 말한 뒤, 같은 구조를 그대로 따라 나만의 짧은 이야기 쓰기.</p>
+    </div>
+  </section>
+
+  <!-- ============ STAGE 3 — pivot ============ -->
+  <section class="grade pivot" id="g3">
+    <div class="grade-head">
+      <span class="grade-num">3</span>
+      <div class="grade-titles">
+        <h3>3단계 · 문단의 발견<span class="pivot-badge">전환점</span></h3>
+      </div>
+    </div>
+    <p class="grade-thesis">⭐ 문장을 문단으로 조직하는 단계 — "구조적 글쓰기"가 실제로 시작되는 지점</p>
+
+    <div class="grade-body">
+      <div class="col-writing">
+        <p class="col-label"><span class="dot write"></span>쓰기 단원</p>
+
+        <article class="unit">
+          <h4 class="unit-title">문장 다듬어 말하고 쓰기</h4>
+          <p class="unit-desc">대사나 시간어가 들어간 문장을 입으로 먼저 시도해보고, 가장 나은 표현을 골라 씁니다.</p>
+          <ul class="unit-check">
+            <li>대사가 들어간 문장을 쓰기 전에 소리 내어 연습한다</li>
+            <li>같은 내용을 두세 가지 방식으로 말해보고 더 나은 쪽을 고른다</li>
+          </ul>
+        </article>
+
+        <article class="unit">
+          <h4 class="unit-title">문단으로 글 조직하기</h4>
+          <p class="unit-desc">한 문단에는 하나의 중심 생각만 담고, "서식지·먹이"처럼 소제목으로 글을 구획합니다. 왜 여기서 새 문단이 시작돼야 하는지 이유를 댈 수 있습니다.</p>
+          <ul class="unit-check">
+            <li>하나의 중심 생각마다 문단을 나눠 쓴다</li>
+            <li>"주제가 바뀌어서 여기서 새 문단이 시작돼요"라고 설명한다</li>
+          </ul>
+        </article>
+
+        <article class="unit">
+          <h4 class="unit-title">인물·배경·사건이 있는 이야기 쓰기</h4>
+          <p class="unit-desc">배경을 묘사하고 인물을 발전시키며, 대사를 사용해 문제와 해결이 있는 줄거리를 씁니다.</p>
+          <ul class="unit-check">
+            <li>배경 묘사·인물 하나·문제와 해결이 있는 줄거리를 쓴다</li>
+            <li>인물의 대사로 성격이나 감정을 드러낸다</li>
+          </ul>
+        </article>
+
+        <article class="unit">
+          <h4 class="unit-title">글을 다시 보고 효과적으로 고치기</h4>
+          <p class="unit-desc">스스로 또는 친구의 글을 소리 내어 읽으며 낱말과 문장 구조를 더 명확하게 바꿀 곳을 제안합니다.</p>
+          <ul class="unit-check">
+            <li>더 정확한 낱말로 바꿀 곳을 찾아 제안한다</li>
+            <li>맞춤법·문장부호 오류를 스스로 고친다</li>
+          </ul>
+        </article>
+      </div>
+
+      <div class="col-support">
+        <p class="col-label"><span class="dot read"></span>읽기 연계</p>
+        <div class="support-item">
+          <p class="support-title">여러 문단에서 중심 생각 찾아 요약하기</p>
+          <p class="support-desc">문단마다 중심 생각을 한 문장으로 정리하고, 3개 이상 문단을 2~3문장으로 요약합니다.</p>
+        </div>
+        <div class="support-item">
+          <p class="support-title">글의 구조와 표현이 의미에 기여하는 방식</p>
+          <p class="support-desc">소제목이 정보를 빨리 찾도록 돕는 것처럼, 구조와 표현 장치가 독자를 어떻게 이끄는지 설명합니다.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="capstone">
+      <p class="capstone-label">완성 과제</p>
+      <p class="capstone-body">하나의 주제(동물, 계절 등)로 서론–본론–결론에 해당하는 3문단짜리 설명문 쓰기 — 문단마다 소제목을 붙이고, 왜 그 자리에서 문단이 나뉘는지 스스로 설명할 수 있어야 합니다.</p>
+    </div>
+  </section>
+
+  <!-- ============ STAGE 4 ============ -->
+  <section class="grade" id="g4">
+    <div class="grade-head">
+      <span class="grade-num">4</span>
+      <div class="grade-titles">
+        <h3>4단계 · 글쓰기의 언어</h3>
+      </div>
+    </div>
+    <p class="grade-thesis">글쓰기 용어로 사고하고, 문단 안의 응집성을 다지기</p>
+
+    <div class="grade-body">
+      <div class="col-writing">
+        <p class="col-label"><span class="dot write"></span>쓰기 단원</p>
+
+        <article class="unit">
+          <h4 class="unit-title">글쓰기 기술 용어 익히기</h4>
+          <p class="unit-desc">구조·응집성·형식·격식체 같은 말을 정확히 쓰고, 이 낱말들이 글쓴이의 의도된 선택을 가리킨다는 것을 이해합니다.</p>
+          <ul class="unit-check">
+            <li>격식체와 비격식체의 차이를 예를 들어 설명한다</li>
+            <li>자기 글을 고칠 때 '응집성', '문단 구조' 같은 말을 정확히 쓴다</li>
+          </ul>
+        </article>
+
+        <article class="unit">
+          <h4 class="unit-title">구조를 갖춘 정보·의견 글쓰기</h4>
+          <p class="unit-desc">주제 소개 → 사실·이유로 전개 → 마무리 문단이라는 3단 구조로 정보 글과 의견 글을 씁니다.</p>
+          <ul class="unit-check">
+            <li>정보 글에서 사실과 정의로 요점을 발전시키고 결론으로 마무리한다</li>
+            <li>의견 글에서 이유 두 가지 이상을 연결어로 잇는다</li>
+          </ul>
+        </article>
+
+        <article class="unit">
+          <h4 class="unit-title">생생한 단어 고르기</h4>
+          <p class="unit-desc">'뛰었다' 대신 '질주했다'처럼, 정확하고 생생한 낱말을 골라 특정한 효과를 만듭니다.</p>
+          <ul class="unit-check">
+            <li>막연한 낱말을 더 정확한 낱말로 바꾸고 효과를 설명한다</li>
+          </ul>
+        </article>
+
+        <article class="unit">
+          <h4 class="unit-title">짧은 조사 프로젝트</h4>
+          <p class="unit-desc">주제에 대한 질문을 세우고, 두 자료에서 정보를 모아 정리한 뒤 한 문단으로 종합합니다.</p>
+          <ul class="unit-check">
+            <li>조사 질문 3개를 세우고 자료별로 메모한다</li>
+            <li>두 자료를 종합한 요약 문단을 쓴다</li>
+          </ul>
+        </article>
+
+        <article class="unit">
+          <h4 class="unit-title">스스로 비판적으로 고쳐쓰기</h4>
+          <p class="unit-desc">선생님의 지적 없이도 스스로 다시 읽고 의미가 불분명한 곳, 더 나은 낱말이 필요한 곳을 찾아냅니다.</p>
+          <ul class="unit-check">
+            <li>혼자서 고칠 곳을 찾고 왜 고쳤는지 설명한다</li>
+          </ul>
+        </article>
+      </div>
+
+      <div class="col-support">
+        <p class="col-label"><span class="dot read"></span>읽기 연계</p>
+        <div class="support-item">
+          <p class="support-title">문단 사이 아이디어 연결 짚어내기</p>
+          <p class="support-desc">원인과 결과, 비교 같은 신호어로 문단과 문단이 어떻게 이어지는지 설명합니다.</p>
+        </div>
+        <div class="support-item">
+          <p class="support-title">구조 용어(장·장면·연) 사용하기</p>
+          <p class="support-desc">뒤의 장이 앞의 장 위에서 어떻게 이야기를 발전시키는지, 구조 용어로 설명합니다.</p>
+        </div>
+
+        <p class="col-label"><span class="dot grammar"></span>문법·응집성 지원</p>
+        <div class="support-item">
+          <p class="support-title">문단 안에서 응집성 만들기</p>
+          <p class="support-desc">대명사·동의어·'먼저·그다음' 같은 접속 부사로 한 문단 안 문장들을 매끄럽게 연결합니다.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="capstone">
+      <p class="capstone-label">완성 과제</p>
+      <p class="capstone-body">직접 조사한 주제로 4~5문단짜리 정보 글 쓰기 — 문단 안 응집 장치(대명사·접속어)를 최소 2개 넣고, 결론 문단으로 마무리하기.</p>
+    </div>
+  </section>
+
+  <!-- ============ STAGE 5 ============ -->
+  <section class="grade" id="g5">
+    <div class="grade-head">
+      <span class="grade-num">5</span>
+      <div class="grade-titles">
+        <h3>5단계 · 독자와 근거</h3>
+      </div>
+    </div>
+    <p class="grade-thesis">독자와 목적에 맞춰 형식을 고르고, 근거로 문단을 연결하기</p>
+
+    <div class="grade-body">
+      <div class="col-writing">
+        <p class="col-label"><span class="dot write"></span>쓰기 단원</p>
+
+        <article class="unit">
+          <h4 class="unit-title">독자·목적에 맞는 형식과 어조 정하기</h4>
+          <p class="unit-desc">쓰기 전에 누가 읽을지, 왜 쓰는지를 먼저 정하고 편지·보고서·이야기 중 알맞은 형식과 어조를 고릅니다.</p>
+          <ul class="unit-check">
+            <li>독자와 목적을 정하고 이것이 언어 선택에 미치는 영향을 설명한다</li>
+            <li>대상에 맞춰 낱말·문장 길이·격식을 조정한다</li>
+          </ul>
+        </article>
+
+        <article class="unit">
+          <h4 class="unit-title">근거를 바탕으로 정보·문학 글쓰기</h4>
+          <p class="unit-desc">설명 글은 읽은 자료의 사실과 세부 내용을, 감상 글은 본문의 인용과 장면을 근거로 삼아 주장을 뒷받침합니다.</p>
+          <ul class="unit-check">
+            <li>정보 글에서 구체적 사실과 근거를 인용해 요점을 뒷받침한다</li>
+            <li>인물의 대사·행동을 인용해 성격이나 동기를 설명한다</li>
+          </ul>
+        </article>
+
+        <article class="unit">
+          <h4 class="unit-title">독자를 위한 일관된 글쓰기</h4>
+          <p class="unit-desc">서론에서 전개, 결론에 이르기까지 각 부분이 제 역할을 하도록 조직하고, 어조와 문체를 끝까지 일관되게 유지합니다.</p>
+          <ul class="unit-check">
+            <li>서론–전개–결론이 순서대로 이어지도록 조직한다</li>
+            <li>초고를 검토해 어조와 격식이 처음부터 끝까지 같은지 확인한다</li>
+          </ul>
+        </article>
+      </div>
+
+      <div class="col-support">
+        <p class="col-label"><span class="dot read"></span>읽기 연계</p>
+        <div class="support-item">
+          <p class="support-title">정보 글의 구조 파악하기</p>
+          <p class="support-desc">시간순·비교·원인과 결과·문제와 해결 중 어떤 구조로 글이 짜였는지, 신호어를 근거로 밝혀냅니다.</p>
+        </div>
+        <div class="support-item">
+          <p class="support-title">주제 찾고 객관적으로 요약하기</p>
+          <p class="support-desc">이야기나 시가 전하는 주제를 찾고, 자기 의견을 섞지 않은 객관적인 줄거리 요약을 씁니다.</p>
+        </div>
+
+        <p class="col-label"><span class="dot grammar"></span>문법·응집성 지원</p>
+        <div class="support-item">
+          <p class="support-title">부사로 문단과 문단 연결하기</p>
+          <p class="support-desc">'첫째로·둘째로·한편'처럼 시간·장소·순서를 나타내는 부사로 문단 사이를 이어 독자를 안내합니다.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="capstone">
+      <p class="capstone-label">완성 과제</p>
+      <p class="capstone-body">근거 기반 논설문 쓰기 — 서론에서 주장을 밝히고, 본론에서 근거 2~3개를 부사로 연결해 전개한 뒤, 결론에서 주장을 다시 강조하기.</p>
+    </div>
+  </section>
+
+  <!-- ============ STAGE 6 ============ -->
+  <section class="grade" id="g6">
+    <div class="grade-head">
+      <span class="grade-num">6</span>
+      <div class="grade-titles">
+        <h3>6단계 · 긴 글 다루기</h3>
+      </div>
+    </div>
+    <p class="grade-thesis">긴 글을 요약·구조화하고, 스스로 계획해 완성하기</p>
+
+    <div class="grade-body">
+      <div class="col-writing">
+        <p class="col-label"><span class="dot write"></span>쓰기 단원</p>
+
+        <article class="unit">
+          <h4 class="unit-title">요약문(정선문) 쓰기</h4>
+          <p class="unit-desc">긴 글의 핵심만 남기고 불필요한 세부를 걷어내, 원래 뜻은 지키면서 간결하게 다시 씁니다.</p>
+          <ul class="unit-check">
+            <li>3문단짜리 글을 핵심을 살려 한 문단으로 줄인다</li>
+            <li>정선문 길이가 원문의 1/3을 넘지 않도록 쓴다</li>
+          </ul>
+        </article>
+
+        <article class="unit">
+          <h4 class="unit-title">정보 글의 레이아웃과 형식 갖추기</h4>
+          <p class="unit-desc">제목·소제목·글머리 기호·표 같은 레이아웃 장치로 정보 글을 구조화해 독자가 훑어보기 쉽게 만듭니다.</p>
+          <ul class="unit-check">
+            <li>소제목으로 정보 글의 절을 나눈다</li>
+            <li>비교 정보를 행·열이 뚜렷한 표로 정리한다</li>
+          </ul>
+        </article>
+
+        <article class="unit">
+          <h4 class="unit-title">작가처럼 이야기 계획하기</h4>
+          <p class="unit-desc">읽었던 작품에서 작가가 인물과 배경을 만든 방법을 관찰하고, 그 기법을 자기 이야기 계획에 가져다 씁니다.</p>
+          <ul class="unit-check">
+            <li>본보기 글에서 인물을 만드는 기법을 하나 찾아낸다</li>
+            <li>그 기법을 적용해 자기 인물을 미리 계획한다</li>
+          </ul>
+        </article>
+
+        <article class="unit">
+          <h4 class="unit-title">자료를 조사하고 노트로 정리하기</h4>
+          <p class="unit-desc">여러 자료에서 정보를 모아 자기 말로 바꿔 적고, 출처 목록까지 남깁니다.</p>
+          <ul class="unit-check">
+            <li>베끼지 않고 자기 말로 바꿔 여러 자료를 정리한다</li>
+            <li>조사에 쓴 출처 목록을 작성한다</li>
+          </ul>
+        </article>
+      </div>
+
+      <div class="col-support">
+        <p class="col-label"><span class="dot read"></span>읽기 연계</p>
+        <div class="support-item">
+          <p class="support-title">정보 글 두 편의 구조 비교하기</p>
+          <p class="support-desc">같은 주제라도 시간순으로 쓴 글과 문제-해결로 쓴 글이 독자에게 다르게 다가가는 이유를 비교합니다.</p>
+        </div>
+        <div class="support-item">
+          <p class="support-title">장(chapter)들이 모여 전체를 이루는 방식</p>
+          <p class="support-desc">이른 장에서 심어 둔 긴장이 나중 장에서 어떻게 풀리는지, 부분과 전체의 관계로 설명합니다.</p>
+        </div>
+        <div class="support-item">
+          <p class="support-title">정보 글의 여러 중심 생각 요약하기</p>
+          <p class="support-desc">긴 설명 글에서 중심 생각 두세 가지를 찾아, 의견을 섞지 않고 요약합니다.</p>
+        </div>
+
+        <p class="col-label"><span class="dot grammar"></span>문법·응집성 지원</p>
+        <div class="support-item">
+          <p class="support-title">문단 간 응집성 심화</p>
+          <p class="support-desc">핵심어 반복·생략(ellipsis)·'그런가 하면' 같은 접속 표현으로 여러 문단을 하나의 흐름으로 묶습니다.</p>
+        </div>
+        <div class="support-item">
+          <p class="support-title">문장 구조 다양화하기</p>
+          <p class="support-desc">짧은 문장을 이어 붙이거나 긴 문장을 나누어, 읽는 재미와 뜻이 가장 잘 살아나는 길이를 고릅니다.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="capstone">
+      <p class="capstone-label">완성 과제 · 마무리 프로젝트</p>
+      <p class="capstone-body">한 주제를 조사해 목차·소제목·표를 갖춘 다문단 리포트를 쓰고, 그 리포트를 원문 길이의 1/3 이하로 요약한 정선문까지 함께 완성하기.</p>
+    </div>
+  </section>
+
+  <footer>
+    <p>이 커리큘럼은 각 단계의 단원을 <strong>Writing Composition</strong> 도메인을 중심으로, 선수학습(prerequisite) 관계로 확인된 순서를 따라 구성했습니다. 예를 들어 3단계의 "문단으로 글 조직하기"는 그 이전 단원인 "인물·배경·사건이 있는 이야기 쓰기"와 "글쓰기 낱말 알기"를 선수 지식으로 요구합니다.</p>
+    <p class="cite">Marble Skill Taxonomy (v1) · © Generative Spark, Inc. (Marble) · https://withmarble.com<br>licensed under ODbL 1.0 (database) and CC BY-SA 4.0 (content) · github.com/withmarbleapp/os-taxonomy</p>
+  </footer>
+
+</div>
