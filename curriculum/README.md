@@ -12,41 +12,58 @@ Writing Composition 도메인(38개 주제)과 선수학습 관계 3,221개에�
 
 | 파일 | 내용 |
 |---|---|
-| [`blueprint.html`](blueprint.html) | **글쓰기 설계도** — 6단계 전체 지도와 입문 트랙. 어떤 단원이 어떤 순서로 오는지, 그 근거가 무엇인지 |
+| [`blueprint.html`](blueprint.html) | **글쓰기 설계도** — 6단계 전체 지도와 입문 트랙 |
 
-### 워크시트 — 학생용
+### 워크시트
 
-모두 A4 인쇄용. 브라우저에서 열어 인쇄하면 한 장씩 떨어진다.
+같은 내용이 **교사용**과 **학생용** 두 벌로 있다. 모두 A4 인쇄용.
 
-| 파일 | 대상 | 장수 | 목표 |
-|---|---|---|---|
-| [`worksheets/entry-1-first-steps.html`](worksheets/entry-1-first-steps.html) | 입문 | 9 | 글쓰기 첫걸음 — 구조를 **한국어로** 먼저 |
-| [`worksheets/entry-2-write-it-in-english.html`](worksheets/entry-2-write-it-in-english.html) | 입문 | 7 | 같은 내용을 **영어로** 다시 |
-| [`worksheets/stage-1-speaking-to-writing.html`](worksheets/stage-1-speaking-to-writing.html) | 초1 | 7 | 말에서 글로 — 영어 세 문장 |
-| [`worksheets/stage-2-purpose.html`](worksheets/stage-2-purpose.html) | 초2 | 15 | 목적을 가진 글 — 같은 일을 두 모양으로 |
-| [`worksheets/stage-3-paragraph.html`](worksheets/stage-3-paragraph.html) ★ | 초3 | 15 | 문단의 발견 — 한 문단 = 한 생각 |
-| [`worksheets/stage-4-language-of-writing.html`](worksheets/stage-4-language-of-writing.html) | 초4 | 9 | 글쓰기의 언어 — 세 문단, 하나의 흐름 |
-| [`worksheets/stage-5-reader-and-reason.html`](worksheets/stage-5-reader-and-reason.html) | 초5 | 9 | 독자와 근거 — 설득하는 글 |
-| [`worksheets/stage-6-long-texts.html`](worksheets/stage-6-long-texts.html) | 초6 | 9 | 긴 글 다루기 — 줄이고 구조화하기 |
+> **학생에게는 반드시 `student/`를 인쇄한다.**
+> `teacher/`에는 각 쪽 하단 「선생님께」 칸에 **정답이 적혀 있다.**
+
+| | 교사용 `teacher/` | 학생용 `student/` |
+|---|---|---|
+| 「선생님께」(정답·지도 요령) | 있음 | **없음** |
+| 소재 | 여섯 가지 중 선택 | **하나로 고정** |
+| 낱말 상자 | 기본 워드뱅크 | 쪽별 낱말 상자 보강 |
+| A4 맞춤 | 일부 쪽 넘침 | **전 쪽 검증 완료** |
+
+| 워크시트 | 대상 | 교사용 | 학생용 | 학생용 소재 |
+|---|---|---:|---:|---|
+| `entry-1-first-steps` | 입문 | 9장 | 11장 | — (한국어) |
+| `entry-2-write-it-in-english` | 입문 | 7장 | 8장 | — (영어) |
+| `stage-1-speaking-to-writing` | 초1 | 7장 | 7장 | 나의 하루 |
+| `stage-2-purpose` | 초2 | 15장 | 17장 | 내가 만들 줄 아는 음식 |
+| `stage-3-paragraph` ★ | 초3 | 15장 | 19장 | 내가 아는 동물 |
+| `stage-4-language-of-writing` | 초4 | 9장 | 11장 | 우리 동네 |
+| `stage-5-reader-and-reason` | 초5 | 9장 | 10장 | 점심시간을 늘리자 |
+| `stage-6-long-texts` | 초6 | 9장 | 9장 | 내가 아는 동물 |
+| `teacher-notebook` | 교사 | 9장 | — | 차시 계획·진단·처방 |
 
 ★ **3단계가 전환점.** 여기서 문장이 문단으로 묶이지 않으면 이후가 모두 무너진다.
 
-### 워크시트 — 교사용
+### ⚠ 알려진 문제 — 교사용과 학생용의 쪽 번호가 다르다
 
-| 파일 | 내용 |
-|---|---|
-| [`worksheets/teacher-notebook.html`](worksheets/teacher-notebook.html) | **수업 운영 노트** (9장) — 2·3단계 차시 계획표, 학생별 진단표, 반 전체 기록, 처방표 |
+학생용은 A4에 맞추려고 여러 쪽을 나누었다. 그래서 **6종에서 쪽 번호가 어긋난다**
+(위 표의 장수 차이). `teacher-notebook`의 차시 계획표와 처방표가 가리키는 쪽 번호는
+**교사용 기준**이다.
+
+수업에서 “7쪽을 펴세요”라고 말하려면 교사용과 학생용을 나란히 놓고 확인해야 한다.
+다음 작업에서 교사용을 학생용과 같은 쪽 구성으로 다시 맞추고, 교사 노트의 쪽 번호도
+함께 고칠 예정이다. 그때까지는 이 차이를 염두에 두고 쓸 것.
+
+쪽 번호가 일치하는 것은 `stage-1`과 `stage-6` 둘뿐이다.
 
 ### 문서
 
 | 파일 | 내용 |
 |---|---|
-| [`docs/plan.md`](docs/plan.md) | 기획서 — 왜 이렇게 설계했는지, 이중 진행과 4단 흐름 |
-| [`docs/design-spec.md`](docs/design-spec.md) | 디자인 규격 — 색·서체·컴포넌트·인쇄 규칙, 그리고 내용 규칙 |
+| [`docs/plan.md`](docs/plan.md) | 기획서 — 이중 진행과 4단 흐름 |
+| [`docs/design-spec.md`](docs/design-spec.md) | 디자인 규격 — 색·서체·컴포넌트·인쇄 규칙, 내용 규칙 |
 
-## 설계의 핵심 네 가지
+## 설계의 핵심 다섯 가지
 
-새 단계를 만들거나 기존 것을 고칠 때 이 넷은 지켜야 한다.
+새 단계를 만들거나 기존 것을 고칠 때 이 다섯은 지켜야 한다.
 자세한 내용은 [`docs/design-spec.md`](docs/design-spec.md) 7절.
 
 **1. 두 부하를 분리한다.** 구조를 이해하는 능력이 영어 산출 능력보다 항상 앞서간다.
@@ -58,9 +75,11 @@ Writing Composition 도메인(38개 주제)과 선수학습 관계 3,221개에�
 **3. 같은 기술을 네 번, 도움을 줄여 가며.** 한 단계는 4개 챕터로 같은 기술을
 소재만 바꿔 반복하고, 챕터마다 비계를 한 칸씩 걷어낸다(`●●●● → ●○○○`).
 
-**4. 소재 6개를 6단계 내내 돌려 쓴다.**
-`my pet · our town · my favourite food · a season · a school day · an animal I know`
-단계가 올라가도 어휘를 새로 배우지 않으므로 어휘가 누적된다.
+**4. 학생이 쓸 소재는 하나로 고정한다.** 여럿 중 고르게 하면 반 전체가 제각각이 되어
+모델링도 상호 도움도 안 된다. 학생 소재는 대체로 **본보기 글과 다른 것**으로 잡아
+베끼지 못하게 한다.
+
+**5. 학생용에는 정답을 남기지 않는다.** 「선생님께」는 `teacher/`에만 둔다.
 
 ## 진행 순서
 
