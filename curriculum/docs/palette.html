@@ -1,0 +1,416 @@
+<title>커리큘럼 색 팔레트</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Jua&family=Fredoka:wght@400;500;600&family=Noto+Sans+KR:wght@400;500;700&display=swap">
+<style>
+:root{
+  --paper:#FFFFFF; --cream:#FFFBF2; --ink:#2A2622; --ink-soft:#6B6157; --rule:#C9BFAA;
+  --coral:#E5603A; --ok:#2E7D4F; --warn:#9A6B00; --bad:#B23B32;
+  --f-title:'Jua',system-ui,sans-serif; --f-en:'Fredoka',system-ui,sans-serif;
+  --f-body:'Noto Sans KR',system-ui,sans-serif;
+}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{background:#DAD3C6;font-family:var(--f-body);color:var(--ink);
+  -webkit-font-smoothing:antialiased;}
+.sheet{max-width:900px;margin:0 auto;background:var(--paper);
+  box-shadow:0 2px 20px rgba(0,0,0,.14);padding:0 0 60px;}
+.pad{padding:0 48px;}
+
+.mast{padding:52px 48px 34px;border-bottom:3px solid var(--coral);}
+.mast .eyebrow{font-family:var(--f-en);font-weight:600;font-size:11.5px;letter-spacing:.1em;
+  color:var(--coral);margin:0 0 12px;}
+.mast h1{font-family:var(--f-title);font-size:44px;margin:0 0 6px;font-weight:400;}
+.mast .en{font-family:var(--f-en);font-weight:500;font-size:15px;color:var(--ink-soft);margin:0 0 20px;}
+.mast p.lede{font-size:14.5px;line-height:1.85;color:var(--ink-soft);margin:0;max-width:62ch;}
+.mast p.lede b{color:var(--ink);}
+
+section{padding-top:46px;}
+h2{font-family:var(--f-title);font-size:26px;margin:0 0 6px;font-weight:400;}
+.sub{font-size:13.5px;line-height:1.75;color:var(--ink-soft);margin:0 0 22px;max-width:62ch;}
+.sub b{color:var(--ink);}
+
+.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;}
+.card{border:1px solid #EAE3D6;border-radius:12px;overflow:hidden;}
+.card header{display:flex;align-items:center;gap:10px;padding:11px 14px;background:var(--cream);}
+.card .pill{font-family:var(--f-en);font-weight:600;font-size:11px;letter-spacing:.05em;
+  background:var(--c);color:#fff;border-radius:6px;padding:4px 10px;}
+.card .use{font-size:12.5px;color:var(--ink-soft);}
+.card .nm{font-family:var(--f-en);font-size:13px;font-weight:600;color:var(--c);}
+.card .dot{width:14px;height:14px;border-radius:50%;background:var(--c);flex:none;}
+.bars{display:flex;flex-direction:column;}
+.bar{padding:11px 14px;display:flex;align-items:baseline;justify-content:space-between;gap:10px;}
+.bar b{font-family:var(--f-en);font-size:13.5px;font-weight:600;font-variant-numeric:tabular-nums;}
+.bar span{font-size:11.5px;opacity:.85;}
+.bar.solid{background:var(--c);color:#fff;}
+.bar.soft{background:var(--s);color:var(--d);}
+.bar.deep{background:var(--d);color:#fff;}
+.cx{width:100%;border-collapse:collapse;font-size:12px;}
+.cx td{padding:7px 14px;border-top:1px solid #F0EAE0;}
+.cx td:first-child{color:var(--ink-soft);}
+.cx .on{font-family:var(--f-en);font-size:10.5px;opacity:.6;}
+.cx .n{font-family:var(--f-en);font-weight:600;font-variant-numeric:tabular-nums;
+  text-align:right;width:52px;}
+.cx .t{width:78px;white-space:nowrap;text-align:right;font-size:11px;font-weight:700;}
+.cx .ok{color:var(--ok);} .cx .warn{color:var(--warn);} .cx .bad{color:var(--bad);}
+.card.slim .bar span{visibility:hidden;}
+
+.neu{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(2,1fr);gap:0 26px;}
+.neu li{display:flex;align-items:center;gap:11px;padding:9px 0;border-bottom:1px solid #F0EAE0;
+  font-size:13px;}
+.neu i{width:26px;height:26px;border-radius:7px;background:var(--c);border:1px solid #E0D8C8;flex:none;}
+.neu b{font-family:var(--f-en);font-size:12.5px;font-weight:600;font-variant-numeric:tabular-nums;width:74px;}
+.neu span{font-family:var(--f-en);font-size:12px;color:var(--ink-soft);width:88px;}
+.neu em{font-style:normal;font-size:12.5px;color:var(--ink-soft);}
+
+/* 실제 적용 */
+.demo{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;}
+.mock{border:1px solid #EAE3D6;border-radius:12px;padding:16px;--s:var(--c);}
+.mock .chapbar{display:flex;align-items:center;gap:10px;background:var(--cream);border-radius:9px;
+  padding:8px 12px;margin:0 0 14px;}
+.mock .badge{font-family:var(--f-en);font-weight:600;font-size:10.5px;letter-spacing:.05em;
+  background:var(--c);color:#fff;border-radius:5px;padding:3px 8px;}
+.mock .cname{font-family:var(--f-title);font-size:15px;color:var(--d);}
+.mock .help{margin-left:auto;display:flex;gap:4px;}
+.mock .help i{width:8px;height:8px;border-radius:50%;border:1.6px solid var(--c);}
+.mock .help i.on{background:var(--c);}
+.mock .step{display:flex;align-items:baseline;gap:10px;padding-bottom:10px;
+  border-bottom:3px solid var(--c);margin:0 0 12px;}
+.mock .alve{font-family:var(--f-en);font-weight:600;font-size:10.5px;letter-spacing:.05em;
+  background:var(--c);color:#fff;border-radius:999px;padding:4px 11px;}
+.mock h4{font-family:var(--f-title);font-size:18px;margin:0;font-weight:400;}
+.mock .lab{font-family:var(--f-en);font-weight:600;font-size:10.5px;letter-spacing:.07em;
+  color:var(--coral);margin:0 0 4px;}
+.mock .q{font-weight:700;font-size:13.5px;margin:0 0 10px;}
+.mock .tip{background:var(--soft);border-radius:9px;padding:10px 13px;font-size:12px;
+  line-height:1.65;color:var(--d);}
+.mock .chips{display:flex;flex-wrap:wrap;gap:5px;margin:0 0 10px;}
+.mock .chip{font-family:var(--f-en);font-size:13px;background:var(--soft);border-radius:5px;padding:2px 9px;}
+
+/* 손볼 곳 */
+.fix{border:1px solid #EAE3D6;border-radius:12px;padding:18px 20px;margin:0 0 16px;}
+.fix h3{font-family:var(--f-title);font-size:19px;margin:0 0 6px;font-weight:400;}
+.fix > p{font-size:13px;line-height:1.75;color:var(--ink-soft);margin:0 0 14px;}
+.fix > p b{color:var(--ink);}
+.pair{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+.side{border:1px solid #EFE7D8;border-radius:10px;padding:13px;display:flex;
+  align-items:center;gap:10px;flex-wrap:wrap;}
+.side .tag{font-size:11px;color:var(--ink-soft);width:100%;}
+.side .tag.alt{color:var(--ok);font-weight:700;}
+.side .chip.solid{background:var(--c);color:#fff;font-family:var(--f-title);font-size:14px;
+  width:34px;height:34px;border-radius:8px;display:flex;align-items:center;justify-content:center;}
+.side .chip.text{font-family:var(--f-en);font-weight:600;font-size:11px;letter-spacing:.07em;
+  color:var(--c);}
+.side b{font-family:var(--f-en);font-size:12.5px;font-weight:600;margin-left:auto;}
+.side .n{font-family:var(--f-en);font-weight:600;font-size:14px;font-variant-numeric:tabular-nums;}
+.cap{font-size:11.5px;color:var(--ink-soft);margin:10px 0 0;}
+
+.note{background:var(--cream);border-left:5px solid var(--coral);border-radius:0 10px 10px 0;
+  padding:14px 18px;margin-top:26px;}
+.note > b:first-child{display:block;font-size:13.5px;margin:0 0 5px;}
+.note p b{color:var(--ink);}
+.note p{margin:0 0 6px;font-size:12.5px;line-height:1.75;color:var(--ink-soft);}
+.note p:last-child{margin:0;}
+
+@media (max-width:780px){
+  .sheet{box-shadow:none;} .pad,.mast{padding-left:22px;padding-right:22px;}
+  .grid,.demo,.pair,.neu{grid-template-columns:1fr;}
+}
+@media print{ body{background:#fff;} .sheet{box-shadow:none;max-width:none;}
+  .card,.fix,.mock{break-inside:avoid;} @page{size:A4;margin:14mm;} }
+</style>
+
+<div class="sheet">
+
+<header class="mast">
+  <p class="eyebrow">STRUCTURED WRITING · COLOUR</p>
+  <h1>커리큘럼 색 팔레트</h1>
+  <p class="en">Every colour in the worksheets, the map, and the notebook</p>
+  <p class="lede">워크시트·설계도·교사 노트가 쓰는 색 전부입니다. 색마다 <b>실제로 어디에 쓰이는지</b>와, 그 조합의 <b>명도 대비</b>를 함께 적었습니다. 대비는 흑백으로 인쇄했을 때 글자가 읽히는지를 가늠하는 숫자이기도 합니다 — <b>4.5 이상</b>이면 작은 글자도 안전하고, 3.0~4.5는 큰 글자에만 씁니다.</p>
+</header>
+
+<div class="pad">
+
+<section>
+  <h2>챕터 색 — 워크시트</h2>
+  <p class="sub">한 챕터가 색 <b>세 개</b>를 씁니다. 진한 색은 배지와 알약의 바탕, 연한 색은 팁 상자와 낱말 칩의 바탕, 가장 진한 색은 그 위에 얹는 글자입니다. 1단계와 4~6단계처럼 챕터가 없는 워크시트는 <b>4단 흐름</b>(보기·나누기·채우기·짓기)에 같은 순서로 배정합니다.</p>
+  <div class="grid">
+<article class="card" style="--c:#1F6F9C;--s:#E8F4FF;--d:#17527A;">
+  <header><span class="pill">CH 1</span><span class="use">1챕터 · 1단계 SEE</span></header>
+  <div class="bars">
+    <div class="bar solid"><b>#1F6F9C</b><span>배지 · 머리띠 · 알약</span></div>
+    <div class="bar soft"><b>#E8F4FF</b><span>팁 상자 · 낱말 칩</span></div>
+    <div class="bar deep"><b>#17527A</b><span>제목 글자 · 팁 글자</span></div>
+  </div>
+  <table class="cx">
+    <tr><td>흰 글자 <span class="on">on</span> 배경색</td><td class="n">5.51</td><td class="t ok">OK</td></tr>
+    <tr><td>진한색 글자 <span class="on">on</span> 연한색</td><td class="n">7.45</td><td class="t ok">OK</td></tr>
+  </table>
+</article>
+<article class="card" style="--c:#7A5AB8;--s:#F1ECFA;--d:#4C3480;">
+  <header><span class="pill">CH 2</span><span class="use">2챕터 · 나누기 SORT</span></header>
+  <div class="bars">
+    <div class="bar solid"><b>#7A5AB8</b><span>배지 · 머리띠 · 알약</span></div>
+    <div class="bar soft"><b>#F1ECFA</b><span>팁 상자 · 낱말 칩</span></div>
+    <div class="bar deep"><b>#4C3480</b><span>제목 글자 · 팁 글자</span></div>
+  </div>
+  <table class="cx">
+    <tr><td>흰 글자 <span class="on">on</span> 배경색</td><td class="n">5.27</td><td class="t ok">OK</td></tr>
+    <tr><td>진한색 글자 <span class="on">on</span> 연한색</td><td class="n">8.59</td><td class="t ok">OK</td></tr>
+  </table>
+</article>
+<article class="card" style="--c:#9A7000;--s:#FFF6D6;--d:#8A6A00;">
+  <header><span class="pill">CH 3</span><span class="use">3챕터 · 채우기 FRAME</span></header>
+  <div class="bars">
+    <div class="bar solid"><b>#9A7000</b><span>배지 · 머리띠 · 알약</span></div>
+    <div class="bar soft"><b>#FFF6D6</b><span>팁 상자 · 낱말 칩</span></div>
+    <div class="bar deep"><b>#8A6A00</b><span>제목 글자 · 팁 글자</span></div>
+  </div>
+  <table class="cx">
+    <tr><td>흰 글자 <span class="on">on</span> 배경색</td><td class="n">4.48</td><td class="t warn">큰 글자만</td></tr>
+    <tr><td>진한색 글자 <span class="on">on</span> 연한색</td><td class="n">4.68</td><td class="t ok">OK</td></tr>
+  </table>
+</article>
+<article class="card" style="--c:#14746A;--s:#E2F3F0;--d:#0E574F;">
+  <header><span class="pill">CH 4</span><span class="use">4챕터 · 짓기 BUILD</span></header>
+  <div class="bars">
+    <div class="bar solid"><b>#14746A</b><span>배지 · 머리띠 · 알약</span></div>
+    <div class="bar soft"><b>#E2F3F0</b><span>팁 상자 · 낱말 칩</span></div>
+    <div class="bar deep"><b>#0E574F</b><span>제목 글자 · 팁 글자</span></div>
+  </div>
+  <table class="cx">
+    <tr><td>흰 글자 <span class="on">on</span> 배경색</td><td class="n">5.62</td><td class="t ok">OK</td></tr>
+    <tr><td>진한색 글자 <span class="on">on</span> 연한색</td><td class="n">7.34</td><td class="t ok">OK</td></tr>
+  </table>
+</article>
+<article class="card" style="--c:#5A6470;--s:#EEF1F4;--d:#3D4550;">
+  <header><span class="pill">CH 0</span><span class="use">표지 · 워드뱅크 · 완성</span></header>
+  <div class="bars">
+    <div class="bar solid"><b>#5A6470</b><span>배지 · 머리띠 · 알약</span></div>
+    <div class="bar soft"><b>#EEF1F4</b><span>팁 상자 · 낱말 칩</span></div>
+    <div class="bar deep"><b>#3D4550</b><span>제목 글자 · 팁 글자</span></div>
+  </div>
+  <table class="cx">
+    <tr><td>흰 글자 <span class="on">on</span> 배경색</td><td class="n">6.01</td><td class="t ok">OK</td></tr>
+    <tr><td>진한색 글자 <span class="on">on</span> 연한색</td><td class="n">8.55</td><td class="t ok">OK</td></tr>
+  </table>
+</article>
+  </div>
+</section>
+
+<section>
+  <h2>실제로 이렇게 보입니다</h2>
+  <p class="sub">워크시트에서 색이 닿는 곳만 떼어 온 것입니다. 종이는 흰색, 상자는 크림색으로 고정이고 <b>바뀌는 것은 챕터 색 하나</b>입니다.</p>
+  <div class="demo">
+<div class="mock" style="--c:#1F6F9C;--soft:#E8F4FF;--d:#17527A;">
+  <div class="chapbar"><span class="badge">CHAPTER 1</span><span class="cname">두 가지 모양</span>
+    <span class="help"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i></span></div>
+  <div class="step"><span class="alve">보기 SEE</span><h4>같은 일, 두 모양</h4></div>
+  <p class="lab">활동 1</p><p class="q">빈칸에 알맞은 말을 골라 쓰세요.</p>
+  <div class="chips"><span class="chip">First,</span><span class="chip">Next,</span><span class="chip">Finally,</span></div>
+  <div class="tip">막히면 앞 쪽을 보세요. 그대로 옮겨 써도 좋습니다.</div>
+</div><div class="mock" style="--c:#7A5AB8;--soft:#F1ECFA;--d:#4C3480;">
+  <div class="chapbar"><span class="badge">CHAPTER 2</span><span class="cname">순서대로</span>
+    <span class="help"><i class="on"></i><i class="on"></i><i class="on"></i><i></i></span></div>
+  <div class="step"><span class="alve">나누기 SORT</span><h4>끼어든 문장 찾기</h4></div>
+  <p class="lab">활동 1</p><p class="q">빈칸에 알맞은 말을 골라 쓰세요.</p>
+  <div class="chips"><span class="chip">First,</span><span class="chip">Next,</span><span class="chip">Finally,</span></div>
+  <div class="tip">막히면 앞 쪽을 보세요. 그대로 옮겨 써도 좋습니다.</div>
+</div><div class="mock" style="--c:#9A7000;--soft:#FFF6D6;--d:#8A6A00;">
+  <div class="chapbar"><span class="badge">CHAPTER 3</span><span class="cname">나누고 짓기</span>
+    <span class="help"><i class="on"></i><i class="on"></i><i></i><i></i></span></div>
+  <div class="step"><span class="alve">채우기 FRAME</span><h4>빠진 주제문 넣기</h4></div>
+  <p class="lab">활동 1</p><p class="q">빈칸에 알맞은 말을 골라 쓰세요.</p>
+  <div class="chips"><span class="chip">First,</span><span class="chip">Next,</span><span class="chip">Finally,</span></div>
+  <div class="tip">막히면 앞 쪽을 보세요. 그대로 옮겨 써도 좋습니다.</div>
+</div><div class="mock" style="--c:#14746A;--soft:#E2F3F0;--d:#0E574F;">
+  <div class="chapbar"><span class="badge">CHAPTER 4</span><span class="cname">문단 짓기</span>
+    <span class="help"><i class="on"></i><i></i><i></i><i></i></span></div>
+  <div class="step"><span class="alve">짓기 BUILD</span><h4>하나에서 둘로</h4></div>
+  <p class="lab">활동 1</p><p class="q">빈칸에 알맞은 말을 골라 쓰세요.</p>
+  <div class="chips"><span class="chip">First,</span><span class="chip">Next,</span><span class="chip">Finally,</span></div>
+  <div class="tip">막히면 앞 쪽을 보세요. 그대로 옮겨 써도 좋습니다.</div>
+</div>
+  </div>
+</section>
+
+<section>
+  <h2>단계 색 — 설계도</h2>
+  <p class="sub">설계도에는 여섯 단계가 한 장에 늘어서므로 색이 여섯 개 필요합니다. 챕터 색 넷에 <b>남색</b>을 더하고, <b>3단계는 전환점</b>이라 강조색인 코랄을 씁니다 — 지도에서 눈이 먼저 닿아야 하는 자리입니다.</p>
+  <div class="grid">
+<article class="card" style="--c:#1F6F9C;--s:#E8F4FF;--d:#17527A;">
+  <header><span class="pill">1단계</span><span class="use">말에서 글로</span></header>
+  <div class="bars">
+    <div class="bar solid"><b>#1F6F9C</b><span>배지 · 머리띠 · 알약</span></div>
+    <div class="bar soft"><b>#E8F4FF</b><span>팁 상자 · 낱말 칩</span></div>
+    <div class="bar deep"><b>#17527A</b><span>제목 글자 · 팁 글자</span></div>
+  </div>
+  <table class="cx">
+    <tr><td>흰 글자 <span class="on">on</span> 배경색</td><td class="n">5.51</td><td class="t ok">OK</td></tr>
+    <tr><td>진한색 글자 <span class="on">on</span> 연한색</td><td class="n">7.45</td><td class="t ok">OK</td></tr>
+  </table>
+</article>
+<article class="card" style="--c:#7A5AB8;--s:#F1ECFA;--d:#4C3480;">
+  <header><span class="pill">2단계</span><span class="use">목적을 가진 글</span></header>
+  <div class="bars">
+    <div class="bar solid"><b>#7A5AB8</b><span>배지 · 머리띠 · 알약</span></div>
+    <div class="bar soft"><b>#F1ECFA</b><span>팁 상자 · 낱말 칩</span></div>
+    <div class="bar deep"><b>#4C3480</b><span>제목 글자 · 팁 글자</span></div>
+  </div>
+  <table class="cx">
+    <tr><td>흰 글자 <span class="on">on</span> 배경색</td><td class="n">5.27</td><td class="t ok">OK</td></tr>
+    <tr><td>진한색 글자 <span class="on">on</span> 연한색</td><td class="n">8.59</td><td class="t ok">OK</td></tr>
+  </table>
+</article>
+<article class="card" style="--c:#E5603A;--s:#FDECE6;--d:#B33F1E;">
+  <header><span class="pill">3단계</span><span class="use">문단의 발견 · 전환점</span></header>
+  <div class="bars">
+    <div class="bar solid"><b>#E5603A</b><span>배지 · 머리띠 · 알약</span></div>
+    <div class="bar soft"><b>#FDECE6</b><span>팁 상자 · 낱말 칩</span></div>
+    <div class="bar deep"><b>#B33F1E</b><span>제목 글자 · 팁 글자</span></div>
+  </div>
+  <table class="cx">
+    <tr><td>흰 글자 <span class="on">on</span> 배경색</td><td class="n">3.46</td><td class="t warn">큰 글자만</td></tr>
+    <tr><td>진한색 글자 <span class="on">on</span> 연한색</td><td class="n">5.02</td><td class="t ok">OK</td></tr>
+  </table>
+</article>
+<article class="card" style="--c:#14746A;--s:#E2F3F0;--d:#0E574F;">
+  <header><span class="pill">4단계</span><span class="use">글쓰기의 언어</span></header>
+  <div class="bars">
+    <div class="bar solid"><b>#14746A</b><span>배지 · 머리띠 · 알약</span></div>
+    <div class="bar soft"><b>#E2F3F0</b><span>팁 상자 · 낱말 칩</span></div>
+    <div class="bar deep"><b>#0E574F</b><span>제목 글자 · 팁 글자</span></div>
+  </div>
+  <table class="cx">
+    <tr><td>흰 글자 <span class="on">on</span> 배경색</td><td class="n">5.62</td><td class="t ok">OK</td></tr>
+    <tr><td>진한색 글자 <span class="on">on</span> 연한색</td><td class="n">7.34</td><td class="t ok">OK</td></tr>
+  </table>
+</article>
+<article class="card" style="--c:#9A7000;--s:#FFF6D6;--d:#8A6A00;">
+  <header><span class="pill">5단계</span><span class="use">독자와 근거</span></header>
+  <div class="bars">
+    <div class="bar solid"><b>#9A7000</b><span>배지 · 머리띠 · 알약</span></div>
+    <div class="bar soft"><b>#FFF6D6</b><span>팁 상자 · 낱말 칩</span></div>
+    <div class="bar deep"><b>#8A6A00</b><span>제목 글자 · 팁 글자</span></div>
+  </div>
+  <table class="cx">
+    <tr><td>흰 글자 <span class="on">on</span> 배경색</td><td class="n">4.48</td><td class="t warn">큰 글자만</td></tr>
+    <tr><td>진한색 글자 <span class="on">on</span> 연한색</td><td class="n">4.68</td><td class="t ok">OK</td></tr>
+  </table>
+</article>
+<article class="card" style="--c:#4C5A87;--s:#ECEFF7;--d:#37436B;">
+  <header><span class="pill">6단계</span><span class="use">긴 글 다루기</span></header>
+  <div class="bars">
+    <div class="bar solid"><b>#4C5A87</b><span>배지 · 머리띠 · 알약</span></div>
+    <div class="bar soft"><b>#ECEFF7</b><span>팁 상자 · 낱말 칩</span></div>
+    <div class="bar deep"><b>#37436B</b><span>제목 글자 · 팁 글자</span></div>
+  </div>
+  <table class="cx">
+    <tr><td>흰 글자 <span class="on">on</span> 배경색</td><td class="n">6.73</td><td class="t ok">OK</td></tr>
+    <tr><td>진한색 글자 <span class="on">on</span> 연한색</td><td class="n">8.38</td><td class="t ok">OK</td></tr>
+  </table>
+</article>
+  </div>
+</section>
+
+<section>
+  <h2>강조색</h2>
+  <p class="sub">챕터가 바뀌어도 <b>변하지 않는</b> 세 색입니다. 활동 라벨과 A글은 코랄, B글은 초록, 「선생님께」의 정답은 빨강 — 학생이 색만 보고도 무엇인지 알게 하는 장치입니다.</p>
+  <div class="grid">
+<article class="card slim" style="--c:#E5603A;">
+  <header><span class="dot"></span><span class="nm">--coral</span><span class="use">활동 라벨 · A글 · 규칙 카드</span></header>
+  <div class="bars"><div class="bar solid"><b>#E5603A</b><span>&nbsp;</span></div></div>
+  <table class="cx"><tr><td>이 색 글자 <span class="on">on</span> 흰 종이</td><td class="n">3.46</td><td class="t warn">큰 글자만</td></tr></table>
+</article>
+<article class="card slim" style="--c:#5B9B21;">
+  <header><span class="dot"></span><span class="nm">--grass</span><span class="use">B글 (하는 법)</span></header>
+  <div class="bars"><div class="bar solid"><b>#5B9B21</b><span>&nbsp;</span></div></div>
+  <table class="cx"><tr><td>이 색 글자 <span class="on">on</span> 흰 종이</td><td class="n">3.41</td><td class="t warn">큰 글자만</td></tr></table>
+</article>
+<article class="card slim" style="--c:#B23B32;">
+  <header><span class="dot"></span><span class="nm">--ans</span><span class="use">「선생님께」의 정답</span></header>
+  <div class="bars"><div class="bar solid"><b>#B23B32</b><span>&nbsp;</span></div></div>
+  <table class="cx"><tr><td>이 색 글자 <span class="on">on</span> 흰 종이</td><td class="n">5.89</td><td class="t ok">OK</td></tr></table>
+</article>
+  </div>
+</section>
+
+<section>
+  <h2>바탕과 글자</h2>
+  <p class="sub">색을 뺀 나머지 전부입니다. 회색을 쓰지 않고 <b>따뜻한 쪽으로 살짝 기운 중성색</b>을 쓴 것은, 인쇄했을 때 종이와 잉크처럼 보이게 하려는 것입니다.</p>
+  <ul class="neu">
+<li style="--c:#FFFFFF;"><i></i><b>#FFFFFF</b><span>--paper</span><em>종이</em></li>
+<li style="--c:#FFFBF2;"><i></i><b>#FFFBF2</b><span>--cream</span><em>상자 바탕</em></li>
+<li style="--c:#FEFCF6;"><i></i><b>#FEFCF6</b><span>--note-bg</span><em>「선생님께」 바탕</em></li>
+<li style="--c:#DCCFB4;"><i></i><b>#DCCFB4</b><span>--note-line</span><em>「선생님께」 점선</em></li>
+<li style="--c:#C9BFAA;"><i></i><b>#C9BFAA</b><span>--rule</span><em>필기선 · 밑줄</em></li>
+<li style="--c:#6B6157;"><i></i><b>#6B6157</b><span>--ink-soft</span><em>보조 글자</em></li>
+<li style="--c:#2A2622;"><i></i><b>#2A2622</b><span>--ink</span><em>본문 글자</em></li>
+<li style="--c:#DAD3C6;"><i></i><b>#DAD3C6</b><span>바깥</span><em>화면 바탕</em></li>
+  </ul>
+</section>
+
+<section>
+  <h2>손보면 좋을 세 곳</h2>
+  <p class="sub">전체적으로는 안전한데, <b>작은 글자에 쓰이는</b> 세 색이 기준에 조금 못 미칩니다. 왼쪽이 지금, 오른쪽이 조금 진하게 조정한 값입니다. 색상은 그대로 두고 명도만 내렸으므로 <b>인상은 바뀌지 않습니다.</b></p>
+<article class="fix">
+  <h3>3챕터 노랑</h3>
+  <p>흰 글자를 얹었을 때 <b>4.48</b>로, 기준(4.5)에 아슬아슬하게 못 미칩니다. 챕터 배지와 알약이 이 색 위에 흰 글자를 씁니다.</p>
+  <div class="pair">
+    <div class="side" style="--c:#9A7000;">
+      <span class="tag">지금</span>
+      <div class="chip solid">가</div><div class="chip text">활동 1</div>
+      <b>#9A7000</b><span class="n">4.48</span>
+    </div>
+    <div class="side" style="--c:#8F6800;">
+      <span class="tag alt">조금 진하게</span>
+      <div class="chip solid">가</div><div class="chip text">활동 1</div>
+      <b>#8F6800</b><span class="n">5.06</span>
+    </div>
+  </div>
+  <p class="cap">흰 글자 on 색 · 기준 4.5</p>
+</article>
+<article class="fix">
+  <h3>코랄 (작은 글자용)</h3>
+  <p>「활동 1」 같은 <b>11px 라벨</b>과 「볼 것」 표시에 쓰입니다. 흰 종이 위에서 <b>3.46</b> — 큰 글자에는 괜찮지만 작은 글자에는 옅습니다.</p>
+  <div class="pair">
+    <div class="side" style="--c:#E5603A;">
+      <span class="tag">지금</span>
+      <div class="chip solid">가</div><div class="chip text">활동 1</div>
+      <b>#E5603A</b><span class="n">3.46</span>
+    </div>
+    <div class="side" style="--c:#C94A25;">
+      <span class="tag alt">조금 진하게</span>
+      <div class="chip solid">가</div><div class="chip text">활동 1</div>
+      <b>#C94A25</b><span class="n">4.68</span>
+    </div>
+  </div>
+  <p class="cap">색 글자 on 흰 종이 · 기준 4.5</p>
+</article>
+<article class="fix">
+  <h3>B글 초록</h3>
+  <p>B글(하는 법) 라벨에 쓰입니다. 역시 <b>11px</b>인데 흰 종이 위에서 <b>3.41</b>입니다.</p>
+  <div class="pair">
+    <div class="side" style="--c:#5B9B21;">
+      <span class="tag">지금</span>
+      <div class="chip solid">가</div><div class="chip text">활동 1</div>
+      <b>#5B9B21</b><span class="n">3.41</span>
+    </div>
+    <div class="side" style="--c:#4A7C1A;">
+      <span class="tag alt">조금 진하게</span>
+      <div class="chip solid">가</div><div class="chip text">활동 1</div>
+      <b>#4A7C1A</b><span class="n">5.01</span>
+    </div>
+  </div>
+  <p class="cap">색 글자 on 흰 종이 · 기준 4.5</p>
+</article>
+  <div class="note">
+    <b>인쇄를 생각하면 더 그렇습니다</b>
+    <p>화면에서는 옅은 색도 또렷하지만, <b>흑백 복사기를 한 번 거치면</b> 옅은 색부터 사라집니다. 학교에서 컬러로 뽑지 않는 경우가 많다면 세 곳 모두 진한 쪽을 권합니다.</p>
+    <p>반대로 컬러로만 쓰신다면 지금 색도 괜찮습니다 — <b>「활동 1」 같은 라벨은 읽지 않아도 되는 표시</b>라, 옅어도 활동을 못 하지는 않습니다.</p>
+  </div>
+</section>
+
+</div>
+</div>
