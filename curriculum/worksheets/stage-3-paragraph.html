@@ -8,29 +8,81 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Jua&family=Fredoka:wght@400;500;600&family=Noto+Sans+KR:wght@400;500;700&display=swap">
 <style>
+/* ================================================================
+   색 = 무지개.  1단계 빨강 · 2 주황 · 3 노랑 · 4 초록 · 5 파랑 · 6 남색.
+
+   흑백으로 복사해도 구분되도록 두 가지를 지켰다.
+   ① 여섯 단계의 회색값을 서로 19 이상 벌렸다 — 색상은 흑백에서 사라지고
+      밝기만 남으므로, 밝기가 곧 구분 표시가 된다.
+   ② 한 단계 안의 네 챕터도 회색값을 33씩 벌려 옅은 색에서 짙은 색으로 간다.
+      챕터가 올라갈수록 도움이 줄고 색이 짙어지므로 순서까지 읽힌다.
+
+   색 위에 얹는 글자색은 --ch-on / --st-on 이 정한다. 밝은 색에는 먹색,
+   어두운 색에는 흰색이 붙는다 — 직접 #fff 를 쓰지 말 것.
+   이 파일은 build.py 가 아니라 사람이 고친다.
+   ================================================================ */
+
 :root{
   --paper:#FFFFFF; --cream:#FFFBF2; --note-bg:#FEFCF6; --note-line:#DCCFB4;
   --ink:#2A2622; --ink-soft:#6B6157; --rule:#C9BFAA;
-  --coral:#E5603A; --grass:#5B9B21; --ans:#B23B32;
-  --ch:#1F6F9C; --ch-soft:#E8F4FF; --ch-deep:#17527A;
+  --a-line:#8C2F14;   /* A글 · 지난 일 — 흑백에서 진한 쪽 */
+  --b-line:#6E9C34;   /* B글 · 하는 법 — 흑백에서 옅은 쪽 */
+  --ans:#B23B32;      /* 「선생님께」의 정답 */
+  --ch:#5A6470; --ch-on:#FFFFFF; --ch-soft:#EEF1F4; --ch-deep:#3D4550;
+  --st:#5A6470; --st-on:#FFFFFF; --st-soft:#EEF1F4; --st-deep:#3D4550;
   --f-title:'Jua',system-ui,sans-serif;
   --f-en:'Fredoka',system-ui,sans-serif;
   --f-body:'Noto Sans KR',system-ui,sans-serif;
 }
-[data-ch="1"]{--ch:#1F6F9C; --ch-soft:#E8F4FF; --ch-deep:#17527A;}
-[data-ch="2"]{--ch:#7A5AB8; --ch-soft:#F1ECFA; --ch-deep:#4C3480;}
-[data-ch="3"]{--ch:#9A7000; --ch-soft:#FFF6D6; --ch-deep:#8A6A00;}
-[data-ch="4"]{--ch:#14746A; --ch-soft:#E2F3F0; --ch-deep:#0E574F;}
-[data-ch="0"]{--ch:#5A6470; --ch-soft:#EEF1F4; --ch-deep:#3D4550;}
 
-/* 설계도의 여섯 단계 — 3단계는 전환점이라 강조색(코랄)을 쓴다 */
-[data-st="1"]{--st:#1F6F9C; --st-soft:#E8F4FF; --st-deep:#17527A;}
-[data-st="2"]{--st:#7A5AB8; --st-soft:#F1ECFA; --st-deep:#4C3480;}
-[data-st="3"]{--st:#E5603A; --st-soft:#FDECE6; --st-deep:#B33F1E;}
-[data-st="4"]{--st:#14746A; --st-soft:#E2F3F0; --st-deep:#0E574F;}
-[data-st="5"]{--st:#9A7000; --st-soft:#FFF6D6; --st-deep:#8A6A00;}
-[data-st="6"]{--st:#4C5A87; --st-soft:#ECEFF7; --st-deep:#37436B;}
-[data-st="0"]{--st:#5A6470; --st-soft:#EEF1F4; --st-deep:#3D4550;}
+/* 단계 — 설계도의 여섯 색 */
+[data-st="1"]{--st:#D43220; --st-on:#FFFFFF; --st-soft:#FDF2F0; --st-deep:#912216;}  /* 빨강 · 회색 112 · 대비 4.9 */
+[data-st="2"]{--st:#F4912D; --st-on:#2A2622; --st-soft:#FDF2E8; --st-deep:#763E06;}  /* 주황 · 회색 168 · 대비 6.4 */
+[data-st="3"]{--st:#F9CE36; --st-on:#2A2622; --st-soft:#FCF4D8; --st-deep:#5E4A03;}  /* 노랑 · 회색 209 · 대비 9.9 */
+[data-st="4"]{--st:#1C6A2E; --st-on:#FFFFFF; --st-soft:#E7F8EB; --st-deep:#175826;}  /* 초록 · 회색 93 · 대비 6.7 */
+[data-st="5"]{--st:#0F4677; --st-on:#FFFFFF; --st-soft:#ECF5FD; --st-deep:#0F4677;}  /* 파랑 · 회색 70 · 대비 9.7 */
+[data-st="6"]{--st:#282665; --st-on:#FFFFFF; --st-soft:#F4F4FB; --st-deep:#282665;}  /* 남색 · 회색 50 · 대비 13.5 */
+[data-st="0"]{--st:#5A6470; --st-on:#FFFFFF; --st-soft:#EEF1F4; --st-deep:#3D4550;}  /* 중성 */
+
+/* 챕터 — 한 단계 안에서 같은 색이 네 단계로 짙어진다 */
+[data-st="1"] [data-ch="1"]{--ch:#EF9E96; --ch-on:#2A2622; --ch-soft:#FDF3F2; --ch-deep:#912216;}
+[data-st="1"] [data-ch="2"]{--ch:#E76D5F; --ch-on:#2A2622; --ch-soft:#FCEFEE; --ch-deep:#912216;}
+[data-st="1"] [data-ch="3"]{--ch:#D33120; --ch-on:#FFFFFF; --ch-soft:#FCEAE9; --ch-deep:#912216;}
+[data-st="1"] [data-ch="4"]{--ch:#912216; --ch-on:#FFFFFF; --ch-soft:#FBE6E3; --ch-deep:#912216;}
+
+[data-st="2"] [data-ch="1"]{--ch:#F5A04B; --ch-on:#2A2622; --ch-soft:#FDF5EC; --ch-deep:#763E06;}
+[data-st="2"] [data-ch="2"]{--ch:#DF760C; --ch-on:#2A2622; --ch-soft:#FDF0E3; --ch-deep:#763E06;}
+[data-st="2"] [data-ch="3"]{--ch:#AC5B09; --ch-on:#FFFFFF; --ch-soft:#FCECDB; --ch-deep:#763E06;}
+[data-st="2"] [data-ch="4"]{--ch:#763E06; --ch-on:#FFFFFF; --ch-soft:#FBE7D3; --ch-deep:#763E06;}
+
+[data-st="3"] [data-ch="1"]{--ch:#DBAD07; --ch-on:#2A2622; --ch-soft:#FCF6DF; --ch-deep:#5E4A03;}
+[data-st="3"] [data-ch="2"]{--ch:#B38E06; --ch-on:#2A2622; --ch-soft:#FBF2D2; --ch-deep:#5E4A03;}
+[data-st="3"] [data-ch="3"]{--ch:#896D04; --ch-on:#FFFFFF; --ch-soft:#FAEFC4; --ch-deep:#5E4A03;}
+[data-st="3"] [data-ch="4"]{--ch:#5E4A03; --ch-on:#FFFFFF; --ch-soft:#F9EAB6; --ch-deep:#5E4A03;}
+
+[data-st="4"] [data-ch="1"]{--ch:#3FCC5F; --ch-on:#2A2622; --ch-soft:#EAF9EE; --ch-deep:#175826;}
+[data-st="4"] [data-ch="2"]{--ch:#2DA749; --ch-on:#2A2622; --ch-soft:#E3F7E8; --ch-deep:#175826;}
+[data-st="4"] [data-ch="3"]{--ch:#228038; --ch-on:#FFFFFF; --ch-soft:#D9F5E0; --ch-deep:#175826;}
+[data-st="4"] [data-ch="4"]{--ch:#175826; --ch-on:#FFFFFF; --ch-soft:#D0F3D8; --ch-deep:#175826;}
+
+[data-st="5"] [data-ch="1"]{--ch:#7BB8EF; --ch-on:#2A2622; --ch-soft:#EFF7FD; --ch-deep:#104F85;}
+[data-st="5"] [data-ch="2"]{--ch:#3B97E7; --ch-on:#2A2622; --ch-soft:#E9F4FC; --ch-deep:#104F85;}
+[data-st="5"] [data-ch="3"]{--ch:#1873C2; --ch-on:#FFFFFF; --ch-soft:#E2F0FB; --ch-deep:#104F85;}
+[data-st="5"] [data-ch="4"]{--ch:#104F85; --ch-on:#FFFFFF; --ch-soft:#DCEDFB; --ch-deep:#104F85;}
+
+[data-st="6"] [data-ch="1"]{--ch:#B0AFE1; --ch-on:#2A2622; --ch-soft:#F6F6FB; --ch-deep:#413DA6;}
+[data-st="6"] [data-ch="2"]{--ch:#8D8BD4; --ch-on:#2A2622; --ch-soft:#F2F1FA; --ch-deep:#413DA6;}
+[data-st="6"] [data-ch="3"]{--ch:#6865C6; --ch-on:#FFFFFF; --ch-soft:#EEEDF8; --ch-deep:#413DA6;}
+[data-st="6"] [data-ch="4"]{--ch:#413DA6; --ch-on:#FFFFFF; --ch-soft:#EAE9F7; --ch-deep:#413DA6;}
+
+/* 챕터가 아닌 쪽(표지·워드뱅크·완성 과제)은 중성. 강조는 --st 를 쓴다. */
+[data-ch="0"]{--ch:#5A6470; --ch-on:#FFFFFF; --ch-soft:#EEF1F4; --ch-deep:#3D4550;}
+
+/* 단계를 지정하지 않은 문서(입문 트랙·교사 노트)는 무지개의 네 색을 빌려 온다. */
+[data-ch="1"]{--ch:#EF9E96; --ch-on:#2A2622; --ch-soft:#FDF3F2; --ch-deep:#912216;}  /* 빨강 */
+[data-ch="2"]{--ch:#DF760C; --ch-on:#2A2622; --ch-soft:#FDF0E3; --ch-deep:#763E06;}  /* 주황 */
+[data-ch="3"]{--ch:#228038; --ch-on:#FFFFFF; --ch-soft:#D9F5E0; --ch-deep:#175826;}  /* 초록 */
+[data-ch="4"]{--ch:#104F85; --ch-on:#FFFFFF; --ch-soft:#DCEDFB; --ch-deep:#104F85;}  /* 파랑 */
 
 *{box-sizing:border-box;}
 html,body{margin:0;padding:0;}
@@ -56,7 +108,7 @@ body{background:#DAD3C6;font-family:var(--f-body);color:var(--ink);-webkit-font-
 .chapbar{display:flex;align-items:center;gap:12px;background:var(--cream);
   border-radius:9px;padding:9px 14px;flex:none;}
 .chbadge{font-family:var(--f-en);font-weight:600;font-size:11px;letter-spacing:.06em;
-  background:var(--ch);color:#fff;padding:4px 9px;border-radius:5px;flex:none;}
+  background:var(--ch);color:var(--ch-on);padding:4px 9px;border-radius:5px;flex:none;}
 .chname{font-family:var(--f-title);font-size:16px;color:var(--ch-deep);flex:none;}
 .chtopic{font-size:12.5px;color:var(--ink-soft);flex:1;min-width:0;}
 .help{display:flex;align-items:center;gap:5px;flex:none;}
@@ -68,7 +120,7 @@ body{background:#DAD3C6;font-family:var(--f-body);color:var(--ink);-webkit-font-
 .stephead{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;
   padding:0 0 13px;border-bottom:3px solid var(--ch);margin:30px 0 0;flex:none;}
 .pill{font-family:var(--f-en);font-weight:600;font-size:11.5px;letter-spacing:.05em;
-  background:var(--ch);color:#fff;padding:5px 12px;border-radius:999px;flex:none;}
+  background:var(--ch);color:var(--ch-on);padding:5px 12px;border-radius:999px;flex:none;}
 .stephead h2{font-family:var(--f-title);font-size:24px;margin:0;color:var(--ink);font-weight:400;}
 .stephead .sub{font-family:var(--f-en);font-size:13px;color:var(--ch-deep);font-weight:500;}
 
@@ -76,18 +128,18 @@ body{background:#DAD3C6;font-family:var(--f-body);color:var(--ink);-webkit-font-
 .acts{flex:1;display:flex;flex-direction:column;gap:21px;padding:24px 0 0;min-height:0;}
 .act{display:flex;flex-direction:column;gap:7px;}
 .act.grow{flex:1;min-height:0;}
-.alab{font-family:var(--f-en);font-weight:600;font-size:11px;letter-spacing:.07em;color:var(--coral);}
+.alab{font-family:var(--f-en);font-weight:600;font-size:11px;letter-spacing:.07em;color:var(--ch-deep);}
 .aq{font-weight:700;font-size:15px;line-height:1.5;margin:0;}
 .asub{font-size:13px;color:var(--ink-soft);line-height:1.55;margin:0;}
 
 /* ---- text samples ---- */
 .sample{background:var(--cream);border-radius:9px;padding:12px 15px;
   border-left:5px solid var(--ch);}
-.sample.a{border-left-color:var(--coral);}
-.sample.b{border-left-color:var(--grass);}
+.sample.a{border-left-color:var(--a-line);}
+.sample.b{border-left-color:var(--b-line);}
 .sample h5{font-family:var(--f-en);font-weight:600;font-size:11px;letter-spacing:.06em;
   margin:0 0 6px;color:var(--ch-deep);}
-.sample.a h5{color:var(--coral);} .sample.b h5{color:var(--grass);}
+.sample.a h5{color:var(--a-line);} .sample.b h5{color:var(--b-line);}
 .sample h5 em{font-style:normal;font-family:var(--f-body);font-weight:500;color:var(--ink-soft);letter-spacing:0;}
 .sample p{margin:0;font-family:var(--f-en);font-weight:400;font-size:16px;line-height:1.95;color:var(--ink);}
 .sample ol{margin:0;padding-left:20px;font-family:var(--f-en);font-size:16px;line-height:1.85;}
@@ -136,9 +188,9 @@ body{background:#DAD3C6;font-family:var(--f-body);color:var(--ink);-webkit-font-
 .topic .tl{font-family:var(--f-en);font-weight:600;font-size:11px;letter-spacing:.06em;color:var(--ch-deep);}
 
 /* rule callout */
-.callout{background:var(--cream);border-radius:9px;padding:11px 15px;border-left:5px solid var(--coral);
+.callout{background:var(--cream);border-radius:9px;padding:11px 15px;border-left:5px solid var(--ch);
   font-size:13.5px;line-height:1.65;}
-.callout b{color:var(--coral);}
+.callout b{color:var(--ch-deep);}
 
 /* checks */
 .checks{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:7px;}
@@ -172,7 +224,8 @@ body:not(.hide-notes) .act.grow .lines{min-height:40px;}
 .toc{display:flex;flex-direction:column;gap:0;}
 .toc div{display:flex;align-items:baseline;gap:11px;padding:8px 0;border-bottom:1px solid #EFE7D8;font-size:13.5px;}
 .toc div:last-child{border-bottom:none;}
-.toc b{font-family:var(--f-en);font-weight:600;font-size:10.5px;color:#fff;padding:3px 7px;border-radius:4px;flex:none;}
+.toc b{font-family:var(--f-en);font-weight:600;font-size:10.5px;color:var(--ch-on);padding:3px 7px;
+  border-radius:4px;flex:none;background:var(--ch);}
 .toc span.t{flex:1;font-weight:700;}
 .toc span.p{font-family:var(--f-en);font-size:12px;color:var(--ink-soft);}
 .namebar{display:flex;gap:20px;}
@@ -240,7 +293,7 @@ body:not(.hide-notes) .ulset.wide .sub2 i{min-height:13px;}
 .vtable th{background:var(--ch-soft);color:var(--ch-deep);font-size:11px;letter-spacing:.05em;
   font-family:var(--f-en);font-weight:600;text-align:left;padding:7px 13px;}
 .vtable td{padding:6px 13px;border-top:1px solid #EFE7D8;font-family:var(--f-en);}
-.vtable td.k{font-weight:600;color:var(--coral);width:96px;}
+.vtable td.k{font-weight:600;color:var(--ch-deep);width:96px;}
 
 /* 영어 주 · 한국어 부 (5·6단계) */
 .checks.en li{font-family:var(--f-en);font-size:14.5px;}
@@ -284,7 +337,7 @@ body:not(.hide-notes) .ulset.wide .sub2 i{min-height:13px;}
 .period{border:2px solid var(--ch-soft);border-radius:10px;overflow:hidden;}
 .phead{display:flex;align-items:baseline;gap:12px;background:var(--ch-soft);padding:8px 14px;}
 .phead .pn{font-family:var(--f-en);font-weight:600;font-size:11px;letter-spacing:.05em;
-  background:var(--ch);color:#fff;border-radius:5px;padding:3px 9px;flex:none;}
+  background:var(--ch);color:var(--ch-on);border-radius:5px;padding:3px 9px;flex:none;}
 .phead .pt{font-weight:700;font-size:14px;color:var(--ch-deep);flex:1;}
 .phead .pp{font-family:var(--f-en);font-size:12px;color:var(--ch-deep);flex:none;}
 .plan{width:100%;border-collapse:collapse;}
@@ -296,7 +349,7 @@ body:not(.hide-notes) .ulset.wide .sub2 i{min-height:13px;}
 .watch{background:var(--cream);border-top:1px solid #EFE7D8;padding:8px 14px;
   font-size:12.5px;line-height:1.6;color:var(--ink-soft);}
 .watch b{color:var(--ink);}
-.watch b:first-child{color:var(--coral);}
+.watch b:first-child{color:var(--ch-deep);}
 
 /* 진단표 */
 .keybox{background:var(--ch-soft);border-radius:8px;padding:9px 14px;
@@ -323,7 +376,7 @@ body:not(.hide-notes) .ulset.wide .sub2 i{min-height:13px;}
 .roster td+td{border-left:1px solid #EFE7D8;}
 
 /* 처방 카드 */
-.rx{border-left:5px solid var(--coral);background:var(--cream);border-radius:0 9px 9px 0;
+.rx{border-left:5px solid var(--ch);background:var(--cream);border-radius:0 9px 9px 0;
   padding:9px 14px;}
 .rx .if{font-weight:700;font-size:13px;margin:0 0 4px;}
 .rx .then{margin:0;font-size:12.5px;line-height:1.65;color:var(--ink-soft);}
@@ -336,7 +389,7 @@ body:not(.hide-notes) .ulset.wide .sub2 i{min-height:13px;}
   <span class="hint">끄면 학생용이 됩니다 · 쪽 구성은 그대로입니다</span>
 </div>
 
-<div class="deck">
+<div class="deck" data-st="3">
 
 <!-- 1 · 표지 · 차례 -->
 <section class="page cover" data-ch="0" style="justify-content:flex-start;gap:24px;">
@@ -347,7 +400,7 @@ body:not(.hide-notes) .ulset.wide .sub2 i{min-height:13px;}
   </div>
 
   <div>
-    <p style="font-family:var(--f-en);font-weight:600;font-size:11.5px;letter-spacing:.1em;color:var(--coral);margin:0 0 10px;">STRUCTURED WRITING · STAGE 3</p>
+    <p style="font-family:var(--f-en);font-weight:600;font-size:11.5px;letter-spacing:.1em;color:var(--st);margin:0 0 10px;">STRUCTURED WRITING · STAGE 3</p>
     <h1 class="big">문단의 발견</h1>
     <p class="bigen">Finding the Paragraph</p>
     <p class="lead">1·2단계에서는 문장을 순서대로 늘어놓았습니다. 이제부터는 문장을 <b>묶습니다.</b> 한 덩어리로 묶인 문장들을 <b>문단</b>이라고 부릅니다. 이 단계를 넘으면 글에 뼈대가 생깁니다.</p>
@@ -359,19 +412,19 @@ body:not(.hide-notes) .ulset.wide .sub2 i{min-height:13px;}
   </div>
 
   <div class="toc">
-    <div><b style="background:#1F6F9C">CH 1</b>
+    <div data-ch="1"><b>CH 1</b>
       <span class="t">문단 알아보기<em>문단의 첫 문장은 무엇에 대한 글인지 알려 줍니다. 그 문장을 여섯 번 찾아냅니다.</em></span>
       <span class="p">강아지 Kongi · 3–6</span></div>
-    <div><b style="background:#7A5AB8">CH 2</b>
+    <div data-ch="2"><b>CH 2</b>
       <span class="t">한 가지 생각만<em>문단에 몰래 끼어든 문장을 찾아내고, 그 자리에 어울리는 문장을 넣습니다.</em></span>
       <span class="p">고양이 Nabi · 7–10</span></div>
-    <div><b style="background:#9A7000">CH 3</b>
+    <div data-ch="3"><b>CH 3</b>
       <span class="t">나누고 짓기<em>붙어 있는 글을 두 문단으로 나누고, 주제문을 고른 뒤 직접 씁니다.</em></span>
       <span class="p">우리 동네 · 11–14</span></div>
-    <div><b style="background:#14746A">CH 4</b>
+    <div data-ch="4"><b>CH 4</b>
       <span class="t">문단 짓기<em>틀 없이 스스로 씁니다. 내가 아는 동물을 한 문단으로, 다시 두 문단으로.</em></span>
       <span class="p">내가 아는 동물 · 15–17</span></div>
-    <div><b style="background:#5A6470">FINAL</b>
+    <div data-ch="0"><b>FINAL</b>
       <span class="t">완성 과제<em>짝과 글을 바꿔 읽고, 돌려받아 한 군데를 고칩니다.</em></span>
       <span class="p">18</span></div>
   </div>

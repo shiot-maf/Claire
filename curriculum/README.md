@@ -41,7 +41,7 @@ Writing Composition 도메인(38개 주제)과 선수학습 관계 3,221개에�
 
 ```
 src/<이름>.html   본문만 (표지·활동·「선생님께」)
-design/tokens.css 색·서체 — 설계도와 워크시트가 함께 쓴다
+design/tokens.css 색·서체 — 무지개 여섯 색. 설계도와 워크시트가 함께 쓴다
 design/sheet.css  워크시트 판형(A4 고정)과 컴포넌트
 design/map.css    설계도 판형(한 폭으로 흐름)
 build.py          본문과 디자인을 합쳐 단일 HTML을 만든다
@@ -71,6 +71,7 @@ build.py          본문과 디자인을 합쳐 단일 HTML을 만든다
 |---|---|
 | [`docs/plan.md`](docs/plan.md) | 기획서 — 이중 진행과 4단 흐름 |
 | [`docs/design-spec.md`](docs/design-spec.md) | 디자인 규격 — 판형·색·서체·컴포넌트, 내용 규칙 |
+| [`docs/palette.html`](docs/palette.html) | 색 팔레트 — 무지개 여섯 색과 흑백 확인 |
 
 ## 설계의 핵심 다섯 가지
 
