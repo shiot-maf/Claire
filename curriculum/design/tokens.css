@@ -1,15 +1,17 @@
 /* ================================================================
-   색 = 무지개.  1단계 빨강 · 2 주황 · 3 노랑 · 4 초록 · 5 파랑 · 6 남색.
+   색 = 무지개.  1단계 빨강 · 2 주황 · 3 겨자 · 4 초록 · 5 파랑 · 6 남색.
+   일곱 칸이 아니라 여섯이므로 보라는 쓰지 않는다.
+   3단계의 노랑은 종이 위에서 너무 떠서 겨자색 쪽으로 눌렀다.
 
    흑백으로 복사해도 구분되도록 두 가지를 지켰다.
-   ① 여섯 단계의 회색값을 서로 19 이상 벌렸다 — 색상은 흑백에서 사라지고
+   ① 여섯 단계의 회색값을 서로 20 이상 벌렸다 — 색상은 흑백에서 사라지고
       밝기만 남으므로, 밝기가 곧 구분 표시가 된다.
    ② 한 단계 안의 네 챕터도 회색값을 33씩 벌려 옅은 색에서 짙은 색으로 간다.
       챕터가 올라갈수록 도움이 줄고 색이 짙어지므로 순서까지 읽힌다.
 
    색 위에 얹는 글자색은 --ch-on / --st-on 이 정한다. 밝은 색에는 먹색,
    어두운 색에는 흰색이 붙는다 — 직접 #fff 를 쓰지 말 것.
-   이 파일은 build.py 가 아니라 사람이 고친다.
+   색을 고쳤으면 design/make-palette.py 를 돌려 팔레트 문서를 맞춰 둔다.
    ================================================================ */
 
 :root{
@@ -26,12 +28,12 @@
 }
 
 /* 단계 — 설계도의 여섯 색 */
-[data-st="1"]{--st:#D43220; --st-on:#FFFFFF; --st-soft:#FDF2F0; --st-deep:#912216;}  /* 빨강 · 회색 112 · 대비 4.9 */
-[data-st="2"]{--st:#F4912D; --st-on:#2A2622; --st-soft:#FDF2E8; --st-deep:#763E06;}  /* 주황 · 회색 168 · 대비 6.4 */
-[data-st="3"]{--st:#F9CE36; --st-on:#2A2622; --st-soft:#FCF4D8; --st-deep:#5E4A03;}  /* 노랑 · 회색 209 · 대비 9.9 */
-[data-st="4"]{--st:#1C6A2E; --st-on:#FFFFFF; --st-soft:#E7F8EB; --st-deep:#175826;}  /* 초록 · 회색 93 · 대비 6.7 */
-[data-st="5"]{--st:#0F4677; --st-on:#FFFFFF; --st-soft:#ECF5FD; --st-deep:#0F4677;}  /* 파랑 · 회색 70 · 대비 9.7 */
-[data-st="6"]{--st:#282665; --st-on:#FFFFFF; --st-soft:#F4F4FB; --st-deep:#282665;}  /* 남색 · 회색 50 · 대비 13.5 */
+[data-st="1"]{--st:#D33120; --st-on:#FFFFFF; --st-soft:#FDF2F0; --st-deep:#912216;}  /* 빨강 · 회색 111 · 대비 5.0 */
+[data-st="2"]{--st:#F3881C; --st-on:#2A2622; --st-soft:#FDF2E8; --st-deep:#763E06;}  /* 주황 · 회색 162 · 대비 6.0 */
+[data-st="3"]{--st:#E4B439; --st-on:#2A2622; --st-soft:#FBF3E1; --st-deep:#60480D;}  /* 겨자 · 회색 185 · 대비 7.8 */
+[data-st="4"]{--st:#1B652C; --st-on:#FFFFFF; --st-soft:#E7F8EB; --st-deep:#175826;}  /* 초록 · 회색 88 · 대비 7.1 */
+[data-st="5"]{--st:#0E4371; --st-on:#FFFFFF; --st-soft:#ECF5FD; --st-deep:#0E4371;}  /* 파랑 · 회색 67 · 대비 10.2 */
+[data-st="6"]{--st:#222158; --st-on:#FFFFFF; --st-soft:#F4F4FB; --st-deep:#222158;}  /* 남색 · 회색 44 · 대비 14.7 */
 [data-st="0"]{--st:#5A6470; --st-on:#FFFFFF; --st-soft:#EEF1F4; --st-deep:#3D4550;}  /* 중성 */
 
 /* 챕터 — 한 단계 안에서 같은 색이 네 단계로 짙어진다 */
@@ -45,10 +47,10 @@
 [data-st="2"] [data-ch="3"]{--ch:#AC5B09; --ch-on:#FFFFFF; --ch-soft:#FCECDB; --ch-deep:#763E06;}
 [data-st="2"] [data-ch="4"]{--ch:#763E06; --ch-on:#FFFFFF; --ch-soft:#FBE7D3; --ch-deep:#763E06;}
 
-[data-st="3"] [data-ch="1"]{--ch:#DBAD07; --ch-on:#2A2622; --ch-soft:#FCF6DF; --ch-deep:#5E4A03;}
-[data-st="3"] [data-ch="2"]{--ch:#B38E06; --ch-on:#2A2622; --ch-soft:#FBF2D2; --ch-deep:#5E4A03;}
-[data-st="3"] [data-ch="3"]{--ch:#896D04; --ch-on:#FFFFFF; --ch-soft:#FAEFC4; --ch-deep:#5E4A03;}
-[data-st="3"] [data-ch="4"]{--ch:#5E4A03; --ch-on:#FFFFFF; --ch-soft:#F9EAB6; --ch-deep:#5E4A03;}
+[data-st="3"] [data-ch="1"]{--ch:#E1AA21; --ch-on:#2A2622; --ch-soft:#FCF6E6; --ch-deep:#60480D;}
+[data-st="3"] [data-ch="2"]{--ch:#B78B19; --ch-on:#2A2622; --ch-soft:#FAF2DC; --ch-deep:#60480D;}
+[data-st="3"] [data-ch="3"]{--ch:#8D6B13; --ch-on:#FFFFFF; --ch-soft:#F9EDD1; --ch-deep:#60480D;}
+[data-st="3"] [data-ch="4"]{--ch:#60480D; --ch-on:#FFFFFF; --ch-soft:#F7EAC7; --ch-deep:#60480D;}
 
 [data-st="4"] [data-ch="1"]{--ch:#3FCC5F; --ch-on:#2A2622; --ch-soft:#EAF9EE; --ch-deep:#175826;}
 [data-st="4"] [data-ch="2"]{--ch:#2DA749; --ch-on:#2A2622; --ch-soft:#E3F7E8; --ch-deep:#175826;}
