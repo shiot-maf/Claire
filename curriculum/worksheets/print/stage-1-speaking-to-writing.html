@@ -1,0 +1,610 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<title>말에서 글로</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Jua&family=Fredoka:wght@400;500;600&family=Noto+Sans+KR:wght@400;500;700&display=swap">
+<style>
+:root{
+  --paper:#FFFFFF; --cream:#FFFBF2; --note-bg:#FEFCF6; --note-line:#DCCFB4;
+  --ink:#2A2622; --ink-soft:#6B6157; --rule:#C9BFAA;
+  --coral:#E5603A; --grass:#5B9B21; --ans:#B23B32;
+  --ch:#1F6F9C; --ch-soft:#E8F4FF; --ch-deep:#17527A;
+  --f-title:'Jua',system-ui,sans-serif;
+  --f-en:'Fredoka',system-ui,sans-serif;
+  --f-body:'Noto Sans KR',system-ui,sans-serif;
+}
+[data-ch="1"]{--ch:#1F6F9C; --ch-soft:#E8F4FF; --ch-deep:#17527A;}
+[data-ch="2"]{--ch:#7A5AB8; --ch-soft:#F1ECFA; --ch-deep:#4C3480;}
+[data-ch="3"]{--ch:#9A7000; --ch-soft:#FFF6D6; --ch-deep:#8A6A00;}
+[data-ch="4"]{--ch:#14746A; --ch-soft:#E2F3F0; --ch-deep:#0E574F;}
+[data-ch="0"]{--ch:#5A6470; --ch-soft:#EEF1F4; --ch-deep:#3D4550;}
+
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{background:#DAD3C6;font-family:var(--f-body);color:var(--ink);-webkit-font-smoothing:antialiased;}
+
+/* toolbar (screen only) */
+.toolbar{position:fixed;top:0;left:0;right:0;z-index:50;display:flex;gap:14px;align-items:center;
+  padding:9px 16px;background:#2A2622;color:#fff;font-size:13px;font-family:var(--f-body);}
+.toolbar label{display:flex;align-items:center;gap:7px;cursor:pointer;}
+.toolbar input{width:15px;height:15px;cursor:pointer;}
+.toolbar .hint{color:#B7AFA4;font-size:12px;}
+.deck{padding:56px 0 40px;display:flex;flex-direction:column;align-items:center;gap:22px;}
+
+/* ---- A4 page ---- */
+.page{
+  width:794px;height:1123px;padding:44px;background:var(--paper);
+  display:flex;flex-direction:column;justify-content:space-between;
+  overflow:hidden;position:relative;box-shadow:0 2px 14px rgba(0,0,0,.16);
+}
+.stack-mid{flex:1;display:flex;flex-direction:column;min-height:0;}
+
+/* ---- chapter bar ---- */
+.chapbar{display:flex;align-items:center;gap:12px;background:var(--cream);
+  border-radius:9px;padding:9px 14px;flex:none;}
+.chbadge{font-family:var(--f-en);font-weight:600;font-size:11px;letter-spacing:.06em;
+  background:var(--ch);color:#fff;padding:4px 9px;border-radius:5px;flex:none;}
+.chname{font-family:var(--f-title);font-size:16px;color:var(--ch-deep);flex:none;}
+.chtopic{font-size:12.5px;color:var(--ink-soft);flex:1;min-width:0;}
+.help{display:flex;align-items:center;gap:5px;flex:none;}
+.help span{font-size:11px;color:var(--ink-soft);}
+.help i{width:9px;height:9px;border-radius:50%;border:1.6px solid var(--ch);display:block;}
+.help i.on{background:var(--ch);}
+
+/* ---- step header ---- */
+.stephead{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;
+  padding:0 0 13px;border-bottom:3px solid var(--ch);margin:30px 0 0;flex:none;}
+.pill{font-family:var(--f-en);font-weight:600;font-size:11.5px;letter-spacing:.05em;
+  background:var(--ch);color:#fff;padding:5px 12px;border-radius:999px;flex:none;}
+.stephead h2{font-family:var(--f-title);font-size:24px;margin:0;color:var(--ink);font-weight:400;}
+.stephead .sub{font-family:var(--f-en);font-size:13px;color:var(--ch-deep);font-weight:500;}
+
+/* ---- activity ---- */
+.acts{flex:1;display:flex;flex-direction:column;gap:21px;padding:24px 0 0;min-height:0;}
+.act{display:flex;flex-direction:column;gap:7px;}
+.act.grow{flex:1;min-height:0;}
+.alab{font-family:var(--f-en);font-weight:600;font-size:11px;letter-spacing:.07em;color:var(--coral);}
+.aq{font-weight:700;font-size:15px;line-height:1.5;margin:0;}
+.asub{font-size:13px;color:var(--ink-soft);line-height:1.55;margin:0;}
+
+/* ---- text samples ---- */
+.sample{background:var(--cream);border-radius:9px;padding:12px 15px;
+  border-left:5px solid var(--ch);}
+.sample.a{border-left-color:var(--coral);}
+.sample.b{border-left-color:var(--grass);}
+.sample h5{font-family:var(--f-en);font-weight:600;font-size:11px;letter-spacing:.06em;
+  margin:0 0 6px;color:var(--ch-deep);}
+.sample.a h5{color:var(--coral);} .sample.b h5{color:var(--grass);}
+.sample h5 em{font-style:normal;font-family:var(--f-body);font-weight:500;color:var(--ink-soft);letter-spacing:0;}
+.sample p{margin:0;font-family:var(--f-en);font-weight:400;font-size:16px;line-height:1.95;color:var(--ink);}
+.sample ol{margin:0;padding-left:20px;font-family:var(--f-en);font-size:16px;line-height:1.85;}
+.sample .ti{font-family:var(--f-en);font-weight:600;font-size:16px;margin:0 0 5px;}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:11px;}
+.two.rows{grid-template-columns:1fr;gap:12px;}
+
+/* ---- writing areas (all underline) ---- */
+.lines{flex:1;min-height:52px;
+  background-image:repeating-linear-gradient(to bottom,transparent 0 30px,var(--rule) 30px 32px);}
+.lines.n1{flex:none;height:32px;} .lines.n2{flex:none;height:64px;}
+.lines.n3{flex:none;height:96px;} .lines.n4{flex:none;height:128px;}
+.ul{display:inline-block;min-width:120px;border-bottom:2px solid var(--rule);
+  vertical-align:-4px;margin:0 4px;height:20px;}
+.ul.s{min-width:64px;} .ul.l{min-width:190px;} .ul.xl{min-width:100%;margin:0;}
+
+/* rows */
+.frames{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px;}
+.frames li{font-family:var(--f-en);font-size:16px;line-height:2.1;}
+.qrow{display:flex;flex-direction:column;gap:5px;margin:0;padding:0;list-style:none;}
+.qrow li{display:flex;align-items:baseline;gap:12px;font-family:var(--f-en);font-size:15.5px;
+  border-bottom:1px dotted var(--rule);padding-bottom:4px;}
+.qrow li span:first-child{flex:1;}
+.qrow li i{flex:none;width:52px;height:19px;border-bottom:2px solid var(--rule);display:block;}
+.numrow{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px;counter-reset:nr;}
+.numrow li{counter-increment:nr;display:flex;align-items:baseline;gap:10px;font-family:var(--f-en);font-size:15.5px;}
+.numrow li::before{content:counter(nr)".";font-weight:600;color:var(--ch-deep);flex:none;width:16px;}
+.cards{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:7px;}
+.cards li{display:flex;align-items:center;gap:11px;background:var(--cream);border-radius:7px;
+  padding:7px 12px;font-family:var(--f-en);font-size:15.5px;}
+.cards li b{flex:none;width:26px;height:26px;border:2px solid var(--rule);border-radius:5px;background:#fff;}
+
+/* word bank */
+.bank{display:flex;flex-direction:column;gap:0;background:var(--cream);border-radius:9px;padding:4px 15px;}
+.brow{display:grid;grid-template-columns:150px 1fr;gap:12px;align-items:baseline;
+  padding:9px 0;border-bottom:1px solid #EFE7D8;}
+.brow:last-child{border-bottom:none;}
+.bkey{font-size:12.5px;font-weight:700;color:var(--ch-deep);}
+.bkey em{display:block;font-style:normal;font-weight:400;font-size:11.5px;color:var(--ink-soft);}
+.chips{display:flex;flex-wrap:wrap;gap:5px;}
+.chip{font-family:var(--f-en);font-size:14.5px;background:var(--ch-soft);border-radius:5px;padding:2px 9px;}
+
+/* topic strip */
+.topic{background:var(--ch-soft);border-radius:9px;padding:11px 15px;display:flex;
+  flex-direction:column;gap:7px;}
+.topic .tl{font-family:var(--f-en);font-weight:600;font-size:11px;letter-spacing:.06em;color:var(--ch-deep);}
+
+/* rule callout */
+.callout{background:var(--cream);border-radius:9px;padding:11px 15px;border-left:5px solid var(--coral);
+  font-size:13.5px;line-height:1.65;}
+.callout b{color:var(--coral);}
+
+/* checks */
+.checks{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:7px;}
+.checks li{display:flex;align-items:flex-start;gap:9px;font-size:13.5px;line-height:1.45;}
+.checks li::before{content:"";flex:none;width:16px;height:16px;border:2px solid var(--rule);
+  border-radius:3px;margin-top:1px;}
+.checks li em{display:block;font-style:normal;font-family:var(--f-en);font-size:13px;color:var(--ch-deep);}
+
+/* teacher note */
+.tnote{border:2px dashed var(--note-line);background:var(--note-bg);border-radius:9px;
+  padding:11px 14px;font-size:12.5px;line-height:1.6;color:var(--ink-soft);flex:none;}
+.tnote .tl{font-family:var(--f-en);font-weight:600;font-size:10.5px;letter-spacing:.08em;
+  color:#9A8C74;display:block;margin:0 0 5px;}
+.tnote p{margin:0 0 5px;} .tnote p:last-child{margin:0;}
+.tnote b.a{color:var(--ans);}
+body.hide-notes .tnote{display:none;}
+body:not(.hide-notes) .act.grow .lines{min-height:40px;}
+
+/* foot */
+.foot{display:flex;justify-content:space-between;align-items:baseline;flex:none;
+  margin-top:20px;padding-top:14px;border-top:1px solid #EAE3D6;font-size:11px;color:var(--ink-soft);}
+.foot .r{font-family:var(--f-en);font-weight:500;}
+
+/* cover */
+.cover .big{font-family:var(--f-title);font-size:46px;line-height:1.15;margin:0 0 4px;}
+.cover .bigen{font-family:var(--f-en);font-weight:500;font-size:15px;color:var(--ch-deep);margin:0 0 20px;}
+.cover .lead{font-size:14.5px;line-height:1.75;color:var(--ink-soft);margin:0;}
+.idea{background:var(--ch-soft);border-radius:11px;padding:18px;text-align:center;}
+.idea .k{font-family:var(--f-title);font-size:25px;margin:0 0 4px;color:var(--ch-deep);}
+.idea .e{font-family:var(--f-en);font-weight:500;font-size:15px;color:var(--ch);margin:0;}
+.toc{display:flex;flex-direction:column;gap:0;}
+.toc div{display:flex;align-items:baseline;gap:11px;padding:8px 0;border-bottom:1px solid #EFE7D8;font-size:13.5px;}
+.toc div:last-child{border-bottom:none;}
+.toc b{font-family:var(--f-en);font-weight:600;font-size:10.5px;color:#fff;padding:3px 7px;border-radius:4px;flex:none;}
+.toc span.t{flex:1;font-weight:700;}
+.toc span.p{font-family:var(--f-en);font-size:12px;color:var(--ink-soft);}
+.namebar{display:flex;gap:20px;}
+.namebar label{flex:1;display:flex;align-items:baseline;gap:8px;}
+.namebar label span{font-size:11.5px;color:var(--ink-soft);white-space:nowrap;}
+.namebar label i{flex:1;border-bottom:2px solid var(--rule);height:22px;display:block;}
+
+@media print{
+  body{background:#fff;}
+  .toolbar{display:none;}
+  .deck{padding:0;gap:0;}
+  .page{box-shadow:none;page-break-after:always;break-after:page;}
+  .page:last-child{page-break-after:auto;break-after:auto;}
+  @page{size:A4;margin:0;}
+}
+
+/* full-width underline rows */
+.ulrow{display:flex;align-items:baseline;gap:9px;font-family:var(--f-en);font-size:15.5px;line-height:2.1;}
+.ulrow .lab{flex:none;}
+.ulrow .fill{flex:1;border-bottom:2px solid var(--rule);height:24px;display:block;}
+.ulrow.tall{padding-top:14px;gap:14px;}
+.ulrow.tall .fill{height:40px;}
+.ulset{display:flex;flex-direction:column;gap:9px;}
+.ulset.wide{gap:12px;}
+.ulset .sub2{display:flex;flex-direction:column;gap:7px;padding-left:22px;}
+.ulset .sub2 i{border-bottom:2px solid var(--rule);height:22px;display:block;}
+.ulset.wide{flex:1;min-height:0;}
+.ulset.wide > div{flex:1;display:flex;flex-direction:column;min-height:0;}
+.ulset.wide .sub2{flex:1;min-height:0;gap:6px;}
+.ulset.wide .sub2 i{flex:1;min-height:18px;max-height:26px;height:auto;}
+body:not(.hide-notes) .ulset.wide .sub2 i{min-height:13px;}
+
+/* student tip */
+.tip{background:var(--ch-soft);border-radius:9px;padding:11px 15px;font-size:13px;
+  line-height:1.65;color:var(--ch-deep);flex:none;}
+.tip b.tl{font-family:var(--f-en);font-weight:600;font-size:10.5px;letter-spacing:.07em;
+  display:block;margin:0 0 4px;opacity:.75;}
+
+/* cover tweaks */
+.cover .lead{max-width:none;}
+.toc div{align-items:flex-start;}
+.toc .t{display:flex;flex-direction:column;gap:2px;}
+.toc .t em{font-style:normal;font-weight:400;font-size:12px;color:var(--ink-soft);line-height:1.5;}
+
+/* 그림 · 그리기 칸 */
+.picrow{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;}
+.picrow.grow{flex:1;min-height:0;}
+.piccard{display:flex;flex-direction:column;gap:7px;min-height:0;}
+.picbox{border:2px solid var(--rule);border-radius:9px;background:var(--cream);
+  flex:1;min-height:96px;display:flex;align-items:flex-end;justify-content:center;padding:7px;}
+.picbox span{font-size:11px;color:#B5AB99;}
+.piccap{font-family:var(--f-en);font-size:14.5px;line-height:1.4;text-align:center;}
+.numbox{width:30px;height:30px;border:2px solid var(--rule);border-radius:6px;background:#fff;
+  margin:0 auto;flex:none;}
+
+/* 줄로 잇기 */
+.match{display:grid;grid-template-columns:1fr 46px 1fr;gap:10px 12px;align-items:center;}
+.match .ml,.match .mr{background:var(--cream);border-radius:7px;padding:8px 12px;font-size:14.5px;}
+.match .ml{font-family:var(--f-en);}
+.match .md{border-bottom:2px dotted var(--rule);height:2px;}
+
+/* 낱말 표 */
+.vtable{width:100%;border-collapse:collapse;font-size:13.5px;background:var(--cream);
+  border-radius:9px;overflow:hidden;}
+.vtable th{background:var(--ch-soft);color:var(--ch-deep);font-size:11px;letter-spacing:.05em;
+  font-family:var(--f-en);font-weight:600;text-align:left;padding:7px 13px;}
+.vtable td{padding:6px 13px;border-top:1px solid #EFE7D8;font-family:var(--f-en);}
+.vtable td.k{font-weight:600;color:var(--coral);width:96px;}
+
+/* 영어 주 · 한국어 부 (5·6단계) */
+.checks.en li{font-family:var(--f-en);font-size:14.5px;}
+.checks.en li em{font-family:var(--f-body);font-size:12px;color:var(--ink-soft);}
+
+/* 줄로 잇기 · 두 칸 */
+.mcol{background:var(--cream);border-radius:9px;padding:10px 13px;}
+.mcol h6{font-family:var(--f-en);font-weight:600;font-size:11px;letter-spacing:.06em;
+  color:var(--ch-deep);margin:0 0 8px;}
+.mcol ol{margin:0;padding-left:19px;font-family:var(--f-en);font-size:14.5px;line-height:1.5;
+  display:flex;flex-direction:column;gap:7px;}
+.mcol ol.alpha{list-style:lower-alpha;}
+</style>
+</head>
+<body>
+<div class="toolbar">
+  <label><input type="checkbox" id="tt" checked> 「선생님께」 보기</label>
+  <span class="hint">끄면 학생용이 됩니다 · 쪽 구성은 그대로입니다</span>
+</div>
+
+<div class="deck">
+
+<!-- 1 · 표지 · 차례 -->
+<section class="page cover" data-ch="0" style="justify-content:flex-start;gap:26px;">
+  <div class="namebar">
+    <label><span>이름</span><i></i></label>
+    <label><span>학년 / 반</span><i></i></label>
+    <label><span>날짜</span><i></i></label>
+  </div>
+
+  <div>
+    <p style="font-family:var(--f-en);font-weight:600;font-size:11.5px;letter-spacing:.1em;color:var(--coral);margin:0 0 10px;">STRUCTURED WRITING · STAGE 1</p>
+    <h1 class="big">말에서 글로</h1>
+    <p class="bigen">From Speaking to Writing</p>
+    <p class="lead">글쓰기의 첫걸음은 쓰는 것이 아니라 <b>말하는 것</b>입니다. 입으로 먼저 해 본 문장은 손으로 쓸 때 훨씬 덜 막힙니다. 이 단계에서는 영어 문장 <b>세 개</b>를 순서대로 놓는 법을 배웁니다.</p>
+  </div>
+
+  <div class="idea">
+    <p class="k">처음 · 중간 · 끝</p>
+    <p class="e">First, Then, Finally.</p>
+  </div>
+
+  <div class="toc">
+    <div><b style="background:#5A6470">WORDS</b>
+      <span class="t">워드뱅크<em>이 워크시트에서 쓸 말이 모두 여기 있습니다. 끝까지 펼쳐 둡니다.</em></span>
+      <span class="p">2</span></div>
+    <div><b style="background:#1F6F9C">SEE</b>
+      <span class="t">보기 · 그림 셋, 문장 셋<em>그림과 영어 문장을 함께 보고 소리 내어 읽습니다.</em></span>
+      <span class="p">3</span></div>
+    <div><b style="background:#7A5AB8">SORT</b>
+      <span class="t">나누기 · 순서 맞추기<em>영어를 한 글자도 쓰지 않습니다. 번호만 씁니다.</em></span>
+      <span class="p">4</span></div>
+    <div><b style="background:#9A7000">FRAME</b>
+      <span class="t">채우기 · 틀에 내 말 넣기<em>문장 틀의 빈칸에 내 이야기를 넣습니다.</em></span>
+      <span class="p">5</span></div>
+    <div><b style="background:#14746A">BUILD</b>
+      <span class="t">짓기 · 그리고, 쓰기<em>세 장면을 그리고 그 아래에 영어 문장을 씁니다.</em></span>
+      <span class="p">6</span></div>
+    <div><b style="background:#5A6470">FINAL</b>
+      <span class="t">완성 과제 · 나의 하루<em>세 문장이 네 문장이 되고, 한 덩이로 이어집니다.</em></span>
+      <span class="p">7</span></div>
+  </div>
+
+  <div class="tnote">
+    <span class="tl">선생님께</span>
+    <p>1단계의 목표는 <b>영어 문장 세 개</b>입니다. 그 이상을 요구하지 마세요. 세 문장을 순서대로 놓을 수 있으면 통과입니다.</p>
+    <p>모든 쓰기 활동 앞에 <b>“소리 내어 말해 보기”</b>가 붙어 있습니다. 시간이 없어도 이것만은 지켜 주세요. 지시문은 이 단계에서 <b>한국어만</b> 씁니다 — 학생이 감당할 영어는 자기가 쓸 세 문장에 모두 써야 합니다.</p>
+  </div>
+</section>
+
+<!-- 2 · 워드뱅크 -->
+<section class="page" data-ch="0">
+  <div class="chapbar">
+    <span class="chbadge">WORD BANK</span>
+    <span class="chname">내가 쓸 수 있는 말</span>
+    <span class="chtopic">끝까지 펼쳐 둡니다</span>
+  </div>
+
+  <div class="stack-mid">
+    <div class="acts">
+      <div class="bank">
+        <div class="brow"><div class="bkey">순서 말하기<em>세 개면 충분합니다</em></div>
+          <div class="chips"><span class="chip">First,</span><span class="chip">Then,</span><span class="chip">Finally,</span></div></div>
+        <div class="brow"><div class="bkey">내가 한 일<em>I + 낱말</em></div>
+          <div class="chips"><span class="chip">I wake up.</span><span class="chip">I eat.</span><span class="chip">I go to school.</span><span class="chip">I play.</span><span class="chip">I read.</span><span class="chip">I sleep.</span></div></div>
+        <div class="brow"><div class="bkey">내 느낌<em>I was + 낱말</em></div>
+          <div class="chips"><span class="chip">happy</span><span class="chip">tired</span><span class="chip">hungry</span><span class="chip">excited</span></div></div>
+        <div class="brow"><div class="bkey">내 것 말하기<em>My ___ is ___.</em></div>
+          <div class="chips"><span class="chip">big</span><span class="chip">small</span><span class="chip">white</span><span class="chip">nice</span></div></div>
+      </div>
+
+      <div class="topic">
+        <span class="tl">MY SIX TOPICS · 여섯 소재는 6단계까지 계속 씁니다</span>
+        <div class="chips"><span class="chip">my pet</span><span class="chip">our town</span><span class="chip">my favourite food</span><span class="chip">a season</span><span class="chip">a school day</span><span class="chip">an animal I know</span></div>
+      </div>
+
+      <div class="act grow">
+        <span class="alab">연습</span>
+        <p class="aq">워드뱅크를 보고 빈칸을 채우세요.</p>
+        <ol class="numrow" style="gap:11px;">
+          <li><span><i class="ul s"></i> I wake up.</span></li>
+          <li><span><i class="ul s"></i> I eat breakfast.</span></li>
+          <li><span><i class="ul s"></i> I go to school.</span></li>
+          <li><span>I was <i class="ul s"></i>.</span></li>
+        </ol>
+      </div>
+    </div>
+
+    <div class="tnote"><span class="tl">선생님께</span>
+      <p>정답 — <b class="a">First, / Then, / Finally,</b> · 4번은 느낌 낱말이면 <b>모두 인정</b>합니다.</p>
+      <p>순서를 나타내는 말을 <b>셋으로 못 박았습니다.</b> Next, After that 같은 말은 2단계에서 늘립니다. 초1 학습자에게는 선택지가 적을수록 문장이 빨리 나옵니다.</p>
+    </div>
+  </div>
+
+  <div class="foot"><span>워드뱅크</span><span class="r">1단계 · 2/7</span></div>
+</section>
+
+<!-- 3 · 보기 -->
+<section class="page" data-ch="1">
+  <div class="chapbar">
+    <span class="chbadge">SEE</span><span class="chname">그림 셋, 문장 셋</span>
+    <span class="chtopic">소재 · 지호의 아침</span>
+    <span class="help"><span>도움</span><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i></span>
+  </div>
+
+  <div class="stack-mid">
+    <div class="stephead"><span class="pill">보기 SEE</span><h2>그림 셋, 문장 셋</h2><span class="sub">Three pictures, three sentences</span></div>
+    <div class="acts">
+      <p class="asub">지호의 아침입니다. 그림을 보고 영어 문장을 읽어 보세요.</p>
+
+      <div class="picrow grow">
+        <div class="piccard"><div class="picbox"><span>그림을 보고 이야기해 보세요</span></div>
+          <p class="piccap">First, I wake up.</p></div>
+        <div class="piccard"><div class="picbox"><span>그림을 보고 이야기해 보세요</span></div>
+          <p class="piccap">Then, I eat breakfast.</p></div>
+        <div class="piccard"><div class="picbox"><span>그림을 보고 이야기해 보세요</span></div>
+          <p class="piccap">Finally, I go to school.</p></div>
+      </div>
+
+      <div class="act">
+        <span class="alab">활동 1</span>
+        <p class="aq">순서를 알려 주는 낱말 <b>세 개</b>에 동그라미 하세요.</p>
+      </div>
+
+      <div class="act">
+        <span class="alab">활동 2</span>
+        <p class="aq">지호의 아침 이야기는 몇 문장인가요?</p>
+        <div class="ulrow"><span class="lab">모두</span><i class="fill"></i><span class="lab">문장입니다</span></div>
+      </div>
+
+      <div class="act">
+        <span class="alab">활동 3</span>
+        <p class="aq">세 문장을 소리 내어 읽고, 다 했으면 표시하세요.</p>
+        <ul class="checks">
+          <li>세 문장을 소리 내어 읽었다<em>I read the three sentences out loud.</em></li>
+          <li>선생님 없이 혼자서도 읽을 수 있다<em>I can read them by myself.</em></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="tnote"><span class="tl">선생님께</span>
+      <p>정답 — 활동 1: <b class="a">First, Then, Finally</b> · 활동 2: <b class="a">3</b></p>
+      <p>이 장에서 학생이 쓰는 영어는 <b>숫자 하나</b>뿐입니다. 읽기와 소리 내기에 시간을 다 쓰세요. 그림칸은 학생이 직접 그려도 좋고, 교사가 그림을 붙여 주어도 좋습니다.</p>
+    </div>
+  </div>
+
+  <div class="foot"><span>보기 SEE</span><span class="r">1단계 · 3/7</span></div>
+</section>
+
+<!-- 4 · 나누기 -->
+<section class="page" data-ch="2">
+  <div class="chapbar">
+    <span class="chbadge">SORT</span><span class="chname">순서 맞추기</span>
+    <span class="chtopic">소재 · 씨앗 심기</span>
+    <span class="help"><span>도움</span><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i></span>
+  </div>
+
+  <div class="stack-mid">
+    <div class="stephead"><span class="pill">나누기 SORT</span><h2>순서 맞추기</h2><span class="sub">Put them in order</span></div>
+    <div class="acts">
+      <p class="asub">이 장에서는 <b>영어를 쓰지 않습니다.</b> 순서만 맞추면 됩니다.</p>
+
+      <div class="act">
+        <span class="alab">활동 1</span>
+        <p class="aq">그림이 뒤섞였습니다. 순서대로 <b>1 · 2 · 3</b>을 쓰세요.</p>
+      </div>
+
+      <div class="picrow grow">
+        <div class="piccard"><div class="picbox"><span>새싹이 났습니다</span></div><div class="numbox"></div></div>
+        <div class="piccard"><div class="picbox"><span>화분에 씨앗을 넣습니다</span></div><div class="numbox"></div></div>
+        <div class="piccard"><div class="picbox"><span>물을 줍니다</span></div><div class="numbox"></div></div>
+      </div>
+
+      <div class="act">
+        <span class="alab">활동 2</span>
+        <p class="aq">문장 카드도 뒤섞였습니다. 순서대로 <b>1 · 2 · 3</b>을 쓰세요.</p>
+        <ul class="cards">
+          <li><b></b><span>Then, I water it.</span></li>
+          <li><b></b><span>Finally, a green leaf comes out.</span></li>
+          <li><b></b><span>First, I put a seed in the pot.</span></li>
+        </ul>
+      </div>
+
+      <div class="act">
+        <span class="alab">활동 3</span>
+        <p class="aq">순서를 어떻게 알았나요? 도움이 된 낱말에 동그라미 하세요.</p>
+        <p class="asub">문장 카드 안에 숨어 있습니다.</p>
+      </div>
+    </div>
+
+    <div class="tnote"><span class="tl">선생님께</span>
+      <p>정답 — 활동 1: 왼쪽부터 <b class="a">3 · 1 · 2</b> · 활동 2: <b class="a">2 · 3 · 1</b> · 활동 3: <b class="a">First, Then, Finally</b></p>
+      <p>영어를 한 글자도 쓰지 않는 장입니다. 영어가 아직 약한 학생도 여기서는 정확히 해내므로 <b>자신감을 세워 주는 장</b>으로 쓰세요. 활동 3이 핵심입니다 — 그림 없이도 순서를 알 수 있었던 이유를 학생 입으로 말하게 하세요.</p>
+    </div>
+  </div>
+
+  <div class="foot"><span>나누기 SORT</span><span class="r">1단계 · 4/7</span></div>
+</section>
+
+<!-- 5 · 채우기 -->
+<section class="page" data-ch="3">
+  <div class="chapbar">
+    <span class="chbadge">FRAME</span><span class="chname">틀에 내 말 넣기</span>
+    <span class="chtopic">소재 · 나의 아침</span>
+    <span class="help"><span>도움</span><i class="on"></i><i class="on"></i><i class="on"></i><i></i></span>
+  </div>
+
+  <div class="stack-mid">
+    <div class="stephead"><span class="pill">채우기 FRAME</span><h2>틀에 내 말 넣기</h2><span class="sub">Fill in the frames</span></div>
+    <div class="acts">
+      <div class="act">
+        <span class="alab">활동 1</span>
+        <p class="aq">영어 문장과 뜻을 줄로 이으세요.</p>
+        <div class="match">
+          <div class="ml">First, I wake up.</div><div class="md"></div><div class="mr">학교에 갑니다</div>
+          <div class="ml">Then, I eat breakfast.</div><div class="md"></div><div class="mr">잠에서 깹니다</div>
+          <div class="ml">Finally, I go to school.</div><div class="md"></div><div class="mr">아침을 먹습니다</div>
+        </div>
+      </div>
+
+      <div class="act grow">
+        <span class="alab">활동 2</span>
+        <p class="aq">이번에는 <b>내 이야기</b>입니다. 빈칸을 채우세요.</p>
+        <p class="asub">2쪽 워드뱅크에서 그대로 가져와 써도 좋습니다.</p>
+        <div class="ulset">
+          <div class="ulrow tall"><span class="lab">First, I</span><i class="fill"></i></div>
+          <div class="ulrow tall"><span class="lab">Then, I</span><i class="fill"></i></div>
+          <div class="ulrow tall"><span class="lab">Finally, I</span><i class="fill"></i></div>
+          <div class="ulrow tall"><span class="lab">I was</span><i class="fill"></i></div>
+        </div>
+      </div>
+
+      <div class="act">
+        <span class="alab">활동 3</span>
+        <p class="aq">네 문장을 짝에게 소리 내어 읽어 주세요.</p>
+        <ul class="checks">
+          <li>짝에게 소리 내어 읽어 주었다<em>I read it out loud to my partner.</em></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="tnote"><span class="tl">선생님께</span>
+      <p>활동 2에서 <b>워드뱅크의 문장을 그대로 베껴도 통과</b>입니다. 1단계에서 확인할 것은 창의성이 아니라 순서입니다.</p>
+      <p>“I wake up” 대신 “I woke up”처럼 과거형을 쓰는 학생이 있으면 <b>그대로 두세요.</b> 시제는 2단계에서 다룹니다.</p>
+    </div>
+  </div>
+
+  <div class="foot"><span>채우기 FRAME</span><span class="r">1단계 · 5/7</span></div>
+</section>
+
+<!-- 6 · 짓기 -->
+<section class="page" data-ch="4">
+  <div class="chapbar">
+    <span class="chbadge">BUILD</span><span class="chname">그리고, 쓰기</span>
+    <span class="chtopic">소재 · 여섯 가지 중 하나</span>
+    <span class="help"><span>도움</span><i class="on"></i><i class="on"></i><i></i><i></i></span>
+  </div>
+
+  <div class="stack-mid">
+    <div class="stephead"><span class="pill">짓기 BUILD</span><h2>그림 그리고 문장 쓰기</h2><span class="sub">Draw it, then write it</span></div>
+    <div class="acts">
+      <div class="act">
+        <span class="alab">활동 1</span>
+        <p class="aq">2쪽의 여섯 소재 가운데 하나를 고르고, <b>쓰기 전에 먼저 말로</b> 해 보세요.</p>
+        <div class="ulrow"><span class="lab">내가 고른 소재</span><i class="fill"></i></div>
+        <ul class="checks" style="margin-top:4px;">
+          <li>그리기 전에 짝에게 말로 이야기했다<em>I told my partner before I drew it.</em></li>
+        </ul>
+      </div>
+
+      <div class="act grow">
+        <span class="alab">활동 2</span>
+        <p class="aq">세 장면을 그리고, 아래 줄에 영어 문장을 한 줄씩 쓰세요.</p>
+        <div class="picrow grow">
+          <div class="piccard"><div class="picbox"><span>First,</span></div><div class="lines n2"></div></div>
+          <div class="piccard"><div class="picbox"><span>Then,</span></div><div class="lines n2"></div></div>
+          <div class="piccard"><div class="picbox"><span>Finally,</span></div><div class="lines n2"></div></div>
+        </div>
+      </div>
+
+      <ul class="checks">
+        <li>문장이 세 개다<em>I have three sentences.</em></li>
+        <li>First · Then · Finally 를 썼다<em>I used First, Then, and Finally.</em></li>
+        <li>그림과 문장이 서로 맞다<em>My pictures and sentences match.</em></li>
+      </ul>
+    </div>
+
+    <div class="tnote"><span class="tl">선생님께</span>
+      <p>그림을 먼저 그리게 하는 데는 이유가 있습니다. 초1에게 <b>그림은 글의 대체물이 아니라 계획표</b>입니다.</p>
+      <p><b>철자가 틀려도 고치지 마세요.</b> 세 문장이 순서대로 놓였으면 통과입니다.</p>
+    </div>
+  </div>
+
+  <div class="foot"><span>짓기 BUILD</span><span class="r">1단계 · 6/7</span></div>
+</section>
+
+<!-- 7 · 완성 과제 -->
+<section class="page" data-ch="0">
+  <div class="chapbar">
+    <span class="chbadge">FINAL</span><span class="chname">나의 하루</span>
+    <span class="chtopic">My Day · 세 문장이 네 문장이 됩니다</span>
+  </div>
+
+  <div class="stack-mid">
+    <div class="stephead"><span class="pill">완성 과제</span><h2>나의 하루</h2><span class="sub">My Day</span></div>
+    <div class="acts">
+      <div class="act">
+        <span class="alab">활동 1</span>
+        <p class="aq">먼저 소리 내어 말해 보세요. 오늘 하루를 <b>네 장면</b>으로 말해 봅니다.</p>
+        <ul class="checks">
+          <li>쓰기 전에 네 장면을 소리 내어 말했다<em>I said all four parts out loud first.</em></li>
+        </ul>
+      </div>
+
+      <div class="act">
+        <span class="alab">활동 2</span>
+        <p class="aq">「나의 하루」를 네 문장으로 쓰세요.</p>
+        <div class="ulset">
+          <div class="ulrow tall"><span class="lab">First, I</span><i class="fill"></i></div>
+          <div class="ulrow tall"><span class="lab">Then, I</span><i class="fill"></i></div>
+          <div class="ulrow tall"><span class="lab">Finally, I</span><i class="fill"></i></div>
+          <div class="ulrow tall"><span class="lab">I was</span><i class="fill"></i></div>
+        </div>
+      </div>
+
+      <div class="act grow">
+        <span class="alab">활동 3</span>
+        <p class="aq">네 문장을 이어서 <b>한 덩이</b>로 다시 쓰세요.</p>
+        <div class="lines"></div>
+      </div>
+
+      <ul class="checks">
+        <li>쓰기 전에 소리 내어 말했다<em>I said it out loud before writing.</em></li>
+        <li>처음 · 중간 · 끝이 있다<em>My writing has a beginning, a middle, and an end.</em></li>
+        <li>마지막에 내 느낌을 썼다<em>I wrote how I felt at the end.</em></li>
+      </ul>
+    </div>
+
+    <div class="tnote"><span class="tl">선생님께</span>
+      <p><b>활동 3이 1단계의 도착점입니다.</b> 흩어진 네 문장을 한 덩이로 옮겨 적는 것 — 이것이 2단계에서 배울 “한 편의 글”의 씨앗입니다.</p>
+      <p>느낌 문장(I was ___.)을 마지막에 두는 것은 짧은 이야기 끝에 <b>반응이나 결말을 한 문장</b> 덧붙이는 이 단계의 확인 항목입니다. 모두 마쳤다면 2단계 「목적을 가진 글」로 넘어갑니다.</p>
+    </div>
+  </div>
+
+  <div class="foot"><span>완성 과제</span><span class="r">1단계 · 7/7</span></div>
+</section>
+
+</div>
+
+<script>
+  var cb = document.getElementById('tt');
+  function sync(){ document.body.classList.toggle('hide-notes', !cb.checked); }
+  cb.addEventListener('change', sync); sync();
+</script>
+</body>
+</html>
