@@ -6,87 +6,130 @@
 ## 1. 출력 형식
 
 - 단일 HTML 파일. 외부 스크립트·이미지 없음. 폰트만 Google Fonts 링크.
-- `<div class="stack">` 안에 `<section class="sheet">`를 나열. **1 sheet = A4 1장.**
-- 인쇄 시 sheet마다 페이지 넘김. 화면에서는 카드로 쌓여 보인다.
-- 각 sheet 우측 상단에 `<span class="pagemark">N단계 · 3/15</span>`.
+- `<div class="deck">` 안에 `<section class="page">`를 나열. **1 page = A4 1장.**
+- 한 파일이 **교사용과 학생용을 겸한다.** 위쪽 토글이 `body.hide-notes`를 걸어
+  「선생님께」를 감춘다. 감추어도 **쪽 구성은 그대로**여야 한다 (7-5 참고).
+- 각 page 아래 `<div class="foot">`에 왼쪽 구간 이름 / 오른쪽 `N단계 · 3/15`.
 
-## 2. 색 토큰
-
-라이트와 다크를 모두 정의한다. 색은 반드시 토큰으로만 쓰고,
-미디어쿼리 안에서 컴포넌트 색을 정의하지 않는다.
+### 판형 — 고정 캔버스
 
 ```css
-:root{
-  --sheet:#FFFDF7;  --page:#EFEADC;        /* 종이 / 바탕 */
-  --ink:#262A1F;    --ink-soft:#5B5D4C;    /* 본문 / 보조 */
-  --accent:#1E6B49; --accent-soft:#E4EFE8; --accent-ink:#F4FBF6;
-  --correction:#B23B32; --correction-soft:#F7E4E0;  /* 빨간펜 */
-  --border:#D5CDB6; --line:#C6BEA6;        /* 테두리 / 필기선 */
-  --mono-ink:#7A7663;
-}
-:root[data-theme="dark"]{
-  --sheet:#20261F;  --page:#161A15;
-  --ink:#ECE7D6;    --ink-soft:#B4B19D;
-  --accent:#6FC79A; --accent-soft:#22321F; --accent-ink:#0D1611;
-  --correction:#E2897C; --correction-soft:#3A2420;
-  --border:#3A4034; --line:#454B3D; --mono-ink:#8B9083;
+.page{
+  width:794px; height:1123px; padding:44px;      /* A4 96dpi · 여백 44px */
+  display:flex; flex-direction:column;
+  justify-content:space-between; overflow:hidden;
 }
 ```
 
-같은 다크 값을 `@media (prefers-color-scheme:dark){ :root:not([data-theme="light"]){...} }`
-에도 반복한다.
+높이가 고정이므로 **넘친 내용은 잘려 나간다.** 그래서 남는 높이를 빨아들이는
+`flex:1` 영역(`.act.grow`, `.lines`, `.ulset.wide`)을 쪽마다 하나씩 두고,
+쪽이 실제로 들어가는지는 **재서 확인한다** (7-6).
+
+빌드는 `src/<이름>.html`(본문) + `_base.css`(디자인)을 `build.py`로 합친다.
+디자인을 고칠 때는 `_base.css` 하나만 고치고 스크립트를 다시 돌린다.
+
+## 2. 색 토큰
+
+바탕은 흰 종이, 상자는 크림색. 챕터마다 색이 하나씩 배정되고,
+그 색이 챕터 배지·머리띠 밑줄·팁 상자·강조에 함께 쓰인다.
+
+```css
+:root{
+  --paper:#FFFFFF; --cream:#FFFBF2;              /* 종이 / 상자 */
+  --note-bg:#FEFCF6; --note-line:#DCCFB4;        /* 「선생님께」 */
+  --ink:#2A2622; --ink-soft:#6B6157; --rule:#C9BFAA;
+  --coral:#E5603A;   /* 활동 라벨 · A글 */
+  --grass:#5B9B21;   /* B글 */
+  --ans:#B23B32;     /* 정답 */
+}
+[data-ch="1"]{--ch:#1F6F9C; --ch-soft:#E8F4FF; --ch-deep:#17527A;}
+[data-ch="2"]{--ch:#7A5AB8; --ch-soft:#F1ECFA; --ch-deep:#4C3480;}
+[data-ch="3"]{--ch:#9A7000; --ch-soft:#FFF6D6; --ch-deep:#8A6A00;}
+[data-ch="4"]{--ch:#14746A; --ch-soft:#E2F3F0; --ch-deep:#0E574F;}
+[data-ch="0"]{--ch:#5A6470; --ch-soft:#EEF1F4; --ch-deep:#3D4550;}  /* 표지·워드뱅크·완성 */
+```
+
+`data-ch`는 `<section class="page">`에 건다. 챕터가 없는 단계(1·4·5·6단계와
+입문 트랙)에서는 **4단 흐름의 단계마다** 색을 배정한다 — 보기 1, 나누기 2,
+채우기 3, 짓기 4.
+
+인쇄용 단일 판형이므로 다크 테마는 정의하지 않는다.
 
 ## 3. 서체
 
 ```css
---font-display: 'Noto Serif KR', Georgia, serif             /* 제목 */
---font-read:    'Noto Serif KR', Georgia, serif             /* 영어 지문·문장 틀 */
---font-ui:      'Noto Sans KR', -apple-system, sans-serif   /* 한국어 지시문 */
---font-mono:    'JetBrains Mono', ui-monospace, monospace   /* 라벨·번호 */
+--f-title: 'Jua'              /* 제목 · 챕터 이름 */
+--f-en:    'Fredoka'          /* 영어 지문 · 문장 틀 · 라벨 */
+--f-body:  'Noto Sans KR'     /* 한국어 지시문 · 「선생님께」 */
 ```
 
-원칙: **영어 = serif, 한국어 지시문 = sans, 라벨 = mono.** 눈으로 언어가 구분되게 한다.
+원칙: **영어 = Fredoka, 한국어 = Noto Sans KR.** 눈으로 언어가 구분되게 한다.
+한국어 전용 워크시트(입문 1권)는 `.page.ko`를 걸어 영문 서체를 본문 서체로 되돌린다.
 
 ## 4. 필기 공간
 
+**모든 입력은 밑줄이다.** 네모칸은 순서 번호(`.cards li b`, 30×30)와
+체크박스(`.checks li::before`, 16×16)에만 쓴다.
+
 ```css
-/* 줄 */
-.lines{ background-image: repeating-linear-gradient(
-  to bottom, transparent 0 32px, var(--line) 32px 33px); }
-/* .l1(1줄) .l2 .l3 .l4 .l5 로 높이 지정 */
+/* 이어지는 줄 — 남는 높이를 흡수한다 */
+.lines{ flex:1; min-height:52px; background-image:repeating-linear-gradient(
+  to bottom, transparent 0 30px, var(--rule) 30px 32px); }
+/* .n1 .n2 .n3 .n4 로 줄 수 고정 */
 
 /* 인라인 빈칸 */
-.blank{ display:inline-block; min-width:130px; border-bottom:1.5px solid var(--line); }
-/* .short(74px) .long(200px) */
+.ul{ display:inline-block; min-width:120px; border-bottom:2px solid var(--rule); }
+/* .s(64px) .l(190px) .xl(100%) */
+
+/* 가로를 꽉 채우는 한 줄 — 라벨 + 밑줄 */
+.ulrow{ display:flex; align-items:baseline; gap:9px; }
+.ulrow .fill{ flex:1; border-bottom:2px solid var(--rule); height:24px; }
+.ulrow.tall .fill{ height:40px; }   /* 낱말을 크게 쓰는 칸 */
+
+/* 여러 줄 묶음 — .wide 는 남는 높이를 줄들이 나눠 갖는다 */
+.ulset.wide .sub2 i{ flex:1; min-height:18px; max-height:26px; }
 ```
 
-네모칸은 1.5px 실선. 순서 배열용 30×30, 체크박스 16×16.
+빈칸은 **쪽 오른쪽 끝까지** 뻗는다. 가운데서 끊긴 밑줄은 쓸 자리를 낭비한다.
 
 ## 5. 필수 컴포넌트
 
 | 클래스 | 쓰임 |
 |---|---|
-| `.chapbar` | 챕터 머리띠 — `CHAPTER N` 배지 + 제목 + 소재 + **도움 표시(●●●○)** |
-| `.passage` | 영어 지문. 왼쪽 3px accent 세로선, `--page` 바탕, line-height 2.05 |
-| `.compare` | 지문 2개 좌우 비교 (2단 grid, 640px 이하 1단) |
-| `.bank` | 워드뱅크. 기능별 행 (왼쪽 라벨 / 오른쪽 chip 나열) |
-| `.topicbox` | 점선 테두리 + accent-soft 바탕. 낱말 선택지 상자 |
-| `.plan` | 계획표 (왼쪽 키 / 오른쪽 필기칸 grid) |
-| `.rule` | 규칙 카드. 왼쪽 3px correction 세로선 + correction-soft 바탕 |
-| `.chapclose` | 챕터 끝 2px accent 테두리 체크리스트 |
-| `.tnote` | **「선생님께」** — 점선 테두리, 각 sheet 맨 아래. 정답은 `.ans` |
+| `.chapbar` | 챕터 머리띠 — 배지 + 이름 + 소재 + **도움 표시(●●●○)** |
+| `.stephead` | 4단 흐름 머리 — `.pill`(보기 SEE) + 제목 + 영어 부제 + 챕터색 3px 밑줄 |
+| `.acts` / `.act` | 활동 묶음. 쪽마다 하나에 `.grow`를 걸어 남는 높이를 준다 |
+| `.sample` | 영어 지문. 왼쪽 5px 세로선. `.a`=코랄(A글), `.b`=초록(B글) |
+| `.two` / `.two.rows` | 지문 둘 나란히 / 위아래로 |
+| `.bank` | 워드뱅크. 기능별 행 (왼쪽 라벨 / 오른쪽 chip) |
+| `.topic` | 챕터 소재·낱말 상자. 챕터색 바탕 |
+| `.callout` | 규칙 카드. 왼쪽 5px 코랄 세로선 |
+| `.tip` | **학생용 도움말.** 챕터색 바탕. 「선생님께」와 달리 학생에게 보인다 |
+| `.checks` | 체크리스트. `.en`을 붙이면 영어가 주, 한국어가 부 |
+| `.cards` / `.qrow` / `.numrow` | 번호 칸 있는 줄 / 오른쪽 짧은 답 칸 / 번호 매긴 문항 |
+| `.picrow` `.picbox` `.numbox` | 그림 칸 · 그리기 칸 · 순서 번호 칸 (1단계) |
+| `.match` | 줄로 잇기 (왼쪽 / 점선 / 오른쪽) |
+| `.vtable` | 두세 칸 낱말 표 |
+| `.counts` `.cbox` | 낱말 수 세기 칸 (6단계) |
+| `.bullets` | 글머리 기호 빈칸 |
+| `.tnote` | **「선생님께」** — 점선 테두리, 각 page 맨 아래. 정답은 `<b class="a">` |
+| `.foot` | 구간 이름 + 쪽 표시 |
 
 ## 6. 인쇄 규칙
 
 ```css
 @media print{
   body{background:#fff;}
-  .sheet{border:none; padding:0 0 12mm; page-break-after:always;}
-  .sheet:last-of-type{page-break-after:auto;}
-  .passage, .tnote, .rule, .chip, .topicbox, .chapbar{background:#fff;}
-  @page{size:A4; margin:16mm 14mm;}
+  .toolbar{display:none;}
+  .deck{padding:0; gap:0;}
+  .page{box-shadow:none; page-break-after:always;}
+  .page:last-child{page-break-after:auto;}
+  @page{size:A4; margin:0;}
 }
 ```
+
+여백은 `@page`가 아니라 `.page`의 `padding:44px`가 만든다.
+인쇄 대화상자에서 **여백 없음**과 **배경 그래픽**을 켜야 한다.
 
 ## 7. 내용 규칙
 
@@ -104,8 +147,12 @@
 
 ### 7-2. 4개 챕터 · 도움 체감
 
-한 단계 = 표지 1 + 워드뱅크 1 + 챕터 4×3장 + 완성과제 1 = **15장**
+한 단계 = 표지 1 + 워드뱅크 1 + 챕터 4개 + 완성과제 = **15~18장**
 같은 기술을 소재만 바꿔 네 번 반복하고, 챕터마다 도움을 한 칸씩 줄인다.
+챕터당 3장이 기본이고, A4에 안 들어가는 장을 나누면 4장이 되기도 한다 (7-6).
+
+챕터로 나누는 것은 **2·3단계**다. 1단계와 4~6단계는 4단 흐름을 한 번만 돌므로
+챕터 대신 흐름의 단계마다 색을 배정한다 (2절).
 
 | | 도움 | 산출 |
 |---|---|---|
@@ -133,37 +180,58 @@ my pet · our town · my favourite food · a season · a school day · an animal
 단계가 올라가도 어휘를 새로 배우지 않고 구조만 바뀌므로 어휘가 누적된다.
 등장인물도 재사용한다 (강아지 Kongi, 고양이 Nabi).
 
-### 7-5. 교사용과 학생용을 나누어 낸다
+### 7-5. 한 파일이 두 벌을 겸한다
 
-한 워크시트는 두 벌로 만든다.
+교사용과 학생용을 **별도 파일로 만들지 않는다.** 「선생님께」를 토글로 감춘다.
 
-| | `teacher/` | `student/` |
-|---|---|---|
-| 「선생님께」(정답·지도 요령) | 있음 | **없음** |
-| 학생이 쓸 소재 | 여섯 중 선택 가능 | **하나로 고정** |
-| 쪽별 낱말 상자 | 선택 | **필수** |
+```css
+body.hide-notes .tnote{ display:none; }
+```
 
-**학생용에 정답을 남기지 않는다.** 「선생님께」 칸이 붙은 채로 인쇄하면 학생이 답을 본다.
+```html
+<div class="toolbar">
+  <label><input type="checkbox" id="tt" checked> 「선생님께」 보기</label>
+  <span class="hint">끄면 학생용이 됩니다 · 쪽 구성은 그대로입니다</span>
+</div>
+```
+
+**쪽 구성은 두 상태에서 같아야 한다.** 교사가 “7쪽을 펴세요”라고 말할 때
+학생의 7쪽이 다른 내용이면 수업이 멈춘다. 그래서 「선생님께」가 사라지며 생긴
+빈 높이는 `flex:1` 영역이 흡수하고, 쪽이 나뉘거나 합쳐지지 않는다.
+
+이 방식이 별도 파일보다 나은 이유는 셋이다 — 정답을 학생용에서 지우는 작업이
+사라지고, 두 벌이 어긋날 일이 없고, 쪽 번호가 저절로 일치한다.
 
 **학생이 쓸 소재는 하나로 고정한다.** 여럿 중 고르게 하면 반 전체가 제각각이 되어
 모델링도 상호 도움도 안 되고, 필요한 낱말을 미리 줄 수도 없다. 학생 소재는 대체로
 **본보기 글과 다른 것**으로 잡아 베끼지 못하게 한다.
 
-**두 벌의 쪽 번호는 반드시 같아야 한다.** 교사가 “7쪽을 펴세요”라고 말할 때
-학생의 7쪽이 다른 내용이면 수업이 멈춘다. 학생용에서 쪽을 나누었다면
-교사용도 같이 나눈다.
+학생이 스스로 쓰는 쪽에는 **낱말 상자**(`.topic` 또는 `.tip`)를 반드시 붙인다.
+「선생님께」를 끄면 정답이 사라지므로, 막혔을 때 붙잡을 것이 있어야 한다.
 
 ### 7-6. A4를 넘기지 않는다
 
-한 `<section class="sheet">`는 **A4 한 장** 안에 들어가야 한다.
-16/14mm 여백 기준 사용 가능 높이는 약 940px이다.
+`.page`는 높이가 **1123px로 고정**이고 `overflow:hidden`이다.
+넘친 내용은 다음 쪽으로 밀리지 않고 **잘려서 사라진다.** 이것이 이 판형의
+유일한 위험이므로 다음 두 가지를 반드시 지킨다.
+
+**① 쪽마다 남는 높이를 흡수할 곳을 하나 둔다.** `.act.grow`, `.lines`,
+`.ulset.wide` 가운데 하나. 그래야 「선생님께」를 켜고 끌 때 쪽이 흔들리지 않는다.
+
+**② 눈으로 가늠하지 말고 잰다.** 헤드리스 브라우저로 `.page`의 높이를 `auto`로
+풀고 자연 높이를 재어 1123px과 견준다. **「선생님께」를 켠 상태와 끈 상태 둘 다**
+재야 한다 — 켠 쪽이 대개 70~90px 더 높다.
+
+```js
+pages.forEach(p => { p.style.height = 'auto'; p.style.minHeight = '0'; });
+// getBoundingClientRect().height > 1123 이면 넘친 것
+```
 
 넘칠 때는 **내용을 덜어내지 말고 쪽을 나눈다.** 연습량을 줄이면 이 커리큘럼의
 설계 의도(같은 기술을 네 번 반복)가 무너진다. 나누면 오히려 활동 하나에
-쪽 하나를 온전히 줄 수 있어 좋아지는 경우가 많다.
-
-쪽 높이는 눈으로 가늠하지 말고 **재서 확인한다.** 지문 낱말 수, 필기줄 높이,
-체크 항목 수를 합산하는 추정 스크립트를 쓰면 넘치는 쪽을 바로 찾을 수 있다.
+쪽 하나를 온전히 줄 수 있어 좋아지는 경우가 많다. 쪽을 나누면 `.foot`의 쪽 표시,
+표지 차례의 쪽 범위, 다른 쪽에서 가리키는 참조, 그리고 **교사 노트의 차시 계획과
+처방표**까지 함께 고친다.
 
 ### 7-7. 「선생님께」에 반드시 넣을 것
 
@@ -172,9 +240,14 @@ my pet · our town · my favourite food · a season · a school day · an animal
 - 이 단계의 통과 기준 한 줄
 - 학생이 틀리는 지점과 그때 던질 질문
 
+두 문단을 넘기지 않는다. 「선생님께」가 길면 그만큼 학생의 필기 공간이 줄고,
+쪽이 A4를 넘긴다. 넘칠 때 **가장 먼저 줄일 곳이 여기**다.
+
 ## 8. 하지 말 것
 
 - 한 장에 활동 5개 이상 (한 장 = 10~15분)
+- 「선생님께」에만 있는 도움 (토글을 끄면 학생은 아무것도 못 본다 — `.tip`을 쓴다)
+- 가운데서 끊긴 밑줄 (빈칸은 쪽 오른쪽 끝까지)
 - 문법 용어 (초2에게 '명령문' 대신 "내가 한 일 / 네가 할 일")
 - 계획 단계를 영어로 강제 (구조 잡기 + 영어 옮기기 동시 요구 = 붕괴)
 - 정답이 하나뿐인 열린 활동

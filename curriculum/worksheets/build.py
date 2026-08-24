@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """워크시트 조립기.
 
-_src/<이름>.html (본문) + _base.css (공통 디자인) → <이름>.html (단일 파일).
+src/<이름>.html (본문) + _base.css (공통 디자인) → <이름>.html (단일 파일).
 
 워크시트는 외부 파일 없이 혼자 열려야 하므로 CSS를 파일마다 심어 넣는다.
 디자인을 고칠 때는 _base.css 하나만 고치고 이 스크립트를 다시 돌린다.
@@ -47,5 +47,5 @@ def build(src):
     print(f"{out.name}  {pages}쪽")
 
 
-for path in sorted((HERE / "_src").glob("*.html")):
+for path in sorted((HERE / "src").glob("*.html")):
     build(path)

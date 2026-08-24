@@ -234,3 +234,26 @@ body:not(.hide-notes) .ulset.wide .sub2 i{min-height:13px;}
 .mcol ol{margin:0;padding-left:19px;font-family:var(--f-en);font-size:14.5px;line-height:1.5;
   display:flex;flex-direction:column;gap:7px;}
 .mcol ol.alpha{list-style:lower-alpha;}
+
+/* 낱말 수 세기 칸 */
+.counts{display:grid;grid-template-columns:repeat(3,1fr);gap:11px;}
+.counts.two{grid-template-columns:repeat(2,1fr);}
+.cbox{background:var(--cream);border-radius:9px;padding:9px 12px;display:flex;
+  flex-direction:column;gap:5px;}
+.cbox h6{font-family:var(--f-en);font-weight:600;font-size:10.5px;letter-spacing:.06em;
+  color:var(--ch-deep);margin:0;}
+.cbox .cl{font-size:11px;color:var(--ink-soft);}
+.cbox i{border-bottom:2px solid var(--rule);height:24px;display:block;}
+
+/* 글머리 기호 빈칸 */
+.bullets{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:9px;}
+.bullets li{display:flex;align-items:baseline;gap:9px;}
+.bullets li::before{content:"•";color:var(--ch);font-size:17px;flex:none;}
+.bullets li i{flex:1;border-bottom:2px solid var(--rule);height:22px;display:block;}
+.vtable td.blank{height:28px;}
+
+/* 한국어 전용 쪽 (입문 트랙 1권) — 영문 서체를 본문 서체로 되돌린다 */
+.page.ko .ulrow,.page.ko .qrow,.page.ko .cards,.page.ko .frames,.page.ko .numrow,
+.page.ko .sample p,.page.ko .sample h5,.page.ko .mcol ol,.page.ko .match .ml,
+.page.ko .chip,.page.ko .vtable td{font-family:var(--f-body);}
+.page.ko .sample p{font-size:14.5px;line-height:1.85;}
