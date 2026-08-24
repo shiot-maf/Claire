@@ -131,7 +131,7 @@ body{background:#DAD3C6;font-family:var(--f-body);color:var(--ink);-webkit-font-
 .sec .intro b{color:var(--ink);font-weight:700;}
 
 /* ---- 학습지 목록 ---- */
-.packs{background:var(--cream);border-radius:12px;padding:22px 26px;}
+.packs{background:var(--cream);border-radius:12px;padding:20px 22px;}
 .packlist{list-style:none;margin:0;padding:0;}
 .packlist li{display:flex;align-items:baseline;gap:14px;padding:10px 0;
   border-bottom:1px solid #EFE7D8;font-size:14px;}
@@ -146,13 +146,12 @@ body{background:#DAD3C6;font-family:var(--f-body);color:var(--ink);-webkit-font-
 /* ---- 입문 트랙 ---- */
 .steps{list-style:none;margin:0;padding:0;counter-reset:tr;
   display:flex;flex-direction:column;gap:11px;}
-.steps li{counter-increment:tr;display:grid;grid-template-columns:34px 1fr;gap:14px;
-  background:var(--cream);border-radius:10px;padding:13px 16px;}
-.steps li::before{content:counter(tr);font-family:var(--f-en);font-weight:600;font-size:13px;
-  color:var(--st-on);background:var(--st);width:26px;height:26px;border-radius:7px;
+.steps li{counter-increment:tr;background:var(--cream);border-radius:10px;padding:15px 22px;}
+.steps h4{font-family:var(--f-title);font-size:17px;margin:0 0 5px;font-weight:400;
+  display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
+.steps h4::before{content:counter(tr);font-family:var(--f-en);font-weight:600;font-size:12.5px;
+  color:var(--st-on);background:var(--st);width:24px;height:24px;border-radius:7px;flex:none;
   display:flex;align-items:center;justify-content:center;}
-.steps h4{font-family:var(--f-title);font-size:17px;margin:0 0 4px;font-weight:400;
-  display:flex;align-items:baseline;gap:9px;flex-wrap:wrap;}
 .steps .tag{font-family:var(--f-body);font-size:11px;font-weight:500;color:var(--st-deep);
   background:var(--st-soft);border-radius:999px;padding:2px 9px;}
 .steps p{margin:0;font-size:13px;line-height:1.7;color:var(--ink-soft);}
@@ -161,14 +160,14 @@ body{background:#DAD3C6;font-family:var(--f-body);color:var(--ink);-webkit-font-
 /* ---- 단계 ---- */
 .stage{margin-top:52px;border:2px solid var(--st-soft);border-radius:14px;overflow:hidden;}
 .stage.pivot{border-color:var(--st);}
-.stage-head{display:flex;align-items:center;gap:16px;background:var(--st-soft);padding:18px 24px;}
+.stage-head{display:flex;align-items:center;gap:16px;background:var(--st-soft);padding:18px 20px;}
 .stage-head .n{font-family:var(--f-title);font-size:30px;color:var(--st-on);background:var(--st);
   width:52px;height:52px;border-radius:12px;display:flex;align-items:center;justify-content:center;flex:none;}
 .stage-head h3{font-family:var(--f-title);font-size:25px;margin:0;font-weight:400;color:var(--st-deep);}
 .stage-head .badge{font-family:var(--f-en);font-weight:600;font-size:10.5px;letter-spacing:.07em;
   background:var(--st);color:var(--st-on);border-radius:999px;padding:4px 11px;margin-left:8px;}
 .thesis{font-size:14px;line-height:1.7;color:var(--st-deep);margin:6px 0 0;font-weight:700;}
-.stage-body{padding:22px 24px 24px;display:grid;grid-template-columns:1.35fr 1fr;gap:26px;}
+.stage-body{padding:20px 20px 22px;display:grid;grid-template-columns:1.35fr 1fr;gap:26px;}
 .col-label{font-family:var(--f-en);font-weight:600;font-size:10.5px;letter-spacing:.08em;
   color:var(--ink-soft);margin:0 0 12px;display:flex;align-items:center;gap:7px;}
 .col-label i{width:9px;height:9px;border-radius:50%;background:var(--st);display:block;}
@@ -189,8 +188,8 @@ body{background:#DAD3C6;font-family:var(--f-body);color:var(--ink);-webkit-font-
 .aside h5{font-size:13.5px;margin:0 0 5px;font-weight:700;}
 .aside p{margin:0;font-size:12.5px;line-height:1.7;color:var(--ink-soft);}
 
-.capstone{margin:20px 24px 24px;border-left:5px solid var(--st);background:var(--st-soft);
-  border-radius:0 10px 10px 0;padding:14px 18px;}
+.capstone{margin:20px 0 0;border-left:5px solid var(--st);background:var(--st-soft);
+  padding:15px 20px 17px 15px;}
 .capstone b{font-family:var(--f-en);font-weight:600;font-size:10.5px;letter-spacing:.08em;
   color:var(--st-deep);display:block;margin:0 0 5px;}
 .capstone p{margin:0;font-size:13.5px;line-height:1.75;}
