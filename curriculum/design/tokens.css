@@ -1,0 +1,27 @@
+:root{
+  --paper:#FFFFFF; --cream:#FFFBF2; --note-bg:#FEFCF6; --note-line:#DCCFB4;
+  --ink:#2A2622; --ink-soft:#6B6157; --rule:#C9BFAA;
+  --coral:#E5603A; --grass:#5B9B21; --ans:#B23B32;
+  --ch:#1F6F9C; --ch-soft:#E8F4FF; --ch-deep:#17527A;
+  --f-title:'Jua',system-ui,sans-serif;
+  --f-en:'Fredoka',system-ui,sans-serif;
+  --f-body:'Noto Sans KR',system-ui,sans-serif;
+}
+[data-ch="1"]{--ch:#1F6F9C; --ch-soft:#E8F4FF; --ch-deep:#17527A;}
+[data-ch="2"]{--ch:#7A5AB8; --ch-soft:#F1ECFA; --ch-deep:#4C3480;}
+[data-ch="3"]{--ch:#9A7000; --ch-soft:#FFF6D6; --ch-deep:#8A6A00;}
+[data-ch="4"]{--ch:#14746A; --ch-soft:#E2F3F0; --ch-deep:#0E574F;}
+[data-ch="0"]{--ch:#5A6470; --ch-soft:#EEF1F4; --ch-deep:#3D4550;}
+
+/* 설계도의 여섯 단계 — 3단계는 전환점이라 강조색(코랄)을 쓴다 */
+[data-st="1"]{--st:#1F6F9C; --st-soft:#E8F4FF; --st-deep:#17527A;}
+[data-st="2"]{--st:#7A5AB8; --st-soft:#F1ECFA; --st-deep:#4C3480;}
+[data-st="3"]{--st:#E5603A; --st-soft:#FDECE6; --st-deep:#B33F1E;}
+[data-st="4"]{--st:#14746A; --st-soft:#E2F3F0; --st-deep:#0E574F;}
+[data-st="5"]{--st:#9A7000; --st-soft:#FFF6D6; --st-deep:#8A6A00;}
+[data-st="6"]{--st:#4C5A87; --st-soft:#ECEFF7; --st-deep:#37436B;}
+[data-st="0"]{--st:#5A6470; --st-soft:#EEF1F4; --st-deep:#3D4550;}
+
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{background:#DAD3C6;font-family:var(--f-body);color:var(--ink);-webkit-font-smoothing:antialiased;}
