@@ -88,7 +88,10 @@
 
 *{box-sizing:border-box;}
 html,body{margin:0;padding:0;}
-body{background:#DAD3C6;font-family:var(--f-body);color:var(--ink);-webkit-font-smoothing:antialiased;}
+body{background:#DAD3C6;font-family:var(--f-body);color:var(--ink);
+  -webkit-font-smoothing:antialiased;
+  word-break:keep-all;   /* 한국어는 어절 안에서 끊지 않는다 */
+  overflow-wrap:break-word;}
 
 /* ---- 설계도 판형 ----
    워크시트와 달리 A4 고정이 아니다. 화면으로 읽는 지도이므로 한 폭으로 흐르고,

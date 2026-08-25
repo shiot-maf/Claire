@@ -167,6 +167,12 @@ body:not(.hide-notes) .act.grow .lines{min-height:40px;}
 .ulset.wide .sub2{flex:1;min-height:0;gap:6px;}
 .ulset.wide .sub2 i{flex:1;min-height:18px;max-height:26px;height:auto;}
 body:not(.hide-notes) .ulset.wide .sub2 i{min-height:13px;}
+/* .roomy — 손글씨가 큰 학년용. 줄 간격과 줄 높이를 키운다. */
+.ulset.wide.roomy .sub2{gap:11px;}
+.ulset.wide.roomy .sub2 i{min-height:28px;max-height:33px;}
+/* 마지막 줄이 「선생님께」에 닿지 않도록 아래를 조금 비운다 */
+.ulset.wide{padding-bottom:6px;}
+body:not(.hide-notes) .ulset.wide.roomy .sub2 i{min-height:24px;}
 
 /* student tip */
 .tip{background:var(--ch-soft);border-radius:9px;padding:11px 15px;font-size:13px;
@@ -192,10 +198,14 @@ body:not(.hide-notes) .ulset.wide .sub2 i{min-height:13px;}
   margin:0 auto;flex:none;}
 
 /* 줄로 잇기 */
-.match{display:grid;grid-template-columns:1fr 46px 1fr;gap:10px 12px;align-items:center;}
-.match .ml,.match .mr{background:var(--cream);border-radius:7px;padding:8px 12px;font-size:14.5px;}
+.match{display:grid;grid-template-columns:1fr 104px 1fr;gap:9px 6px;align-items:stretch;}
+.match .ml,.match .mr{background:var(--cream);border-radius:7px;padding:8px 11px;font-size:13.5px;
+  line-height:1.5;display:flex;align-items:center;}
 .match .ml{font-family:var(--f-en);}
-.match .md{border-bottom:2px dotted var(--rule);height:2px;}
+/* 가운데는 학생이 선을 긋는 자리다. 양 끝의 점이 시작과 끝을 알려 준다. */
+.match .md{display:flex;align-items:center;justify-content:space-between;}
+.match .md::before,.match .md::after{content:"";width:7px;height:7px;border-radius:50%;
+  background:var(--rule);flex:none;}
 
 /* 낱말 표 */
 .vtable{width:100%;border-collapse:collapse;font-size:13.5px;background:var(--cream);

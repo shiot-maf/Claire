@@ -88,7 +88,10 @@
 
 *{box-sizing:border-box;}
 html,body{margin:0;padding:0;}
-body{background:#DAD3C6;font-family:var(--f-body);color:var(--ink);-webkit-font-smoothing:antialiased;}
+body{background:#DAD3C6;font-family:var(--f-body);color:var(--ink);
+  -webkit-font-smoothing:antialiased;
+  word-break:keep-all;   /* 한국어는 어절 안에서 끊지 않는다 */
+  overflow-wrap:break-word;}
 
 /* toolbar (screen only) */
 .toolbar{position:fixed;top:0;left:0;right:0;z-index:50;display:flex;gap:14px;align-items:center;
@@ -259,6 +262,12 @@ body:not(.hide-notes) .act.grow .lines{min-height:40px;}
 .ulset.wide .sub2{flex:1;min-height:0;gap:6px;}
 .ulset.wide .sub2 i{flex:1;min-height:18px;max-height:26px;height:auto;}
 body:not(.hide-notes) .ulset.wide .sub2 i{min-height:13px;}
+/* .roomy — 손글씨가 큰 학년용. 줄 간격과 줄 높이를 키운다. */
+.ulset.wide.roomy .sub2{gap:11px;}
+.ulset.wide.roomy .sub2 i{min-height:28px;max-height:33px;}
+/* 마지막 줄이 「선생님께」에 닿지 않도록 아래를 조금 비운다 */
+.ulset.wide{padding-bottom:6px;}
+body:not(.hide-notes) .ulset.wide.roomy .sub2 i{min-height:24px;}
 
 /* student tip */
 .tip{background:var(--ch-soft);border-radius:9px;padding:11px 15px;font-size:13px;
@@ -284,10 +293,14 @@ body:not(.hide-notes) .ulset.wide .sub2 i{min-height:13px;}
   margin:0 auto;flex:none;}
 
 /* 줄로 잇기 */
-.match{display:grid;grid-template-columns:1fr 46px 1fr;gap:10px 12px;align-items:center;}
-.match .ml,.match .mr{background:var(--cream);border-radius:7px;padding:8px 12px;font-size:14.5px;}
+.match{display:grid;grid-template-columns:1fr 104px 1fr;gap:9px 6px;align-items:stretch;}
+.match .ml,.match .mr{background:var(--cream);border-radius:7px;padding:8px 11px;font-size:13.5px;
+  line-height:1.5;display:flex;align-items:center;}
 .match .ml{font-family:var(--f-en);}
-.match .md{border-bottom:2px dotted var(--rule);height:2px;}
+/* 가운데는 학생이 선을 긋는 자리다. 양 끝의 점이 시작과 끝을 알려 준다. */
+.match .md{display:flex;align-items:center;justify-content:space-between;}
+.match .md::before,.match .md::after{content:"";width:7px;height:7px;border-radius:50%;
+  background:var(--rule);flex:none;}
 
 /* 낱말 표 */
 .vtable{width:100%;border-collapse:collapse;font-size:13.5px;background:var(--cream);
@@ -404,7 +417,6 @@ body:not(.hide-notes) .ulset.wide .sub2 i{min-height:13px;}
   <div>
     <p style="font-family:var(--f-en);font-weight:600;font-size:11.5px;letter-spacing:.1em;color:var(--st);margin:0 0 10px;">입문 트랙 · 1권</p>
     <h1 class="big">글쓰기 첫걸음</h1>
-    <p class="bigen">한국어로 먼저 · 영어는 그다음</p>
     <p class="lead">읽기로 글의 <b>구조</b>를 눈에 익힌 다음, 같은 구조를 <b>내 손으로</b> 세워 봅니다. 한 걸음에 한 장씩, 순서대로 풀어 주세요. 앞 걸음을 건너뛰면 뒷걸음이 어려워집니다.</p>
   </div>
 
@@ -520,10 +532,10 @@ body:not(.hide-notes) .ulset.wide .sub2 i{min-height:13px;}
       <div class="act grow">
         <span class="alab">활동 1</span>
         <p class="aq">처음·중간·끝에 무슨 일이 있었는지 <b>한 문장씩</b> 쓰세요.</p>
-        <div class="ulset wide">
-          <div><span class="lab" style="font-size:12.5px;color:var(--ink-soft);">처음</span><div class="sub2"><i></i><i></i></div></div>
-          <div><span class="lab" style="font-size:12.5px;color:var(--ink-soft);">중간</span><div class="sub2"><i></i><i></i></div></div>
-          <div><span class="lab" style="font-size:12.5px;color:var(--ink-soft);">끝</span><div class="sub2"><i></i><i></i></div></div>
+        <div class="ulset wide roomy">
+          <div><span class="lab" style="font-size:12.5px;color:var(--ink-soft);">처음</span><div class="sub2"><i></i><i></i><i></i></div></div>
+          <div><span class="lab" style="font-size:12.5px;color:var(--ink-soft);">중간</span><div class="sub2"><i></i><i></i><i></i></div></div>
+          <div><span class="lab" style="font-size:12.5px;color:var(--ink-soft);">끝</span><div class="sub2"><i></i><i></i><i></i></div></div>
         </div>
       </div>
     </div>
@@ -552,8 +564,8 @@ body:not(.hide-notes) .ulset.wide .sub2 i{min-height:13px;}
         <span class="alab">활동 1</span>
         <p class="aq">이 이야기가 하고 싶은 말은 무엇일까요? <b>한 문장</b>으로 쓰세요.</p>
         <p class="asub">“무슨 일이 있었는지”가 아니라 <b>“무엇을 알게 되었는지”</b>를 씁니다.</p>
-        <div class="ulset wide">
-          <div><div class="sub2"><i></i><i></i></div></div>
+        <div class="ulset wide roomy">
+          <div><div class="sub2"><i></i><i></i><i></i></div></div>
         </div>
       </div>
 
@@ -597,9 +609,9 @@ body:not(.hide-notes) .ulset.wide .sub2 i{min-height:13px;}
         <p class="aq">설명책의 각 부분은 무엇을 하는 곳일까요? 줄로 이어 보세요.</p>
         <div class="match">
           <div class="ml">차례</div><div class="md"></div><div class="mr">어려운 낱말의 뜻을 모아 둔 곳</div>
-          <div class="ml">소제목</div><div class="md"></div><div class="mr">어떤 내용이 몇 쪽에 있는지 한눈에 보여 주는 곳</div>
-          <div class="ml">찾아보기</div><div class="md"></div><div class="mr">한 부분이 무엇에 대한 이야기인지 알려 주는 작은 제목</div>
-          <div class="ml">낱말 풀이</div><div class="md"></div><div class="mr">찾고 싶은 낱말이 몇 쪽에 나오는지 알려 주는 목록</div>
+          <div class="ml">소제목</div><div class="md"></div><div class="mr">어떤 내용이 몇 쪽에 있는지<br>한눈에 보여 주는 곳</div>
+          <div class="ml">찾아보기</div><div class="md"></div><div class="mr">한 부분이 무엇에 대한 이야기인지<br>알려 주는 작은 제목</div>
+          <div class="ml">낱말 풀이</div><div class="md"></div><div class="mr">찾고 싶은 낱말이 몇 쪽에 나오는지<br>알려 주는 목록</div>
         </div>
       </div>
 
