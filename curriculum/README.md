@@ -12,55 +12,88 @@ Writing Composition 도메인(38개 주제)과 선수학습 관계 3,221개에�
 
 | 파일 | 내용 |
 |---|---|
-| [`blueprint.html`](blueprint.html) | **글쓰기 설계도** — 6단계 전체 지도와 입문 트랙. 어떤 단원이 어떤 순서로 오는지, 그 근거가 무엇인지 |
+| [`blueprint.html`](blueprint.html) | **글쓰기 설계도** — 6단계 전체 지도와 입문 트랙. 워크시트와 같은 색·서체를 쓰되 A4 고정이 아니라 한 폭으로 흐른다 |
 
-### 워크시트 — 학생용
+### 워크시트
 
-모두 A4 인쇄용. 브라우저에서 열어 인쇄하면 한 장씩 떨어진다.
+한 파일이 **교사용과 학생용을 겸한다.** 화면 위쪽의 「선생님께」 토글을 끄면
+정답과 지도 요령이 사라지고 그대로 학생용이 된다. **쪽 구성은 바뀌지 않으므로**
+“7쪽을 펴세요”가 두 벌에서 같은 쪽을 가리킨다.
 
-| 파일 | 대상 | 장수 | 목표 |
-|---|---|---|---|
-| [`worksheets/entry-1-first-steps.html`](worksheets/entry-1-first-steps.html) | 입문 | 9 | 글쓰기 첫걸음 — 구조를 **한국어로** 먼저 |
-| [`worksheets/entry-2-write-it-in-english.html`](worksheets/entry-2-write-it-in-english.html) | 입문 | 7 | 같은 내용을 **영어로** 다시 |
-| [`worksheets/stage-1-speaking-to-writing.html`](worksheets/stage-1-speaking-to-writing.html) | 초1 | 7 | 말에서 글로 — 영어 세 문장 |
-| [`worksheets/stage-2-purpose.html`](worksheets/stage-2-purpose.html) | 초2 | 15 | 목적을 가진 글 — 같은 일을 두 모양으로 |
-| [`worksheets/stage-3-paragraph.html`](worksheets/stage-3-paragraph.html) ★ | 초3 | 15 | 문단의 발견 — 한 문단 = 한 생각 |
-| [`worksheets/stage-4-language-of-writing.html`](worksheets/stage-4-language-of-writing.html) | 초4 | 9 | 글쓰기의 언어 — 세 문단, 하나의 흐름 |
-| [`worksheets/stage-5-reader-and-reason.html`](worksheets/stage-5-reader-and-reason.html) | 초5 | 9 | 독자와 근거 — 설득하는 글 |
-| [`worksheets/stage-6-long-texts.html`](worksheets/stage-6-long-texts.html) | 초6 | 9 | 긴 글 다루기 — 줄이고 구조화하기 |
+| 워크시트 | 대상 | 장수 | 학생이 쓸 소재 |
+|---|---|---:|---|
+| [`entry-1-first-steps.html`](worksheets/entry-1-first-steps.html) | 입문 | 11 | — (한국어) |
+| [`entry-2-write-it-in-english.html`](worksheets/entry-2-write-it-in-english.html) | 입문 | 9 | 내가 잘 아는 것 하나 |
+| [`stage-1-speaking-to-writing.html`](worksheets/stage-1-speaking-to-writing.html) | 1단계 | 7 | 여섯 소재 중 하나 |
+| [`stage-2-purpose.html`](worksheets/stage-2-purpose.html) | 2단계 | 15 | 내가 만들 줄 아는 음식 |
+| [`stage-3-paragraph.html`](worksheets/stage-3-paragraph.html) ★ | 3단계 | 18 | 내가 아는 동물 |
+| [`stage-4-language-of-writing.html`](worksheets/stage-4-language-of-writing.html) | 4단계 | 11 | 우리 동네 |
+| [`stage-5-reader-and-reason.html`](worksheets/stage-5-reader-and-reason.html) | 5단계 | 12 | 점심시간을 늘리자 |
+| [`stage-6-long-texts.html`](worksheets/stage-6-long-texts.html) | 6단계 | 12 | 내가 아는 동물 |
+| [`teacher-notebook.html`](worksheets/teacher-notebook.html) | 교사 | 9 | 차시 계획·진단·처방 |
 
 ★ **3단계가 전환점.** 여기서 문장이 문단으로 묶이지 않으면 이후가 모두 무너진다.
 
-### 워크시트 — 교사용
+워크시트와 교사 노트는 전 쪽이 **A4 한 장에 정확히** 들어간다 (794×1123px 고정 판형).
+「선생님께」를 켠 상태와 끈 상태 **둘 다** 헤드리스 브라우저로 재서 확인했다.
 
-| 파일 | 내용 |
-|---|---|
-| [`worksheets/teacher-notebook.html`](worksheets/teacher-notebook.html) | **수업 운영 노트** (9장) — 2·3단계 차시 계획표, 학생별 진단표, 반 전체 기록, 처방표 |
+### 고칠 때
+
+```
+src/<이름>.html   본문만 (표지·활동·「선생님께」)
+design/tokens.css 색·서체 — 무지개 여섯 색. 설계도와 워크시트가 함께 쓴다
+design/make-palette.py 색을 고치면 이걸 돌려 팔레트 문서를 맞춘다
+design/sheet.css  워크시트 판형(A4 고정)과 컴포넌트
+design/map.css    설계도 판형(한 폭으로 흐름)
+build.py          본문과 디자인을 합쳐 단일 HTML을 만든다
+```
+
+문서는 서버 없이 파일 하나로 열려야 하므로 CSS를 파일마다 심어 넣는다.
+디자인을 고칠 때는 `design/` 아래만 고치고 `python3 build.py`를 돌린다.
+본문 첫 줄의 지시자가 어떤 판형으로 어디에 낼지 정한다.
+
+```html
+<!--title: 문단의 발견-->
+<!--layout: sheet-->          <!-- sheet(기본) 또는 map -->
+<!--out: blueprint.html-->    <!-- 기본값 worksheets/<이름>.html -->
+```
+
+쪽이 A4를 넘는지는 눈으로 가늠하지 말고 **재서 확인한다.**
+헤드리스 브라우저로 각 `.page`의 자연 높이를 재어 1123px과 견주면 된다.
+
+### 지난 판 — `worksheets/superseded/`
+
+교사용과 학생용을 **별도 파일**로 냈던 이전 판이다. 두 벌의 쪽 번호가 어긋나는
+문제가 있어 토글 방식으로 대체했다. 참고용으로만 남겨 두었고, 수업에는 쓰지 않는다.
 
 ### 문서
 
 | 파일 | 내용 |
 |---|---|
-| [`docs/plan.md`](docs/plan.md) | 기획서 — 왜 이렇게 설계했는지, 이중 진행과 4단 흐름 |
-| [`docs/design-spec.md`](docs/design-spec.md) | 디자인 규격 — 색·서체·컴포넌트·인쇄 규칙, 그리고 내용 규칙 |
+| [`docs/plan.md`](docs/plan.md) | 기획서 — 이중 진행과 4단 흐름 |
+| [`docs/design-spec.md`](docs/design-spec.md) | 디자인 규격 — 판형·색·서체·컴포넌트, 내용 규칙 |
+| [`docs/palette.html`](docs/palette.html) | 색 팔레트 — 무지개 여섯 색과 흑백 확인 |
 
-## 설계의 핵심 네 가지
+## 설계의 핵심 다섯 가지
 
-새 단계를 만들거나 기존 것을 고칠 때 이 넷은 지켜야 한다.
+새 단계를 만들거나 기존 것을 고칠 때 이 다섯은 지켜야 한다.
 자세한 내용은 [`docs/design-spec.md`](docs/design-spec.md) 7절.
 
 **1. 두 부하를 분리한다.** 구조를 이해하는 능력이 영어 산출 능력보다 항상 앞서간다.
 구조는 한국어로 이해하고, 산출만 영어로 한다.
 
 **2. SORT 구간은 영어 산출이 0이다.** 밑줄·✗표·번호만 쓴다.
-영어가 약한 학생도 구조 이해도를 온전히 보여줄 수 있는 유일한 구간이라 절대 빼지 않는다.
+영어가 약한 학생도 구조 이해도를 온전히 보여 줄 수 있는 유일한 구간이라 절대 빼지 않는다.
 
 **3. 같은 기술을 네 번, 도움을 줄여 가며.** 한 단계는 4개 챕터로 같은 기술을
 소재만 바꿔 반복하고, 챕터마다 비계를 한 칸씩 걷어낸다(`●●●● → ●○○○`).
 
-**4. 소재 6개를 6단계 내내 돌려 쓴다.**
-`my pet · our town · my favourite food · a season · a school day · an animal I know`
-단계가 올라가도 어휘를 새로 배우지 않으므로 어휘가 누적된다.
+**4. 학생이 쓸 소재는 하나로 고정한다.** 여럿 중 고르게 하면 반 전체가 제각각이 되어
+모델링도 상호 도움도 안 된다. 학생 소재는 대체로 **본보기 글과 다른 것**으로 잡아
+베끼지 못하게 한다.
+
+**5. 정답은 「선생님께」 안에만 둔다.** 토글을 끄면 사라진다. 학생에게 인쇄하기 전에
+토글이 꺼져 있는지 확인한다.
 
 ## 진행 순서
 
@@ -72,8 +105,8 @@ Writing Composition 도메인(38개 주제)과 선수학습 관계 3,221개에�
 
 ## 인쇄
 
-각 HTML을 브라우저에서 열고 인쇄(Ctrl/Cmd+P). A4 세로, 여백 기본값.
-`<section class="sheet">` 하나가 A4 한 장으로 떨어진다.
+각 HTML을 브라우저에서 열고 **「선생님께」 토글을 끈 다음** 인쇄(Ctrl/Cmd+P).
+A4 세로, **여백 없음**, 배경 그래픽 켜기. `<section class="page">` 하나가 A4 한 장이다.
 
 ## 라이선스
 

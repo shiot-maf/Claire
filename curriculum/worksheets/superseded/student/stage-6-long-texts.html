@@ -1,0 +1,1090 @@
+<title>긴 글 다루기 학생용</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;500;700&family=Noto+Sans+KR:wght@400;500;700&family=JetBrains+Mono:wght@400;500;600&display=swap">
+<style>
+  :root{
+    --sheet:#FFFDF7;
+    --page:#EFEADC;
+    --ink:#262A1F;
+    --ink-soft:#5B5D4C;
+    --accent:#1E6B49;
+    --accent-soft:#E4EFE8;
+    --accent-ink:#F4FBF6;
+    --correction:#B23B32;
+    --correction-soft:#F7E4E0;
+    --border:#D5CDB6;
+    --line:#C6BEA6;
+    --mono-ink:#7A7663;
+    --font-display:'Noto Serif KR',Georgia,serif;
+    --font-read:'Noto Serif KR',Georgia,serif;
+    --font-ui:'Noto Sans KR',-apple-system,BlinkMacSystemFont,sans-serif;
+    --font-mono:'JetBrains Mono',ui-monospace,Consolas,monospace;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --sheet:#20261F;
+      --page:#161A15;
+      --ink:#ECE7D6;
+      --ink-soft:#B4B19D;
+      --accent:#6FC79A;
+      --accent-soft:#22321F;
+      --accent-ink:#0D1611;
+      --correction:#E2897C;
+      --correction-soft:#3A2420;
+      --border:#3A4034;
+      --line:#454B3D;
+      --mono-ink:#8B9083;
+    }
+  }
+  :root[data-theme="dark"]{
+    --sheet:#20261F;
+    --page:#161A15;
+    --ink:#ECE7D6;
+    --ink-soft:#B4B19D;
+    --accent:#6FC79A;
+    --accent-soft:#22321F;
+    --accent-ink:#0D1611;
+    --correction:#E2897C;
+    --correction-soft:#3A2420;
+    --border:#3A4034;
+    --line:#454B3D;
+    --mono-ink:#8B9083;
+  }
+
+  *{box-sizing:border-box;}
+  @media (prefers-reduced-motion: reduce){*{transition:none !important;}}
+  body{
+    margin:0;
+    background:var(--page);
+    color:var(--ink);
+    font-family:var(--font-ui);
+    font-size:16px;
+    line-height:1.7;
+    -webkit-font-smoothing:antialiased;
+  }
+  a{color:var(--accent);}
+  a:focus-visible{outline:2px solid var(--correction); outline-offset:3px;}
+  code{font-family:var(--font-mono); font-size:.88em;}
+
+  .stack{max-width:820px; margin:0 auto; padding:40px 20px 70px; display:flex; flex-direction:column; gap:26px;}
+
+  .sheet{
+    background:var(--sheet);
+    border:1px solid var(--border);
+    border-radius:4px;
+    padding:38px 42px 34px;
+    position:relative;
+  }
+  @media (max-width:600px){ .sheet{padding:28px 22px 26px;} }
+  .pagemark{
+    position:absolute;
+    top:14px; right:18px;
+    font-family:var(--font-mono);
+    font-size:10.5px;
+    color:var(--mono-ink);
+    letter-spacing:.06em;
+  }
+
+  /* ---------- cover ---------- */
+  .cover-eyebrow{
+    font-family:var(--font-mono);
+    font-size:11.5px;
+    letter-spacing:.14em;
+    text-transform:uppercase;
+    color:var(--correction);
+    margin:0 0 12px;
+  }
+  .cover h1{
+    font-family:var(--font-display);
+    font-weight:700;
+    font-size:clamp(2rem,5.5vw,2.8rem);
+    line-height:1.2;
+    margin:0 0 6px;
+    text-wrap:balance;
+  }
+  .cover .h1-en{
+    font-family:var(--font-mono);
+    font-size:13px;
+    letter-spacing:.1em;
+    text-transform:uppercase;
+    color:var(--accent);
+    margin:0 0 18px;
+  }
+  .cover p.blurb{
+    font-family:var(--font-read);
+    color:var(--ink-soft);
+    max-width:56ch;
+    margin:0 0 24px;
+  }
+  .bigidea{
+    border:2px solid var(--accent);
+    border-radius:5px;
+    padding:18px 20px;
+    margin:0 0 24px;
+    text-align:center;
+  }
+  .bigidea .ko{
+    font-family:var(--font-display);
+    font-weight:700;
+    font-size:1.35rem;
+    margin:0 0 4px;
+    color:var(--ink);
+  }
+  .bigidea .en{
+    font-family:var(--font-read);
+    font-size:1.05rem;
+    color:var(--accent);
+    margin:0;
+  }
+  .namebar{
+    display:flex;
+    gap:26px;
+    flex-wrap:wrap;
+    padding:16px 0 0;
+    border-top:1px solid var(--border);
+  }
+  .namefield{display:flex; align-items:baseline; gap:10px; flex:1 1 190px;}
+  .namefield span{
+    font-family:var(--font-mono);
+    font-size:12px;
+    color:var(--mono-ink);
+    white-space:nowrap;
+  }
+  .namefield i{flex:1; border-bottom:1.5px solid var(--line); height:26px; display:block;}
+  .howto{
+    margin:24px 0 0;
+    padding:16px 18px;
+    background:var(--accent-soft);
+    border-radius:4px;
+    font-size:.9rem;
+    color:var(--ink-soft);
+  }
+  .howto b{color:var(--ink);}
+  .howto ol{margin:8px 0 0; padding-left:20px;}
+  .howto li{margin:0 0 5px;}
+
+  /* ---------- sheet header ---------- */
+  .step-head{
+    display:flex;
+    gap:16px;
+    align-items:flex-start;
+    padding:0 0 16px;
+    border-bottom:2px solid var(--accent);
+    margin:0 0 24px;
+  }
+  .step-num{
+    flex:none;
+    padding:0 12px;
+    height:40px;
+    border-radius:20px;
+    background:var(--accent);
+    color:var(--accent-ink);
+    font-family:var(--font-mono);
+    font-size:13px;
+    font-weight:600;
+    letter-spacing:.06em;
+    display:flex; align-items:center; justify-content:center;
+    white-space:nowrap;
+  }
+  .step-titles{flex:1; min-width:0;}
+  .step-titles h2{
+    font-family:var(--font-display);
+    font-weight:700;
+    font-size:1.5rem;
+    line-height:1.25;
+    margin:0 0 3px;
+    text-wrap:balance;
+  }
+  .step-titles .h2-en{
+    font-family:var(--font-read);
+    font-size:.95rem;
+    color:var(--accent);
+    margin:0;
+  }
+
+  /* ---------- activity ---------- */
+  .act{margin:0 0 26px;}
+  .act:last-of-type{margin-bottom:0;}
+  .act-label{
+    font-family:var(--font-mono);
+    font-size:11.5px;
+    letter-spacing:.09em;
+    color:var(--correction);
+    font-weight:600;
+    margin:0 0 5px;
+  }
+  .act-prompt{
+    font-family:var(--font-read);
+    font-weight:700;
+    font-size:1.02rem;
+    margin:0 0 2px;
+    color:var(--ink);
+  }
+  .act-ko{
+    font-size:.85rem;
+    color:var(--ink-soft);
+    margin:0 0 12px;
+  }
+  .act-hint{
+    font-size:.85rem;
+    color:var(--ink-soft);
+    margin:-6px 0 12px;
+  }
+  .act-hint.en{
+    font-family:var(--font-read);
+    font-size:.92rem;
+  }
+
+  /* rule card */
+  .rule{
+    border-left:3px solid var(--correction);
+    background:var(--correction-soft);
+    border-radius:0 4px 4px 0;
+    padding:12px 16px;
+    margin:0 0 16px;
+    font-size:.92rem;
+  }
+  .rule b{color:var(--correction);}
+
+  /* passage */
+  .passage{
+    font-family:var(--font-read);
+    background:var(--page);
+    border-left:3px solid var(--accent);
+    border-radius:0 4px 4px 0;
+    padding:15px 18px;
+    margin:0 0 14px;
+    font-size:1rem;
+    line-height:2.05;
+  }
+  .passage h5{
+    font-family:var(--font-mono);
+    font-size:11px;
+    font-weight:600;
+    letter-spacing:.08em;
+    margin:0 0 7px;
+    color:var(--accent);
+  }
+  .passage h5 span{
+    font-family:var(--font-ui);
+    color:var(--ink-soft);
+    letter-spacing:0;
+    font-weight:400;
+  }
+  .passage p{margin:0 0 10px;}
+  .passage p:last-child{margin:0;}
+  .passage.spaced{line-height:2.6;}
+
+  .compare{display:grid; grid-template-columns:1.4fr 1fr; gap:14px; margin:0 0 14px;}
+  @media (max-width:640px){ .compare{grid-template-columns:1fr;} }
+  .compare .passage{margin:0;}
+
+  /* writing lines */
+  .lines{
+    background-image:repeating-linear-gradient(to bottom,transparent 0 31px,var(--line) 31px 32px);
+    min-height:96px;
+  }
+  .lines.l1{min-height:32px;}
+  .lines.l2{min-height:64px;}
+  .lines.l3{min-height:96px;}
+  .lines.l4{min-height:128px;}
+
+  .blank{
+    display:inline-block;
+    min-width:120px;
+    border-bottom:1.5px solid var(--line);
+    margin:0 3px;
+    vertical-align:-2px;
+  }
+  .blank.short{min-width:70px;}
+  .blank.long{min-width:200px;}
+
+  ul.frames{list-style:none; margin:0; padding:0;}
+  ul.frames li{
+    font-family:var(--font-read);
+    font-size:1rem;
+    line-height:2.5;
+    margin:0 0 4px;
+  }
+
+  /* word bank */
+  .bank{
+    border:1px solid var(--accent);
+    border-radius:5px;
+    padding:16px 18px;
+    margin:0 0 20px;
+  }
+  .bank-row{
+    display:grid;
+    grid-template-columns:175px 1fr;
+    gap:10px 16px;
+    padding:9px 0;
+    border-bottom:1px dashed var(--border);
+    align-items:baseline;
+  }
+  .bank-row:last-child{border-bottom:none; padding-bottom:0;}
+  @media (max-width:600px){ .bank-row{grid-template-columns:1fr; gap:4px;} }
+  .bank-key{font-size:.85rem; font-weight:700; color:var(--accent);}
+  .bank-key small{display:block; font-weight:400; color:var(--ink-soft); font-size:.92em;}
+  .chips{display:flex; flex-wrap:wrap; gap:6px;}
+  .chip{
+    font-family:var(--font-read);
+    font-size:.93rem;
+    background:var(--accent-soft);
+    border-radius:3px;
+    padding:2px 9px;
+    white-space:nowrap;
+  }
+
+  .topicbox{
+    border:1px dashed var(--accent);
+    border-radius:5px;
+    padding:14px 16px;
+    margin:0 0 16px;
+    background:var(--accent-soft);
+  }
+  .topicbox p.tb-label{
+    font-family:var(--font-mono);
+    font-size:11px;
+    letter-spacing:.08em;
+    color:var(--accent);
+    font-weight:600;
+    margin:0 0 8px;
+  }
+
+  /* tables */
+  .tablewrap{overflow-x:auto; margin:0 0 16px;}
+  table.pairs, table.data{
+    width:100%;
+    border-collapse:collapse;
+    font-family:var(--font-read);
+    font-size:.94rem;
+  }
+  table.pairs th, table.pairs td,
+  table.data th, table.data td{
+    border:1px solid var(--border);
+    padding:8px 11px;
+    text-align:left;
+  }
+  table.pairs th, table.data th{
+    background:var(--accent-soft);
+    font-family:var(--font-ui);
+    font-size:.8rem;
+    font-weight:700;
+  }
+  table.pairs td:first-child{color:var(--correction); font-weight:500;}
+  table.data td.fillcell{height:38px; background:transparent;}
+  table.data td.rowkey{font-weight:700; font-family:var(--font-ui); font-size:.85rem;}
+
+  /* sentence + short answer rows */
+  ol.qrows{margin:0; padding:0 0 0 22px;}
+  ol.qrows li{
+    margin:0 0 10px;
+    font-family:var(--font-read);
+    font-size:1rem;
+    display:flex;
+    justify-content:space-between;
+    gap:16px;
+    align-items:baseline;
+    border-bottom:1px dotted var(--border);
+    padding-bottom:5px;
+  }
+  ol.qrows li span.ans{
+    flex:none;
+    width:60px;
+    border-bottom:1.5px solid var(--line);
+    height:20px;
+  }
+
+  /* numbered fill rows */
+  ol.fill{margin:0; padding:0 0 0 22px;}
+  ol.fill li{margin:0 0 13px; font-size:.98rem; font-family:var(--font-read);}
+  ol.fill li:last-child{margin-bottom:0;}
+  ol.fill .lines{margin-top:5px;}
+
+  /* word count box */
+  .counts{display:flex; gap:14px; flex-wrap:wrap; margin:0 0 14px;}
+  .countbox{
+    border:1px solid var(--border);
+    border-radius:4px;
+    padding:9px 14px;
+    min-width:150px;
+    flex:1 1 150px;
+  }
+  .countbox h6{
+    font-family:var(--font-mono);
+    font-size:10.5px;
+    letter-spacing:.06em;
+    color:var(--accent);
+    font-weight:600;
+    margin:0 0 4px;
+  }
+  .countbox .cline{
+    border-bottom:1.5px solid var(--line);
+    height:26px;
+  }
+  .countbox small{
+    display:block;
+    font-size:.78rem;
+    color:var(--ink-soft);
+    margin-top:4px;
+  }
+
+  /* boxed answers */
+  .boxrow{display:grid; gap:12px; margin:0 0 12px;}
+  .boxrow.two{grid-template-columns:1fr 1fr;}
+  @media (max-width:600px){ .boxrow.two{grid-template-columns:1fr;} }
+  .abox{
+    border:1px solid var(--border);
+    border-radius:4px;
+    padding:10px 12px 6px;
+  }
+  .abox h6{
+    font-family:var(--font-mono);
+    font-size:10.5px;
+    letter-spacing:.06em;
+    color:var(--accent);
+    font-weight:600;
+    margin:0 0 6px;
+  }
+  .abox h6 span{
+    font-family:var(--font-ui);
+    color:var(--ink-soft);
+    letter-spacing:0;
+    font-weight:400;
+  }
+  .abox .lines{background-image:repeating-linear-gradient(to bottom,transparent 0 27px,var(--line) 27px 28px);}
+
+  /* report skeleton */
+  .skeleton{
+    border:1px solid var(--accent);
+    border-radius:5px;
+    padding:16px 18px;
+    margin:0 0 14px;
+  }
+  .sk-row{margin:0 0 14px;}
+  .sk-row:last-child{margin-bottom:0;}
+  .sk-label{
+    font-family:var(--font-mono);
+    font-size:10.5px;
+    letter-spacing:.07em;
+    color:var(--accent);
+    font-weight:600;
+    margin:0 0 4px;
+  }
+  .sk-label span{
+    font-family:var(--font-ui);
+    color:var(--ink-soft);
+    letter-spacing:0;
+    font-weight:400;
+  }
+  .sk-line{border-bottom:1.5px solid var(--line); height:30px;}
+  .sk-bullets{padding-left:4px;}
+  .sk-bullets div{
+    display:flex; align-items:center; gap:9px;
+    margin:0 0 6px;
+  }
+  .sk-bullets div::before{
+    content:"•";
+    color:var(--accent);
+    font-weight:700;
+    flex:none;
+  }
+  .sk-bullets div i{flex:1; border-bottom:1.5px solid var(--line); height:24px; display:block;}
+
+  /* plan grid */
+  .plan{display:grid; border:1px solid var(--border); border-radius:4px; overflow:hidden;}
+  .plan-row{display:grid; grid-template-columns:158px 1fr; border-bottom:1px solid var(--border);}
+  .plan-row:last-child{border-bottom:none;}
+  @media (max-width:600px){ .plan-row{grid-template-columns:108px 1fr;} }
+  .plan-key{
+    background:var(--accent-soft);
+    padding:10px 12px;
+    font-size:.84rem;
+    font-weight:700;
+    border-right:1px solid var(--border);
+    line-height:1.45;
+  }
+  .plan-key small{display:block; font-weight:400; color:var(--ink-soft);}
+  .plan-val{padding:6px 12px;}
+  .plan-val .lines{background-image:repeating-linear-gradient(to bottom,transparent 0 29px,var(--line) 29px 30px); min-height:30px;}
+  .plan-val .lines.two{min-height:60px;}
+
+  /* checkbox list */
+  ul.checks{list-style:none; margin:0; padding:0;}
+  ul.checks li{
+    position:relative;
+    padding-left:28px;
+    margin:0 0 10px;
+    font-family:var(--font-read);
+    font-size:.96rem;
+    line-height:1.5;
+  }
+  ul.checks li::before{
+    content:"";
+    position:absolute;
+    left:0; top:4px;
+    width:15px; height:15px;
+    border:1.5px solid var(--ink-soft);
+    border-radius:3px;
+  }
+  ul.checks li .cko{
+    display:block;
+    font-family:var(--font-ui);
+    font-size:.83rem;
+    color:var(--ink-soft);
+  }
+
+  /* teacher note */
+  .tnote{
+    margin:26px 0 0;
+    padding:14px 16px;
+    border:1px dashed var(--border);
+    border-radius:4px;
+    background:var(--page);
+    font-size:.85rem;
+    line-height:1.75;
+    color:var(--ink-soft);
+  }
+  .tnote b.tlabel{
+    font-family:var(--font-mono);
+    font-size:11px;
+    letter-spacing:.08em;
+    text-transform:uppercase;
+    color:var(--mono-ink);
+    display:block;
+    margin:0 0 6px;
+  }
+  .tnote p{margin:0 0 7px;}
+  .tnote p:last-child{margin:0;}
+  .tnote .ans{color:var(--correction); font-weight:700;}
+
+  .colophon{
+    font-family:var(--font-mono);
+    font-size:11px;
+    color:var(--mono-ink);
+    line-height:1.75;
+    text-align:center;
+    padding:6px 0 0;
+  }
+
+  @media print{
+    body{background:#fff;}
+    .stack{max-width:none; padding:0; gap:0;}
+    .sheet{
+      border:none;
+      border-radius:0;
+      padding:0 0 12mm;
+      page-break-after:always;
+      break-after:page;
+    }
+    .sheet:last-of-type{page-break-after:auto; break-after:auto;}
+    .colophon{display:none;}
+    .passage{background:#fff; border-left:3px solid #1E6B49;}
+    .tnote, .rule{background:#fff;}
+    .chip, .topicbox{background:#fff;}
+    .pagemark{top:0; right:0;}
+    @page{size:A4; margin:16mm 14mm;}
+  }
+</style>
+
+<div class="stack">
+
+  <!-- ================= COVER ================= -->
+  <section class="sheet cover">
+    <span class="pagemark">6단계 · 1/9</span>
+    <p class="cover-eyebrow">구조적 글쓰기 · 6단계 워크시트</p>
+    <h1>긴 글 다루기</h1>
+    <p class="h1-en">Stage 6 · Handling Long Texts</p>
+
+    <p class="blurb">
+      1단계부터 5단계까지, 여러분은 계속 글을 <b>늘려</b> 왔습니다.
+      세 문장이 한 문단이 되고, 한 문단이 다섯 문단이 되었습니다.
+      마지막 단계에서 배울 것은 그 반대입니다 — <b>줄이는 법</b>, 그리고 긴 글에서 <b>길을 잃지 않게 하는 법.</b>
+    </p>
+
+    <div class="bigidea">
+      <p class="ko">줄여도 뜻은 남는다</p>
+      <p class="en">Shorter, but nothing lost.</p>
+    </div>
+
+    <div class="namebar">
+      <label class="namefield"><span>이름 / NAME</span><i></i></label>
+      <label class="namefield"><span>학년 / CLASS</span><i></i></label>
+      <label class="namefield"><span>날짜 / DATE</span><i></i></label>
+    </div>
+
+    <div class="howto">
+      <b>이 워크시트는 이렇게 진행합니다</b>
+      <ol>
+        <li><b>보기</b> — 긴 글과 그것을 줄인 글을 견줍니다. (3쪽)</li>
+        <li><b>나누기</b> — 베낀 것과 바꿔 쓴 것을 가르고, 표에 들어갈 것을 골라냅니다. (4·5쪽)</li>
+        <li><b>채우기</b> — 바꿔 쓰고, 줄입니다. (6·7쪽)</li>
+        <li><b>짓기</b> — 소제목과 표를 갖춘 리포트를 씁니다. (8쪽)</li>
+        <li><b>완성 과제</b> — 내 리포트를 1/3로 줄이고 출처를 밝힙니다. (9쪽)</li>
+      </ol>
+    </div>
+</section>
+
+  <!-- ================= WORD BANK ================= -->
+  <section class="sheet">
+    <span class="pagemark">6단계 · 2/9</span>
+    <div class="step-head">
+      <div class="step-num">WORD BANK</div>
+      <div class="step-titles">
+        <h2>줄일 때 쓰는 말</h2>
+        <p class="h2-en">Keep this page open while you write.</p>
+      </div>
+    </div>
+
+    <div class="bank">
+      <div class="bank-row">
+        <div class="bank-key">Opening a summary<small>요약 열기</small></div>
+        <div class="chips"><span class="chip">This text explains ___.</span><span class="chip">The main idea is ___.</span><span class="chip">In short, ___.</span></div>
+      </div>
+      <div class="bank-row">
+        <div class="bank-key">Shorter words<small>짧은 말로 바꾸기</small></div>
+        <div class="chips"><span class="chip">a lot of → many</span><span class="chip">is able to → can</span><span class="chip">look for → search</span><span class="chip">very big → huge</span></div>
+      </div>
+      <div class="bank-row">
+        <div class="bank-key">Layout words<small>레이아웃 낱말</small></div>
+        <div class="chips"><span class="chip">title</span><span class="chip">heading</span><span class="chip">table</span><span class="chip">bullet points</span><span class="chip">contents</span></div>
+      </div>
+      <div class="bank-row">
+        <div class="bank-key">Naming your source<small>출처 밝히기</small></div>
+        <div class="chips"><span class="chip">According to ___,</span><span class="chip">Source: ___</span><span class="chip">I read this in ___.</span></div>
+      </div>
+      <div class="bank-row">
+        <div class="bank-key">Numbers in a table<small>표에 쓰는 말</small></div>
+        <div class="chips"><span class="chip">more than</span><span class="chip">fewer than</span><span class="chip">about</span><span class="chip">around</span></div>
+      </div>
+    </div>
+
+    <div class="topicbox">
+      <p class="tb-label">이 워크시트의 소재 · 하나뿐입니다</p>
+      <div class="chips"><span class="chip">an animal I know · 내가 아는 동물</span></div>
+      <p style="font-size:.84rem; color:var(--ink-soft); margin:8px 0 0;">본보기 글은 꿀벌입니다. 여러분은 <b>다른 동물</b>을 하나 골라 리포트를 씁니다.</p>
+    </div>
+
+    <div class="act">
+      <p class="act-label">PRACTICE</p>
+      <p class="act-prompt">Make each sentence shorter. Use the Word Bank.</p>
+      <p class="act-ko">각 문장을 더 짧게 만드세요.</p>
+      <ol class="fill">
+        <li>A hive holds a lot of bees. <span class="blank long"></span></li>
+        <li>A bee is able to fly for many hours. <span class="blank long"></span></li>
+        <li>Foragers look for flowers all day. <span class="blank long"></span></li>
+      </ol>
+    </div>
+</section>
+
+  <!-- ================= SEE ================= -->
+  <section class="sheet">
+    <span class="pagemark">6단계 · 3/9</span>
+    <div class="step-head">
+      <div class="step-num">보기 SEE</div>
+      <div class="step-titles">
+        <h2>긴 글과 줄인 글</h2>
+        <p class="h2-en">A long text and its summary</p>
+      </div>
+    </div>
+
+    <div class="compare">
+      <div class="passage">
+        <h5>ORIGINAL <span>· 98 words</span></h5>
+        <p>Honey bees live together in a hive. A single hive can hold more than fifty thousand bees. Every bee in the hive has a job. Some bees clean, some guard the door, and some look for flowers.</p>
+        <p>The bees that look for flowers are called foragers. A forager can visit two thousand flowers in one day. It carries pollen back to the hive on its legs. This is how flowers spread across a field.</p>
+        <p>Bees are important for farmers. About one third of our food depends on bees. If bees disappear, many fruits and vegetables will disappear too.</p>
+      </div>
+      <div class="passage">
+        <h5>SUMMARY <span>· 30 words</span></h5>
+        <p>Honey bees live in huge hives where every bee has a job. Foragers search thousands of flowers and carry pollen, which helps plants spread. Bees are vital for our food.</p>
+      </div>
+    </div>
+
+    <div class="act">
+      <p class="act-label">ACTIVITY 1</p>
+      <p class="act-prompt">Find one sentence in the original that is completely gone from the summary. Write it.</p>
+      <p class="act-ko">원문에는 있지만 요약에서 완전히 사라진 문장 하나를 찾아 쓰세요.</p>
+      <div class="lines l2"></div>
+    </div>
+
+    <div class="act">
+      <p class="act-label">ACTIVITY 2</p>
+      <p class="act-prompt">Find three words in the summary that are NOT in the original. Write them.</p>
+      <p class="act-ko">요약에는 있지만 원문에는 없는 낱말 세 개를 찾아 쓰세요.</p>
+      <ol class="fill">
+        <li><span class="blank"></span></li>
+        <li><span class="blank"></span></li>
+        <li><span class="blank"></span></li>
+      </ol>
+    </div>
+
+    <div class="rule">
+      <b>THE RULE ·</b> A summary is <b>one third</b> of the original or shorter — and it uses <b>your own words</b>, not the writer's.
+      <br><span style="font-size:.9em;">요약은 원문의 1/3 이하로, 그리고 <b>내 말로</b> 씁니다.</span>
+    </div>
+</section>
+
+  <!-- ================= SORT 1 ================= -->
+  <section class="sheet">
+    <span class="pagemark">6단계 · 4/9</span>
+    <div class="step-head">
+      <div class="step-num">나누기 SORT ①</div>
+      <div class="step-titles">
+        <h2>베낀 것과 바꿔 쓴 것</h2>
+        <p class="h2-en">Copy or paraphrase?</p>
+      </div>
+    </div>
+
+    <div class="act">
+      <p class="act-label">ACTIVITY 1</p>
+      <p class="act-prompt">Read the original sentence. Then mark each version.</p>
+      <p class="act-ko">원문을 읽고, 각 문장에 표시하세요. <b>C</b> = 베낌 · <b>P</b> = 바꿔 씀 · <b>X</b> = 뜻이 달라짐</p>
+      <div class="passage">
+        <h5>ORIGINAL</h5>
+        <p>A forager can visit two thousand flowers in one day.</p>
+      </div>
+      <ol class="qrows">
+        <li><span>A forager can visit 2,000 flowers in one day.</span><span class="ans"></span></li>
+        <li><span>In a single day, one forager may go to two thousand flowers.</span><span class="ans"></span></li>
+        <li><span>Foragers like flowers very much.</span><span class="ans"></span></li>
+        <li><span>One bee can reach two thousand flowers each day.</span><span class="ans"></span></li>
+      </ol>
+    </div>
+
+    <div class="act">
+      <p class="act-label">ACTIVITY 2</p>
+      <p class="act-prompt">Mark <b>M</b> for main idea or <b>D</b> for detail.</p>
+      <p class="act-ko">중심 생각이면 M, 세부 내용이면 D를 쓰세요.</p>
+      <ol class="qrows">
+        <li><span>Honey bees live together in a hive.</span><span class="ans"></span></li>
+        <li><span>A single hive can hold more than fifty thousand bees.</span><span class="ans"></span></li>
+        <li><span>Every bee in the hive has a job.</span><span class="ans"></span></li>
+        <li><span>Some bees guard the door.</span><span class="ans"></span></li>
+        <li><span>Bees are important for farmers.</span><span class="ans"></span></li>
+      </ol>
+    </div>
+
+    <div class="rule">
+      <b>THE RULE ·</b> A summary keeps the <b>M</b> sentences and cuts the <b>D</b> sentences.
+      <br><span style="font-size:.9em;">요약은 M을 남기고 D를 잘라냅니다.</span>
+    </div>
+</section>
+
+  <!-- ================= SORT 2 ================= -->
+  <section class="sheet">
+    <span class="pagemark">6단계 · 5/9</span>
+    <div class="step-head">
+      <div class="step-num">나누기 SORT ②</div>
+      <div class="step-titles">
+        <h2>길을 알려 주는 장치</h2>
+        <p class="h2-en">Headings, bullets, and tables</p>
+      </div>
+    </div>
+
+    <p class="act-hint">긴 글에서 독자는 길을 잃습니다. <b>소제목·글머리 기호·표</b>는 독자에게 길을 알려 주는 표지판입니다.</p>
+
+    <div class="act">
+      <p class="act-label">ACTIVITY 1</p>
+      <p class="act-prompt">Which heading fits each part of the bee text? Write the letter.</p>
+      <p class="act-ko">3쪽 원문의 각 문단에 알맞은 소제목을 고르세요.</p>
+      <div class="topicbox">
+        <p class="tb-label">HEADINGS</p>
+        <div class="chips"><span class="chip">a. Why Bees Matter</span><span class="chip">b. Life in the Hive</span><span class="chip">c. The Flower Hunters</span></div>
+      </div>
+      <ol class="qrows">
+        <li><span>Paragraph 1 — bees live together, every bee has a job</span><span class="ans"></span></li>
+        <li><span>Paragraph 2 — foragers and pollen</span><span class="ans"></span></li>
+        <li><span>Paragraph 3 — bees and our food</span><span class="ans"></span></li>
+      </ol>
+    </div>
+
+    <div class="act">
+      <p class="act-label">ACTIVITY 2</p>
+      <p class="act-prompt">Where does each fact belong? Write <b>T</b> for table or <b>P</b> for paragraph.</p>
+      <p class="act-ko">각 사실은 어디에 넣어야 할까요? 표에는 T, 문단에는 P.</p>
+      <ol class="qrows">
+        <li><span>A hive holds more than 50,000 bees.</span><span class="ans"></span></li>
+        <li><span>Bees are important for farmers.</span><span class="ans"></span></li>
+        <li><span>A forager visits 2,000 flowers a day.</span><span class="ans"></span></li>
+        <li><span>Some bees guard the door of the hive.</span><span class="ans"></span></li>
+        <li><span>About one third of our food depends on bees.</span><span class="ans"></span></li>
+      </ol>
+    </div>
+
+    <div class="rule">
+      <b>THE RULE ·</b> <b>Numbers</b> go in a table. <b>Ideas</b> go in sentences.
+      <br><span style="font-size:.9em;">숫자는 표로, 생각은 문장으로.</span>
+    </div>
+
+    <div class="act">
+      <p class="act-label">ACTIVITY 3</p>
+      <p class="act-prompt">Put the <b>T</b> facts into this table.</p>
+      <p class="act-ko">T로 표시한 사실을 표에 옮겨 적으세요.</p>
+      <div class="tablewrap">
+        <table class="data">
+          <thead><tr><th style="width:42%">Bees in numbers</th><th>Number</th></tr></thead>
+          <tbody>
+            <tr><td class="fillcell"></td><td class="fillcell"></td></tr>
+            <tr><td class="fillcell"></td><td class="fillcell"></td></tr>
+            <tr><td class="fillcell"></td><td class="fillcell"></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+</section>
+
+  <!-- ================= FRAME 1 ================= -->
+  <section class="sheet">
+    <span class="pagemark">6단계 · 6/9</span>
+    <div class="step-head">
+      <div class="step-num">채우기 FRAME ①</div>
+      <div class="step-titles">
+        <h2>바꿔 쓰는 두 가지 기술</h2>
+        <p class="h2-en">Two ways to say it differently</p>
+      </div>
+    </div>
+
+    <div class="rule">
+      <b>TECHNIQUE 1 · Swap a word</b> — change a word for one that means the same.<br>
+      <b>TECHNIQUE 2 · Move a part</b> — put a different part of the sentence first.<br>
+      <span style="font-size:.9em;">① 낱말 바꾸기 &nbsp;② 순서 바꾸기 — 이 둘만으로 충분합니다.</span>
+    </div>
+
+    <div class="act">
+      <p class="act-label">ACTIVITY 1 · SWAP A WORD</p>
+      <p class="act-prompt">Replace the underlined word. Use the box.</p>
+      <p class="act-ko">밑줄 친 낱말을 바꿔 쓰세요.</p>
+      <div class="topicbox">
+        <p class="tb-label">WORD BOX</p>
+        <div class="chips"><span class="chip">enormous</span><span class="chip">search for</span><span class="chip">protect</span><span class="chip">rely on</span></div>
+      </div>
+      <ol class="fill">
+        <li>Foragers <u>look for</u> flowers all day. <span class="blank"></span></li>
+        <li>A hive can be <u>very big</u>. <span class="blank"></span></li>
+        <li>Some bees <u>guard</u> the door. <span class="blank"></span></li>
+        <li>Many crops <u>depend on</u> bees. <span class="blank"></span></li>
+      </ol>
+    </div>
+
+    <div class="act">
+      <p class="act-label">ACTIVITY 2 · MOVE A PART</p>
+      <p class="act-prompt">Move the underlined part to the front of the sentence.</p>
+      <p class="act-ko">밑줄 친 부분을 문장 맨 앞으로 옮겨 다시 쓰세요.</p>
+      <ol class="fill">
+        <li>A forager can visit two thousand flowers <u>in one day</u>.<div class="lines l1"></div></li>
+        <li>Many fruits will disappear <u>if bees disappear</u>.<div class="lines l1"></div></li>
+      </ol>
+    </div>
+
+    <div class="act">
+      <p class="act-label">ACTIVITY 3 · USE BOTH</p>
+      <p class="act-prompt">Rewrite this sentence using <b>both</b> techniques.</p>
+      <p class="act-ko">두 기술을 모두 써서 다시 쓰세요.</p>
+      <div class="passage">
+        <p>Bees look for flowers in the fields every morning.</p>
+      </div>
+      <div class="lines l2"></div>
+    </div>
+</section>
+
+  <!-- ================= FRAME 2 ================= -->
+  <section class="sheet">
+    <span class="pagemark">6단계 · 7/9</span>
+    <div class="step-head">
+      <div class="step-num">채우기 FRAME ②</div>
+      <div class="step-titles">
+        <h2>1/3로 줄이기</h2>
+        <p class="h2-en">Cut it to one third</p>
+      </div>
+    </div>
+
+    <div class="act">
+      <p class="act-label">ACTIVITY 1</p>
+      <p class="act-prompt">Reduce each paragraph to <b>one sentence</b>.</p>
+      <p class="act-ko">각 문단을 한 문장으로 줄이세요.</p>
+
+      <div class="passage">
+        <h5>PARAGRAPH 1</h5>
+        <p>Emperor penguins live in Antarctica. Antarctica is the coldest place on Earth. In winter the temperature falls to −60°C. The penguins stand together in large groups on the ice.</p>
+      </div>
+      <div class="lines l2" style="margin-bottom:16px;"></div>
+
+      <div class="passage">
+        <h5>PARAGRAPH 2</h5>
+        <p>Emperor penguins have four layers of feathers. The feathers stop the cold wind. They also have thick fat under their skin. When the wind is very strong, hundreds of penguins stand close together and share their heat.</p>
+      </div>
+      <div class="lines l2"></div>
+    </div>
+
+    <div class="act">
+      <p class="act-label">ACTIVITY 2</p>
+      <p class="act-prompt">Count the words. Your summary must be one third or shorter.</p>
+      <p class="act-ko">낱말 수를 세어 보세요. 요약은 1/3 이하여야 합니다.</p>
+      <div class="counts">
+        <div class="countbox"><h6>ORIGINAL</h6><div class="cline"></div><small>두 문단의 낱말 수</small></div>
+        <div class="countbox"><h6>ONE THIRD</h6><div class="cline"></div><small>위 숫자 ÷ 3</small></div>
+        <div class="countbox"><h6>MY SUMMARY</h6><div class="cline"></div><small>내 두 문장의 낱말 수</small></div>
+      </div>
+    </div>
+
+    <div class="act">
+      <p class="act-label">ACTIVITY 3</p>
+      <p class="act-prompt">Read your summary again. Cross out any opinion.</p>
+      <p class="act-ko">요약을 다시 읽고, 내 의견이 들어간 곳이 있으면 지우세요.</p>
+      <p class="act-hint">“Penguins are cute.” 같은 문장은 요약에 들어가지 않습니다.</p>
+      <ul class="checks">
+        <li>My summary has no opinion — only what the text says.<span class="cko">요약에 내 의견이 없다</span></li>
+      </ul>
+    </div>
+</section>
+
+  <!-- ================= BUILD ================= -->
+  <section class="sheet">
+    <span class="pagemark">6단계 · 8/9</span>
+    <div class="step-head">
+      <div class="step-num">짓기 BUILD</div>
+      <div class="step-titles">
+        <h2>소제목과 표가 있는 리포트</h2>
+        <p class="h2-en">A report with headings and a table</p>
+      </div>
+    </div>
+
+    <p class="act-hint">동물을 하나 골라 리포트를 씁니다. 이번에는 <b>레이아웃</b>을 갖춥니다.</p>
+
+    <div class="topicbox">
+      <p class="tb-label">동물 리포트에 쓰는 낱말</p>
+      <div class="chips"><span class="chip">lives in</span><span class="chip">eats</span><span class="chip">weighs</span><span class="chip">can reach</span><span class="chip">about ___ years</span><span class="chip">more than</span><span class="chip">fewer than</span><span class="chip">the forest</span><span class="chip">the ocean</span><span class="chip">Where it lives</span><span class="chip">What it eats</span><span class="chip">Why it matters</span></div>
+    </div>
+
+    <div class="act">
+      <p class="act-label">ACTIVITY 1 · PLAN</p>
+      <p class="act-prompt">Choose your topic and plan the layout.</p>
+      <p class="act-ko">동물을 고르고 레이아웃을 계획하세요.</p>
+      <div class="plan">
+        <div class="plan-row"><div class="plan-key">My topic</div><div class="plan-val"><div class="lines"></div></div></div>
+        <div class="plan-row"><div class="plan-key">Where I read it<small>출처</small></div><div class="plan-val"><div class="lines"></div></div></div>
+      </div>
+    </div>
+
+    <div class="act">
+      <p class="act-label">ACTIVITY 2 · WRITE</p>
+      <p class="act-prompt">Fill in the report. Remember: write the facts in your own words.</p>
+      <p class="act-ko">리포트를 채우세요. 사실은 반드시 <b>내 말로</b> 씁니다.</p>
+
+      <div class="skeleton">
+        <div class="sk-row">
+          <p class="sk-label">TITLE <span>· 글 제목</span></p>
+          <div class="sk-line"></div>
+        </div>
+        <div class="sk-row">
+          <p class="sk-label">INTRODUCTION <span>· 두 문장</span></p>
+          <div class="lines l2"></div>
+        </div>
+        <div class="sk-row">
+          <p class="sk-label">HEADING 1 <span>· 소제목</span></p>
+          <div class="sk-line"></div>
+          <div class="lines l2" style="margin-top:8px;"></div>
+        </div>
+        <div class="sk-row">
+          <p class="sk-label">HEADING 2 <span>· 소제목</span></p>
+          <div class="sk-line"></div>
+          <div class="lines l2" style="margin-top:8px;"></div>
+        </div>
+        <div class="sk-row">
+          <p class="sk-label">QUICK FACTS <span>· 숫자는 표로</span></p>
+          <div class="tablewrap">
+            <table class="data">
+              <thead><tr><th style="width:48%">Fact</th><th>Number</th></tr></thead>
+              <tbody>
+                <tr><td class="fillcell"></td><td class="fillcell"></td></tr>
+                <tr><td class="fillcell"></td><td class="fillcell"></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="sk-row">
+          <p class="sk-label">THREE THINGS TO REMEMBER <span>· 글머리 기호로</span></p>
+          <div class="sk-bullets">
+            <div><i></i></div>
+            <div><i></i></div>
+            <div><i></i></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="act">
+      <p class="act-label">ACTIVITY 3 · CHECK YOURSELF</p>
+      <ul class="checks">
+        <li>My headings tell the reader what each part is about.<span class="cko">소제목만 읽어도 내용을 짐작할 수 있다</span></li>
+        <li>All the numbers are in the table, not in the sentences.<span class="cko">숫자는 표에 있고 문장에는 없다</span></li>
+        <li>I did not copy any sentence from my source.<span class="cko">출처의 문장을 그대로 옮긴 곳이 없다</span></li>
+      </ul>
+    </div>
+</section>
+
+  <!-- ================= CAPSTONE ================= -->
+  <section class="sheet">
+    <span class="pagemark">6단계 · 9/9</span>
+    <div class="step-head">
+      <div class="step-num">완성 과제</div>
+      <div class="step-titles">
+        <h2>내 글을 1/3로</h2>
+        <p class="h2-en">Summarise your own report</p>
+      </div>
+    </div>
+
+    <p class="act-hint">마지막 과제는 남의 글이 아니라 <b>내가 쓴 글</b>을 줄이는 것입니다. 6단계 전체가 이 한 장으로 모입니다.</p>
+
+    <div class="act">
+      <p class="act-label">ACTIVITY 1 · COUNT</p>
+      <p class="act-prompt">Count the words in your report from page 8.</p>
+      <p class="act-ko">8쪽 리포트의 낱말 수를 세세요.</p>
+      <div class="counts">
+        <div class="countbox"><h6>MY REPORT</h6><div class="cline"></div><small>전체 낱말 수</small></div>
+        <div class="countbox"><h6>ONE THIRD</h6><div class="cline"></div><small>÷ 3 — 요약 목표</small></div>
+      </div>
+    </div>
+
+    <div class="act">
+      <p class="act-label">ACTIVITY 2 · SUMMARISE</p>
+      <p class="act-prompt">Write a summary of your report. Use a Word Bank opener.</p>
+      <p class="act-ko">리포트를 요약하세요. 워드뱅크의 여는 말을 쓰세요.</p>
+      <div class="lines l3"></div>
+      <div class="counts" style="margin-top:12px;">
+        <div class="countbox"><h6>MY SUMMARY</h6><div class="cline"></div><small>목표 숫자보다 작아야 합니다</small></div>
+      </div>
+    </div>
+
+    <div class="act">
+      <p class="act-label">ACTIVITY 3 · SOURCES</p>
+      <p class="act-prompt">List where your facts came from.</p>
+      <p class="act-ko">사실을 어디서 얻었는지 적으세요.</p>
+      <div class="sk-bullets">
+        <div><i></i></div>
+        <div><i></i></div>
+      </div>
+    </div>
+
+    <div class="act">
+      <p class="act-label">ACTIVITY 4 · FINAL CHECK</p>
+      <ul class="checks">
+        <li>My summary is one third of my report or shorter.<span class="cko">요약이 리포트의 1/3 이하다</span></li>
+        <li>My summary keeps the main ideas and cuts the details.<span class="cko">중심 생각은 남기고 세부는 잘라냈다</span></li>
+        <li>My summary uses different words from my report.<span class="cko">요약의 낱말이 리포트와 다르다</span></li>
+        <li>Every source is written down.<span class="cko">출처를 모두 적었다</span></li>
+      </ul>
+    </div>
+</section>
+
+  <p class="colophon">
+    구조적 글쓰기 6단계 · 6단계 워크시트<br>
+    Marble Skill Taxonomy (v1) · © Generative Spark, Inc. (Marble) · https://withmarble.com<br>
+    licensed under ODbL 1.0 (database) and CC BY-SA 4.0 (content)
+  </p>
+
+</div>

@@ -1,0 +1,1073 @@
+<title>독자와 근거 학생용</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;500;700&family=Noto+Sans+KR:wght@400;500;700&family=JetBrains+Mono:wght@400;500;600&display=swap">
+<style>
+  :root{
+    --sheet:#FFFDF7;
+    --page:#EFEADC;
+    --ink:#262A1F;
+    --ink-soft:#5B5D4C;
+    --accent:#1E6B49;
+    --accent-soft:#E4EFE8;
+    --accent-ink:#F4FBF6;
+    --correction:#B23B32;
+    --correction-soft:#F7E4E0;
+    --border:#D5CDB6;
+    --line:#C6BEA6;
+    --mono-ink:#7A7663;
+    --font-display:'Noto Serif KR',Georgia,serif;
+    --font-read:'Noto Serif KR',Georgia,serif;
+    --font-ui:'Noto Sans KR',-apple-system,BlinkMacSystemFont,sans-serif;
+    --font-mono:'JetBrains Mono',ui-monospace,Consolas,monospace;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --sheet:#20261F;
+      --page:#161A15;
+      --ink:#ECE7D6;
+      --ink-soft:#B4B19D;
+      --accent:#6FC79A;
+      --accent-soft:#22321F;
+      --accent-ink:#0D1611;
+      --correction:#E2897C;
+      --correction-soft:#3A2420;
+      --border:#3A4034;
+      --line:#454B3D;
+      --mono-ink:#8B9083;
+    }
+  }
+  :root[data-theme="dark"]{
+    --sheet:#20261F;
+    --page:#161A15;
+    --ink:#ECE7D6;
+    --ink-soft:#B4B19D;
+    --accent:#6FC79A;
+    --accent-soft:#22321F;
+    --accent-ink:#0D1611;
+    --correction:#E2897C;
+    --correction-soft:#3A2420;
+    --border:#3A4034;
+    --line:#454B3D;
+    --mono-ink:#8B9083;
+  }
+
+  *{box-sizing:border-box;}
+  @media (prefers-reduced-motion: reduce){*{transition:none !important;}}
+  body{
+    margin:0;
+    background:var(--page);
+    color:var(--ink);
+    font-family:var(--font-ui);
+    font-size:16px;
+    line-height:1.7;
+    -webkit-font-smoothing:antialiased;
+  }
+  a{color:var(--accent);}
+  a:focus-visible{outline:2px solid var(--correction); outline-offset:3px;}
+  code{font-family:var(--font-mono); font-size:.88em;}
+
+  .stack{max-width:820px; margin:0 auto; padding:40px 20px 70px; display:flex; flex-direction:column; gap:26px;}
+
+  .sheet{
+    background:var(--sheet);
+    border:1px solid var(--border);
+    border-radius:4px;
+    padding:38px 42px 34px;
+    position:relative;
+  }
+  @media (max-width:600px){ .sheet{padding:28px 22px 26px;} }
+  .pagemark{
+    position:absolute;
+    top:14px; right:18px;
+    font-family:var(--font-mono);
+    font-size:10.5px;
+    color:var(--mono-ink);
+    letter-spacing:.06em;
+  }
+
+  /* ---------- cover ---------- */
+  .cover-eyebrow{
+    font-family:var(--font-mono);
+    font-size:11.5px;
+    letter-spacing:.14em;
+    text-transform:uppercase;
+    color:var(--correction);
+    margin:0 0 12px;
+  }
+  .cover h1{
+    font-family:var(--font-display);
+    font-weight:700;
+    font-size:clamp(2rem,5.5vw,2.8rem);
+    line-height:1.2;
+    margin:0 0 6px;
+    text-wrap:balance;
+  }
+  .cover .h1-en{
+    font-family:var(--font-mono);
+    font-size:13px;
+    letter-spacing:.1em;
+    text-transform:uppercase;
+    color:var(--accent);
+    margin:0 0 18px;
+  }
+  .cover p.blurb{
+    font-family:var(--font-read);
+    color:var(--ink-soft);
+    max-width:56ch;
+    margin:0 0 24px;
+  }
+  .bigidea{
+    border:2px solid var(--accent);
+    border-radius:5px;
+    padding:18px 20px;
+    margin:0 0 24px;
+    text-align:center;
+  }
+  .bigidea .ko{
+    font-family:var(--font-display);
+    font-weight:700;
+    font-size:1.35rem;
+    margin:0 0 4px;
+    color:var(--ink);
+  }
+  .bigidea .en{
+    font-family:var(--font-read);
+    font-size:1.05rem;
+    color:var(--accent);
+    margin:0;
+  }
+  .namebar{
+    display:flex;
+    gap:26px;
+    flex-wrap:wrap;
+    padding:16px 0 0;
+    border-top:1px solid var(--border);
+  }
+  .namefield{display:flex; align-items:baseline; gap:10px; flex:1 1 190px;}
+  .namefield span{
+    font-family:var(--font-mono);
+    font-size:12px;
+    color:var(--mono-ink);
+    white-space:nowrap;
+  }
+  .namefield i{flex:1; border-bottom:1.5px solid var(--line); height:26px; display:block;}
+  .howto{
+    margin:24px 0 0;
+    padding:16px 18px;
+    background:var(--accent-soft);
+    border-radius:4px;
+    font-size:.9rem;
+    color:var(--ink-soft);
+  }
+  .howto b{color:var(--ink);}
+  .howto ol{margin:8px 0 0; padding-left:20px;}
+  .howto li{margin:0 0 5px;}
+  .langnote{
+    margin:16px 0 0;
+    padding:12px 15px;
+    border:1px solid var(--correction);
+    border-radius:4px;
+    font-size:.87rem;
+    color:var(--ink-soft);
+  }
+  .langnote b{color:var(--correction);}
+
+  /* ---------- sheet header ---------- */
+  .step-head{
+    display:flex;
+    gap:16px;
+    align-items:flex-start;
+    padding:0 0 16px;
+    border-bottom:2px solid var(--accent);
+    margin:0 0 24px;
+  }
+  .step-num{
+    flex:none;
+    padding:0 12px;
+    height:40px;
+    border-radius:20px;
+    background:var(--accent);
+    color:var(--accent-ink);
+    font-family:var(--font-mono);
+    font-size:13px;
+    font-weight:600;
+    letter-spacing:.06em;
+    display:flex; align-items:center; justify-content:center;
+    white-space:nowrap;
+  }
+  .step-titles{flex:1; min-width:0;}
+  .step-titles h2{
+    font-family:var(--font-display);
+    font-weight:700;
+    font-size:1.5rem;
+    line-height:1.25;
+    margin:0 0 3px;
+    text-wrap:balance;
+  }
+  .step-titles .h2-en{
+    font-family:var(--font-read);
+    font-size:.95rem;
+    color:var(--accent);
+    margin:0;
+  }
+
+  /* ---------- activity ---------- */
+  .act{margin:0 0 26px;}
+  .act:last-of-type{margin-bottom:0;}
+  .act-label{
+    font-family:var(--font-mono);
+    font-size:11.5px;
+    letter-spacing:.09em;
+    color:var(--correction);
+    font-weight:600;
+    margin:0 0 5px;
+  }
+  /* stage 5+: English is the instruction, Korean is the footnote */
+  .act-prompt{
+    font-family:var(--font-read);
+    font-weight:700;
+    font-size:1.02rem;
+    margin:0 0 2px;
+    color:var(--ink);
+  }
+  .act-ko{
+    font-size:.85rem;
+    color:var(--ink-soft);
+    margin:0 0 12px;
+  }
+  .act-hint{
+    font-size:.85rem;
+    color:var(--ink-soft);
+    margin:-6px 0 12px;
+  }
+  .act-hint.en{
+    font-family:var(--font-read);
+    font-size:.92rem;
+  }
+
+  /* passage */
+  .passage{
+    font-family:var(--font-read);
+    background:var(--page);
+    border-left:3px solid var(--accent);
+    border-radius:0 4px 4px 0;
+    padding:15px 18px;
+    margin:0 0 14px;
+    font-size:1rem;
+    line-height:2.1;
+  }
+  .passage h5{
+    font-family:var(--font-mono);
+    font-size:11px;
+    font-weight:600;
+    letter-spacing:.08em;
+    margin:0 0 7px;
+    color:var(--accent);
+  }
+  .passage h5 span{
+    font-family:var(--font-ui);
+    color:var(--ink-soft);
+    letter-spacing:0;
+    font-weight:400;
+  }
+  .passage p{margin:0 0 10px;}
+  .passage p:last-child{margin:0;}
+  .passage.spaced{line-height:2.6;}
+
+  /* two-text comparison */
+  .compare{display:grid; grid-template-columns:1fr 1fr; gap:14px; margin:0 0 14px;}
+  @media (max-width:640px){ .compare{grid-template-columns:1fr;} }
+  .compare .passage{margin:0;}
+
+  /* writing lines */
+  .lines{
+    background-image:repeating-linear-gradient(to bottom,transparent 0 31px,var(--line) 31px 32px);
+    min-height:96px;
+  }
+  .lines.l1{min-height:32px;}
+  .lines.l2{min-height:64px;}
+  .lines.l3{min-height:96px;}
+  .lines.l4{min-height:128px;}
+  .lines.l5{min-height:160px;}
+
+  .blank{
+    display:inline-block;
+    min-width:120px;
+    border-bottom:1.5px solid var(--line);
+    margin:0 3px;
+    vertical-align:-2px;
+  }
+  .blank.short{min-width:70px;}
+  .blank.long{min-width:200px;}
+
+  ul.frames{list-style:none; margin:0; padding:0;}
+  ul.frames li{
+    font-family:var(--font-read);
+    font-size:1rem;
+    line-height:2.5;
+    margin:0 0 4px;
+  }
+
+  /* word bank */
+  .bank{
+    border:1px solid var(--accent);
+    border-radius:5px;
+    padding:16px 18px;
+    margin:0 0 20px;
+  }
+  .bank-row{
+    display:grid;
+    grid-template-columns:175px 1fr;
+    gap:10px 16px;
+    padding:9px 0;
+    border-bottom:1px dashed var(--border);
+    align-items:baseline;
+  }
+  .bank-row:last-child{border-bottom:none; padding-bottom:0;}
+  @media (max-width:600px){ .bank-row{grid-template-columns:1fr; gap:4px;} }
+  .bank-key{font-size:.85rem; font-weight:700; color:var(--accent);}
+  .bank-key small{display:block; font-weight:400; color:var(--ink-soft); font-size:.92em;}
+  .chips{display:flex; flex-wrap:wrap; gap:6px;}
+  .chip{
+    font-family:var(--font-read);
+    font-size:.93rem;
+    background:var(--accent-soft);
+    border-radius:3px;
+    padding:2px 9px;
+    white-space:nowrap;
+  }
+
+  .topicbox{
+    border:1px dashed var(--accent);
+    border-radius:5px;
+    padding:14px 16px;
+    margin:0 0 16px;
+    background:var(--accent-soft);
+  }
+  .topicbox p.tb-label{
+    font-family:var(--font-mono);
+    font-size:11px;
+    letter-spacing:.08em;
+    color:var(--accent);
+    font-weight:600;
+    margin:0 0 8px;
+  }
+
+  /* register pair table */
+  .tablewrap{overflow-x:auto; margin:0 0 16px;}
+  table.pairs{
+    width:100%;
+    border-collapse:collapse;
+    font-family:var(--font-read);
+    font-size:.94rem;
+  }
+  table.pairs th, table.pairs td{
+    border:1px solid var(--border);
+    padding:7px 11px;
+    text-align:left;
+  }
+  table.pairs th{
+    background:var(--accent-soft);
+    font-family:var(--font-ui);
+    font-size:.8rem;
+    font-weight:700;
+  }
+  table.pairs td:first-child{color:var(--correction); font-weight:500;}
+
+  /* sentence + short answer rows */
+  ol.qrows{margin:0; padding:0 0 0 22px;}
+  ol.qrows li{
+    margin:0 0 10px;
+    font-family:var(--font-read);
+    font-size:1rem;
+    display:flex;
+    justify-content:space-between;
+    gap:16px;
+    align-items:baseline;
+    border-bottom:1px dotted var(--border);
+    padding-bottom:5px;
+  }
+  ol.qrows li span.ans{
+    flex:none;
+    width:60px;
+    border-bottom:1.5px solid var(--line);
+    height:20px;
+  }
+
+  /* claim + evidence match */
+  .matchgrid{display:grid; grid-template-columns:1fr 1fr; gap:12px 26px; margin:0 0 12px;}
+  @media (max-width:640px){ .matchgrid{grid-template-columns:1fr;} }
+  .matchcol h6{
+    font-family:var(--font-mono);
+    font-size:10.5px;
+    letter-spacing:.07em;
+    color:var(--accent);
+    font-weight:600;
+    margin:0 0 8px;
+  }
+  .matchcol ol{margin:0; padding:0 0 0 20px;}
+  .matchcol li{
+    font-family:var(--font-read);
+    font-size:.95rem;
+    margin:0 0 9px;
+    line-height:1.55;
+  }
+
+  /* numbered fill rows */
+  ol.fill{margin:0; padding:0 0 0 22px;}
+  ol.fill li{margin:0 0 13px; font-size:.98rem; font-family:var(--font-read);}
+  ol.fill li:last-child{margin-bottom:0;}
+  ol.fill .lines{margin-top:5px;}
+
+  /* multiple choice */
+  ul.mc{list-style:none; margin:0 0 6px; padding:0;}
+  ul.mc li{
+    font-family:var(--font-read);
+    font-size:.98rem;
+    padding:4px 0 4px 32px;
+    position:relative;
+  }
+  ul.mc li::before{
+    content:attr(data-opt);
+    position:absolute;
+    left:0; top:5px;
+    width:21px; height:21px;
+    border:1.5px solid var(--ink-soft);
+    border-radius:50%;
+    font-family:var(--font-mono);
+    font-size:10.5px;
+    display:flex; align-items:center; justify-content:center;
+    color:var(--ink-soft);
+  }
+
+  /* boxed answers */
+  .boxrow{display:grid; gap:12px; margin:0 0 12px;}
+  .boxrow.two{grid-template-columns:1fr 1fr;}
+  @media (max-width:600px){ .boxrow.two{grid-template-columns:1fr;} }
+  .abox{
+    border:1px solid var(--border);
+    border-radius:4px;
+    padding:10px 12px 6px;
+  }
+  .abox h6{
+    font-family:var(--font-mono);
+    font-size:10.5px;
+    letter-spacing:.06em;
+    color:var(--accent);
+    font-weight:600;
+    margin:0 0 6px;
+  }
+  .abox h6 span{
+    font-family:var(--font-ui);
+    color:var(--ink-soft);
+    letter-spacing:0;
+    font-weight:400;
+  }
+  .abox .lines{background-image:repeating-linear-gradient(to bottom,transparent 0 27px,var(--line) 27px 28px);}
+
+  /* plan grid */
+  .plan{display:grid; border:1px solid var(--border); border-radius:4px; overflow:hidden;}
+  .plan-row{display:grid; grid-template-columns:158px 1fr; border-bottom:1px solid var(--border);}
+  .plan-row:last-child{border-bottom:none;}
+  @media (max-width:600px){ .plan-row{grid-template-columns:108px 1fr;} }
+  .plan-key{
+    background:var(--accent-soft);
+    padding:10px 12px;
+    font-size:.84rem;
+    font-weight:700;
+    border-right:1px solid var(--border);
+    line-height:1.45;
+  }
+  .plan-key small{display:block; font-weight:400; color:var(--ink-soft);}
+  .plan-val{padding:6px 12px;}
+  .plan-val .lines{background-image:repeating-linear-gradient(to bottom,transparent 0 29px,var(--line) 29px 30px); min-height:30px;}
+  .plan-val .lines.two{min-height:60px;}
+
+  /* checkbox list */
+  ul.checks{list-style:none; margin:0; padding:0;}
+  ul.checks li{
+    position:relative;
+    padding-left:28px;
+    margin:0 0 10px;
+    font-family:var(--font-read);
+    font-size:.96rem;
+    line-height:1.5;
+  }
+  ul.checks li::before{
+    content:"";
+    position:absolute;
+    left:0; top:4px;
+    width:15px; height:15px;
+    border:1.5px solid var(--ink-soft);
+    border-radius:3px;
+  }
+  ul.checks li .cko{
+    display:block;
+    font-family:var(--font-ui);
+    font-size:.83rem;
+    color:var(--ink-soft);
+  }
+
+  /* teacher note */
+  .tnote{
+    margin:26px 0 0;
+    padding:14px 16px;
+    border:1px dashed var(--border);
+    border-radius:4px;
+    background:var(--page);
+    font-size:.85rem;
+    line-height:1.75;
+    color:var(--ink-soft);
+  }
+  .tnote b.tlabel{
+    font-family:var(--font-mono);
+    font-size:11px;
+    letter-spacing:.08em;
+    text-transform:uppercase;
+    color:var(--mono-ink);
+    display:block;
+    margin:0 0 6px;
+  }
+  .tnote p{margin:0 0 7px;}
+  .tnote p:last-child{margin:0;}
+  .tnote .ans{color:var(--correction); font-weight:700;}
+
+  .colophon{
+    font-family:var(--font-mono);
+    font-size:11px;
+    color:var(--mono-ink);
+    line-height:1.75;
+    text-align:center;
+    padding:6px 0 0;
+  }
+
+  @media print{
+    body{background:#fff;}
+    .stack{max-width:none; padding:0; gap:0;}
+    .sheet{
+      border:none;
+      border-radius:0;
+      padding:0 0 12mm;
+      page-break-after:always;
+      break-after:page;
+    }
+    .sheet:last-of-type{page-break-after:auto; break-after:auto;}
+    .colophon{display:none;}
+    .passage{background:#fff; border-left:3px solid #1E6B49;}
+    .tnote{background:#fff;}
+    .chip, .topicbox{background:#fff;}
+    .pagemark{top:0; right:0;}
+    @page{size:A4; margin:16mm 14mm;}
+  }
+</style>
+
+<div class="stack">
+
+  <!-- ================= COVER ================= -->
+  <section class="sheet cover">
+    <span class="pagemark">5단계 · 1/10</span>
+    <p class="cover-eyebrow">구조적 글쓰기 · 5단계 워크시트</p>
+    <h1>독자와 근거</h1>
+    <p class="h1-en">Stage 5 · Reader and Reason</p>
+
+    <p class="blurb">
+      4단계까지는 <b>내가 아는 것</b>을 잘 정리해 썼습니다.
+      이제부터는 <b>남을 설득하는 글</b>을 씁니다.
+      설득에는 두 가지가 필요합니다 — 누가 읽는지 아는 것, 그리고 내 말을 뒷받침할 사실을 대는 것.
+    </p>
+
+    <div class="bigidea">
+      <p class="ko">독자가 다르면 글도 다르다</p>
+      <p class="en">A different reader needs a different text.</p>
+    </div>
+
+    <div class="namebar">
+      <label class="namefield"><span>이름 / NAME</span><i></i></label>
+      <label class="namefield"><span>학년 / CLASS</span><i></i></label>
+      <label class="namefield"><span>날짜 / DATE</span><i></i></label>
+    </div>
+
+    <div class="howto">
+      <b>이 워크시트는 이렇게 진행합니다</b>
+      <ol>
+        <li><b>보기</b> — 같은 내용을 두 독자에게 쓴 글을 견줍니다. (3쪽)</li>
+        <li><b>나누기</b> — 격식을 가르고, 주장과 근거를 가릅니다. (4·5쪽)</li>
+        <li><b>채우기</b> — 독자를 바꿔 다시 쓰고, 문단을 잇습니다. (6·7쪽)</li>
+        <li><b>짓기</b> — 근거를 갖춘 네 문단 글을 씁니다. (8쪽)</li>
+        <li><b>완성 과제</b> — 다섯 문단 논설문을 씁니다. (9쪽)</li>
+      </ol>
+    </div>
+
+    <div class="langnote">
+      <b>이 단계부터 바뀝니다 —</b> 활동 지시문이 영어로 나옵니다. 한국어는 아래에 작게 붙어 있으니, <b>먼저 영어를 읽고</b> 모를 때만 한국어를 보세요.
+    </div>
+</section>
+
+  <!-- ================= WORD BANK ================= -->
+  <section class="sheet">
+    <span class="pagemark">5단계 · 2/10</span>
+    <div class="step-head">
+      <div class="step-num">WORD BANK</div>
+      <div class="step-titles">
+        <h2>설득할 때 쓰는 말</h2>
+        <p class="h2-en">Keep this page open while you write.</p>
+      </div>
+    </div>
+
+    <div class="bank">
+      <div class="bank-row">
+        <div class="bank-key">Formal opening<small>격식 있게 열기</small></div>
+        <div class="chips"><span class="chip">Dear ___,</span><span class="chip">I am writing to ___.</span><span class="chip">I would like to ___.</span></div>
+      </div>
+      <div class="bank-row">
+        <div class="bank-key">Informal opening<small>친근하게 열기</small></div>
+        <div class="chips"><span class="chip">Hey ___!</span><span class="chip">Guess what —</span><span class="chip">Do you want to ___?</span></div>
+      </div>
+      <div class="bank-row">
+        <div class="bank-key">Giving evidence<small>근거 대기</small></div>
+        <div class="chips"><span class="chip">For example,</span><span class="chip">According to ___,</span><span class="chip">Last year,</span><span class="chip">In fact,</span></div>
+      </div>
+      <div class="bank-row">
+        <div class="bank-key">Linking paragraphs<small>문단 잇기</small></div>
+        <div class="chips"><span class="chip">First of all,</span><span class="chip">Second,</span><span class="chip">Another reason is</span><span class="chip">However,</span><span class="chip">As a result,</span></div>
+      </div>
+      <div class="bank-row">
+        <div class="bank-key">Closing an argument<small>주장 맺기</small></div>
+        <div class="chips"><span class="chip">In conclusion,</span><span class="chip">That is why I think ___.</span><span class="chip">I hope you will ___.</span></div>
+      </div>
+    </div>
+
+    <div class="topicbox">
+      <p class="tb-label">이 워크시트의 주장 · 하나뿐입니다</p>
+      <div class="chips"><span class="chip">Our lunch break should be longer.</span></div>
+      <p style="font-size:.84rem; color:var(--ink-soft); margin:8px 0 0;">3쪽 본보기 글과 같은 주장입니다. 반 전체가 같은 주장으로 쓰되, <b>근거는 각자 다르게</b> 찾습니다.</p>
+    </div>
+
+    <div class="act">
+      <p class="act-label">PRACTICE</p>
+      <p class="act-prompt">Write one word from the Word Bank in each blank.</p>
+      <p class="act-ko">워드뱅크에서 알맞은 말을 골라 빈칸에 쓰세요.</p>
+      <ol class="fill">
+        <li><span class="blank"></span> Principal Kim,</li>
+        <li>Our library is too small. <span class="blank"></span>, it has only two tables.</li>
+        <li><span class="blank"></span>, students need more time to eat.</li>
+        <li><span class="blank"></span>, I think our lunch break should be longer.</li>
+      </ol>
+    </div>
+</section>
+
+  <!-- ================= SEE ================= -->
+  <section class="sheet">
+    <span class="pagemark">5단계 · 3/10</span>
+    <div class="step-head">
+      <div class="step-num">보기 SEE</div>
+      <div class="step-titles">
+        <h2>같은 부탁, 다른 독자</h2>
+        <p class="h2-en">Same message, two readers</p>
+      </div>
+    </div>
+
+    <p class="act-hint en">Jiho wants a longer lunch break. He wrote twice — once to his friend, once to the principal.</p>
+
+    <div class="compare">
+      <div class="passage">
+        <h5>TEXT A <span>· to a friend</span></h5>
+        <p>Hey Minji! Guess what — our class wants a longer lunch break. We only get thirty minutes. That's way too short! We can't even finish eating. Do you want to help me ask? Text me back!</p>
+      </div>
+      <div class="passage">
+        <h5>TEXT B <span>· to the principal</span></h5>
+        <p>Dear Principal Kim,</p>
+        <p>I am writing to ask for a longer lunch break. At present, students have only thirty minutes. Many students cannot finish their meals. As a result, some go back to class hungry.</p>
+        <p>I hope you will consider this. Yours sincerely, Jiho</p>
+      </div>
+    </div>
+
+    <div class="act">
+      <p class="act-label">ACTIVITY 1</p>
+      <p class="act-prompt">What is the same in both texts? Write one sentence.</p>
+      <p class="act-ko">두 글에서 같은 것은 무엇인가요? 한 문장으로 쓰세요.</p>
+      <div class="lines l2"></div>
+    </div>
+
+    <div class="act">
+      <p class="act-label">ACTIVITY 2</p>
+      <p class="act-prompt">Underline three words in Text A that you would NOT use in Text B.</p>
+      <p class="act-ko">Text A에서 Text B에는 쓰지 않을 낱말 세 개에 밑줄을 그으세요.</p>
+    </div>
+
+    <div class="act">
+      <p class="act-label">ACTIVITY 3</p>
+      <p class="act-prompt">Text B gives a reason and then a result. Circle the two words that show this.</p>
+      <p class="act-ko">Text B는 까닭을 대고 결과를 말합니다. 그것을 보여 주는 말 두 개에 동그라미 하세요.</p>
+    </div>
+</section>
+
+  <!-- ================= SORT 1 ================= -->
+  <section class="sheet">
+    <span class="pagemark">5단계 · 4/10</span>
+    <div class="step-head">
+      <div class="step-num">나누기 SORT ①</div>
+      <div class="step-titles">
+        <h2>격식 가르기</h2>
+        <p class="h2-en">Formal or informal?</p>
+      </div>
+    </div>
+
+    <div class="act">
+      <p class="act-label">ACTIVITY 1</p>
+      <p class="act-prompt">Write <b>F</b> for formal or <b>I</b> for informal.</p>
+      <p class="act-ko">격식 있는 문장에는 F, 친근한 문장에는 I를 쓰세요.</p>
+      <ol class="qrows">
+        <li><span>Hey, can you help me out?</span><span class="ans"></span></li>
+        <li><span>I am writing to ask for your help.</span><span class="ans"></span></li>
+        <li><span>That's way too short!</span><span class="ans"></span></li>
+        <li><span>This is not enough time for students.</span><span class="ans"></span></li>
+        <li><span>Do you wanna come?</span><span class="ans"></span></li>
+        <li><span>I would like to invite you.</span><span class="ans"></span></li>
+        <li><span>Yours sincerely,</span><span class="ans"></span></li>
+        <li><span>Text me back!</span><span class="ans"></span></li>
+      </ol>
+    </div>
+
+    <div class="act">
+      <p class="act-label">ACTIVITY 2</p>
+      <p class="act-prompt">Circle the better opening for each reader.</p>
+      <p class="act-ko">각 독자에게 더 알맞은 첫인사에 동그라미 하세요.</p>
+      <ol class="fill">
+        <li>To your best friend &nbsp;→&nbsp; <b>Hey Minji!</b> &nbsp;/&nbsp; <b>Dear Ms Park,</b></li>
+        <li>To the school principal &nbsp;→&nbsp; <b>Guess what —</b> &nbsp;/&nbsp; <b>Dear Principal Kim,</b></li>
+        <li>To younger students &nbsp;→&nbsp; <b>Hello everyone,</b> &nbsp;/&nbsp; <b>I am writing to inform you,</b></li>
+      </ol>
+    </div>
+
+    <div class="act">
+      <p class="act-label">ACTIVITY 3</p>
+      <p class="act-prompt">Which is harder to write — formal or informal? Circle one and tell your partner why.</p>
+      <p class="act-ko">격식 있는 글과 친근한 글 중 어느 쪽이 더 어려운가요? 하나를 고르고 짝에게 까닭을 말해 보세요.</p>
+      <ul class="mc">
+        <li data-opt="a">Formal is harder.</li>
+        <li data-opt="b">Informal is harder.</li>
+      </ul>
+    </div>
+</section>
+
+  <!-- ================= SORT 2 ================= -->
+  <section class="sheet">
+    <span class="pagemark">5단계 · 5/10</span>
+    <div class="step-head">
+      <div class="step-num">나누기 SORT ②</div>
+      <div class="step-titles">
+        <h2>주장과 근거 가르기</h2>
+        <p class="h2-en">Claim or evidence?</p>
+      </div>
+    </div>
+
+    <p class="act-hint"><b>주장(claim)</b>은 내가 생각하는 것입니다. <b>근거(evidence)</b>는 내 생각이 옳다는 것을 보여 주는 <b>사실</b>입니다. 주장만 있고 근거가 없으면 아무도 설득되지 않습니다.</p>
+
+    <div class="act">
+      <p class="act-label">ACTIVITY 1</p>
+      <p class="act-prompt">Write <b>C</b> for claim or <b>E</b> for evidence.</p>
+      <p class="act-ko">주장이면 C, 근거이면 E를 쓰세요.</p>
+      <ol class="qrows">
+        <li><span>Our school day should start later.</span><span class="ans"></span></li>
+        <li><span>Many students arrive at school very sleepy.</span><span class="ans"></span></li>
+        <li><span>Winter is the best season.</span><span class="ans"></span></li>
+        <li><span>In our town it snows for two months.</span><span class="ans"></span></li>
+        <li><span>Our town needs a new library.</span><span class="ans"></span></li>
+        <li><span>The old library has only two reading tables.</span><span class="ans"></span></li>
+      </ol>
+    </div>
+
+    <div class="act">
+      <p class="act-label">ACTIVITY 2</p>
+      <p class="act-prompt">Which evidence supports which claim? Draw a line.</p>
+      <p class="act-ko">어느 근거가 어느 주장을 뒷받침하나요? 선으로 이으세요.</p>
+      <div class="matchgrid">
+        <div class="matchcol">
+          <h6>CLAIMS</h6>
+          <ol>
+            <li>Our town needs a new library.</li>
+            <li>Our school needs a bigger playground.</li>
+          </ol>
+        </div>
+        <div class="matchcol">
+          <h6>EVIDENCE</h6>
+          <ol type="a">
+            <li>Three hundred students share one small field.</li>
+            <li>Many children go to the next town to borrow books.</li>
+            <li>Students often wait in line to play.</li>
+            <li>The shelves hold only five hundred books.</li>
+          </ol>
+        </div>
+      </div>
+    </div>
+
+    <div class="act">
+      <p class="act-label">ACTIVITY 3</p>
+      <p class="act-prompt">One sentence below is NOT evidence. Cross it out.</p>
+      <p class="act-ko">아래 중 근거가 <b>아닌</b> 문장 하나에 ✗ 표를 하세요.</p>
+      <ol class="fill">
+        <li>The library has only two tables.</li>
+        <li>The library is boring.</li>
+        <li>Only five hundred books are on the shelves.</li>
+      </ol>
+    </div>
+</section>
+
+  <!-- ================= FRAME 1 ================= -->
+  <section class="sheet">
+    <span class="pagemark">5단계 · 6/10</span>
+    <div class="step-head">
+      <div class="step-num">채우기 FRAME ①</div>
+      <div class="step-titles">
+        <h2>독자를 바꿔 다시 쓰기</h2>
+        <p class="h2-en">Rewrite it for a different reader</p>
+      </div>
+    </div>
+
+    <div class="tablewrap">
+      <table class="pairs">
+        <thead><tr><th>Informal · 친근하게</th><th>Formal · 격식 있게</th></tr></thead>
+        <tbody>
+          <tr><td>I want</td><td>I would like</td></tr>
+          <tr><td>kids</td><td>students</td></tr>
+          <tr><td>get</td><td>receive</td></tr>
+          <tr><td>a lot of</td><td>many</td></tr>
+          <tr><td>Thanks!</td><td>Yours sincerely,</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="act">
+      <p class="act-label">ACTIVITY 1</p>
+      <p class="act-prompt">Read this message from a student to a friend.</p>
+      <p class="act-ko">친구에게 보낸 메시지입니다.</p>
+      <div class="passage spaced">
+        <p>Hey! Our playground is way too small. A lot of kids have to wait to play. Can we get a bigger one? Thanks!</p>
+      </div>
+    </div>
+
+    <div class="act">
+      <p class="act-label">ACTIVITY 2</p>
+      <p class="act-prompt">Now write the same message to the principal. Use the frames.</p>
+      <p class="act-ko">같은 내용을 교장 선생님께 쓰세요. 아래 틀을 쓰면 됩니다.</p>
+      <ul class="frames">
+        <li>Dear <span class="blank"></span>,</li>
+        <li>I am writing to <span class="blank long"></span>.</li>
+        <li>At present, <span class="blank long"></span>.</li>
+        <li>As a result, <span class="blank long"></span>.</li>
+        <li>I hope you will <span class="blank long"></span>.</li>
+        <li>Yours sincerely, <span class="blank"></span></li>
+      </ul>
+    </div>
+
+    <div class="act">
+      <p class="act-label">ACTIVITY 3</p>
+      <p class="act-prompt">Read both versions out loud. Which one gives more reasons?</p>
+      <p class="act-ko">두 글을 소리 내어 읽어 보세요. 어느 쪽이 근거를 더 많이 대나요?</p>
+      <ul class="checks">
+        <li>I read both versions out loud.<span class="cko">두 글을 소리 내어 읽었다</span></li>
+      </ul>
+    </div>
+</section>
+
+  <!-- ================= FRAME 2 ================= -->
+  <section class="sheet">
+    <span class="pagemark">5단계 · 7/10</span>
+    <div class="step-head">
+      <div class="step-num">채우기 FRAME ②</div>
+      <div class="step-titles">
+        <h2>근거 붙이고 문단 잇기</h2>
+        <p class="h2-en">Add evidence, link the paragraphs</p>
+      </div>
+    </div>
+
+    <div class="act">
+      <p class="act-label">ACTIVITY 1</p>
+      <p class="act-prompt">Each paragraph starts a new reason. Write the linking word.</p>
+      <p class="act-ko">문단마다 새로운 근거가 시작됩니다. 문단을 잇는 말을 쓰세요.</p>
+      <div class="topicbox">
+        <p class="tb-label">WORD BOX</p>
+        <div class="chips"><span class="chip">First of all,</span><span class="chip">Second,</span><span class="chip">In conclusion,</span></div>
+      </div>
+      <div class="passage spaced">
+        <p><span class="blank"></span> our lunch break is too short. Students have only thirty minutes to eat.</p>
+        <p><span class="blank"></span> students need time to rest. After eating, there is no time to go outside.</p>
+        <p><span class="blank"></span> I hope the school will give us a longer break.</p>
+      </div>
+    </div>
+
+    <div class="act">
+      <p class="act-label">ACTIVITY 2</p>
+      <p class="act-prompt">Add evidence to each claim. Use the frames.</p>
+      <p class="act-ko">각 주장에 근거를 붙이세요.</p>
+      <ul class="frames">
+        <li>Our town needs a new library. For example, <span class="blank long"></span>.</li>
+        <li>Winter is the best season. In fact, <span class="blank long"></span>.</li>
+      </ul>
+    </div>
+
+    <div class="act">
+      <p class="act-label">ACTIVITY 3</p>
+      <p class="act-prompt">This sentence is too weak. Make it stronger with a number or a fact.</p>
+      <p class="act-ko">이 문장은 약합니다. 숫자나 사실을 넣어 튼튼하게 만드세요.</p>
+      <div class="passage">
+        <p>The playground is small.</p>
+      </div>
+      <div class="lines l2"></div>
+    </div>
+</section>
+
+  <!-- ================= BUILD ================= -->
+  <section class="sheet">
+    <span class="pagemark">5단계 · 8/10</span>
+    <div class="step-head">
+      <div class="step-num">짓기 BUILD</div>
+      <div class="step-titles">
+        <h2>근거를 갖춘 네 문단</h2>
+        <p class="h2-en">Four paragraphs with evidence</p>
+      </div>
+    </div>
+
+    <div class="topicbox">
+      <p class="tb-label">점심시간 주장을 쓸 때 쓰는 낱말</p>
+      <div class="chips"><span class="chip">lunch break</span><span class="chip">thirty minutes</span><span class="chip">finish</span><span class="chip">meal</span><span class="chip">rest</span><span class="chip">hungry</span><span class="chip">tired</span><span class="chip">the playground</span><span class="chip">go outside</span><span class="chip">not enough time</span></div>
+    </div>
+
+    <div class="act">
+      <p class="act-label">ACTIVITY 1</p>
+      <p class="act-prompt">Plan first. Choose a claim from page 2 and choose your reader.</p>
+      <p class="act-ko">먼저 계획합니다. 주장은 2쪽에 있는 것 하나이고, <b>읽을 사람만</b> 여러분이 정합니다.</p>
+      <div class="plan">
+        <div class="plan-row"><div class="plan-key">My claim<small>내 주장</small></div><div class="plan-val"><div class="lines"></div></div></div>
+        <div class="plan-row"><div class="plan-key">My reader<small>읽을 사람</small></div><div class="plan-val"><div class="lines"></div></div></div>
+        <div class="plan-row"><div class="plan-key">Reason 1 + evidence<small>근거 1</small></div><div class="plan-val"><div class="lines two"></div></div></div>
+        <div class="plan-row"><div class="plan-key">Reason 2 + evidence<small>근거 2</small></div><div class="plan-val"><div class="lines two"></div></div></div>
+      </div>
+    </div>
+
+    <div class="act">
+      <p class="act-label">ACTIVITY 2</p>
+      <p class="act-prompt">Say it out loud. Then write one paragraph in each box.</p>
+      <p class="act-ko">소리 내어 읽어 본 다음, 각 칸에 문단을 하나씩 쓰세요.</p>
+
+      <div class="abox" style="margin-bottom:12px;">
+        <h6>INTRODUCTION <span>· 주장 밝히기</span></h6>
+        <div class="lines l2"></div>
+      </div>
+      <div class="abox" style="margin-bottom:12px;">
+        <h6>BODY 1 <span>· 근거 하나 + 사실</span></h6>
+        <div class="lines l3"></div>
+      </div>
+      <div class="abox" style="margin-bottom:12px;">
+        <h6>BODY 2 <span>· 또 다른 근거 + 사실</span></h6>
+        <div class="lines l3"></div>
+      </div>
+      <div class="abox">
+        <h6>CONCLUSION <span>· 주장 다시 강조하기</span></h6>
+        <div class="lines l2"></div>
+      </div>
+    </div>
+
+    <div class="act">
+      <p class="act-label">ACTIVITY 3 · CHECK YOURSELF</p>
+      <ul class="checks">
+        <li>My tone matches my reader.<span class="cko">어조가 읽을 사람에게 맞다</span></li>
+        <li>Each body paragraph has one reason <b>and</b> one fact.<span class="cko">본론 문단마다 근거 하나와 사실 하나가 있다</span></li>
+        <li>I linked my paragraphs with First of all / Second / In conclusion.<span class="cko">문단을 잇는 말을 썼다</span></li>
+        <li>My conclusion says my claim again in different words.<span class="cko">결론에서 주장을 다른 말로 다시 말했다</span></li>
+      </ul>
+    </div>
+</section>
+
+  <!-- ================= CAPSTONE ================= -->
+  <section class="sheet">
+    <span class="pagemark">5단계 · 9/10</span>
+    <div class="step-head">
+      <div class="step-num">완성 과제</div>
+      <div class="step-titles">
+        <h2>다섯 문단 논설문</h2>
+        <p class="h2-en">A five-paragraph argument</p>
+      </div>
+    </div>
+
+    <p class="act-hint">이번에는 근거를 <b>셋</b> 댑니다. 그리고 마지막에, 같은 주장을 <b>다른 독자</b>에게 여는 연습을 합니다.</p>
+
+    <div class="topicbox">
+      <p class="tb-label">근거로 쓸 만한 것</p>
+      <div class="chips"><span class="chip">how many minutes</span><span class="chip">how many students</span><span class="chip">what happens after</span><span class="chip">a number</span><span class="chip">something you saw</span><span class="chip">something a friend said</span></div>
+    </div>
+
+    <div class="act">
+      <p class="act-label">ACTIVITY 1 · COLLECT</p>
+      <p class="act-prompt">Choose one claim. Find three reasons, and one fact for each.</p>
+      <p class="act-ko">주장 하나를 고르고, 근거 셋과 각각의 사실을 찾으세요.</p>
+      <div class="plan">
+        <div class="plan-row"><div class="plan-key">My claim</div><div class="plan-val"><div class="lines"></div></div></div>
+        <div class="plan-row"><div class="plan-key">Reason 1 · fact</div><div class="plan-val"><div class="lines"></div></div></div>
+        <div class="plan-row"><div class="plan-key">Reason 2 · fact</div><div class="plan-val"><div class="lines"></div></div></div>
+        <div class="plan-row"><div class="plan-key">Reason 3 · fact</div><div class="plan-val"><div class="lines"></div></div></div>
+      </div>
+    </div>
+
+    <div class="act">
+      <p class="act-label">ACTIVITY 2 · WRITE</p>
+      <p class="act-prompt">Write five paragraphs. Start each body paragraph with a linking word.</p>
+      <p class="act-ko">다섯 문단으로 쓰세요. 본론 문단은 잇는 말로 시작합니다.</p>
+      <div class="abox" style="margin-bottom:10px;">
+        <h6>INTRODUCTION <span>· 주장</span></h6><div class="lines l2"></div>
+      </div>
+      <div class="abox" style="margin-bottom:10px;">
+        <h6>BODY 1 <span>· First of all,</span></h6><div class="lines l2"></div>
+      </div>
+      <div class="abox" style="margin-bottom:10px;">
+        <h6>BODY 2 <span>· Second,</span></h6><div class="lines l2"></div>
+      </div>
+      <div class="abox" style="margin-bottom:10px;">
+        <h6>BODY 3 <span>· Another reason is</span></h6><div class="lines l2"></div>
+      </div>
+      <div class="abox">
+        <h6>CONCLUSION <span>· In conclusion,</span></h6><div class="lines l2"></div>
+      </div>
+    </div>
+
+  </section>
+
+  <section class="sheet">
+    <span class="pagemark">5단계 · 10/10</span>
+    <div class="step-head">
+      <div class="step-num">완성 과제 ②</div>
+      <div class="step-titles">
+        <h2>독자를 바꿔 다시 열기</h2>
+        <p class="h2-en">Open it again, for a different reader</p>
+      </div>
+    </div>
+
+    <p class="act-hint">같은 주장, 같은 근거입니다. 바뀌는 것은 <b>읽는 사람</b>뿐입니다. 서론만 다시 씁니다.</p>
+
+    <div class="act">
+      <p class="act-label">ACTIVITY 1 · CHANGE THE READER</p>
+      <p class="act-prompt">Write your introduction again — this time for a friend.</p>
+      <p class="act-ko">서론만 다시 쓰세요. 이번에는 친구가 읽습니다.</p>
+      <div class="lines l2"></div>
+    </div>
+
+    <div class="act">
+      <p class="act-label">ACTIVITY 2 · CHECK</p>
+      <ul class="checks">
+        <li>All three reasons support the same claim.<span class="cko">근거 셋이 모두 같은 주장을 향한다</span></li>
+        <li>Every reason has a fact, not just an opinion.<span class="cko">근거마다 의견이 아니라 사실이 붙어 있다</span></li>
+        <li>My two introductions sound different.<span class="cko">두 서론의 어조가 서로 다르다</span></li>
+      </ul>
+    </div>
+</section>
+
+  <p class="colophon">
+    구조적 글쓰기 6단계 · 5단계 워크시트<br>
+    Marble Skill Taxonomy (v1) · © Generative Spark, Inc. (Marble) · https://withmarble.com<br>
+    licensed under ODbL 1.0 (database) and CC BY-SA 4.0 (content)
+  </p>
+
+</div>

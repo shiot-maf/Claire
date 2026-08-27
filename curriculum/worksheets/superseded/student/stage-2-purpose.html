@@ -1,0 +1,866 @@
+<title>목적을 가진 글 학생용</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;500;700&family=Noto+Sans+KR:wght@400;500;700&family=JetBrains+Mono:wght@400;500;600&display=swap">
+<style>
+  :root{
+    --sheet:#FFFDF7; --page:#EFEADC; --ink:#262A1F; --ink-soft:#5B5D4C;
+    --accent:#1E6B49; --accent-soft:#E4EFE8; --accent-ink:#F4FBF6;
+    --correction:#B23B32; --correction-soft:#F7E4E0;
+    --border:#D5CDB6; --line:#C6BEA6; --mono-ink:#7A7663;
+    --font-display:'Noto Serif KR',Georgia,serif;
+    --font-read:'Noto Serif KR',Georgia,serif;
+    --font-ui:'Noto Sans KR',-apple-system,BlinkMacSystemFont,sans-serif;
+    --font-mono:'JetBrains Mono',ui-monospace,Consolas,monospace;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --sheet:#20261F; --page:#161A15; --ink:#ECE7D6; --ink-soft:#B4B19D;
+      --accent:#6FC79A; --accent-soft:#22321F; --accent-ink:#0D1611;
+      --correction:#E2897C; --correction-soft:#3A2420;
+      --border:#3A4034; --line:#454B3D; --mono-ink:#8B9083;
+    }
+  }
+  :root[data-theme="dark"]{
+    --sheet:#20261F; --page:#161A15; --ink:#ECE7D6; --ink-soft:#B4B19D;
+    --accent:#6FC79A; --accent-soft:#22321F; --accent-ink:#0D1611;
+    --correction:#E2897C; --correction-soft:#3A2420;
+    --border:#3A4034; --line:#454B3D; --mono-ink:#8B9083;
+  }
+
+  *{box-sizing:border-box;}
+  @media (prefers-reduced-motion: reduce){*{transition:none !important;}}
+  body{margin:0; background:var(--page); color:var(--ink); font-family:var(--font-ui); font-size:15.5px; line-height:1.62; -webkit-font-smoothing:antialiased;}
+  a{color:var(--accent);} a:focus-visible{outline:2px solid var(--correction); outline-offset:3px;}
+
+  .stack{max-width:800px; margin:0 auto; padding:40px 20px 70px; display:flex; flex-direction:column; gap:26px;}
+  /* A4 안전 영역: 인쇄 시 178 x 249 mm. 한 sheet의 내용은 이 안에 들어가야 한다. */
+  .sheet{background:var(--sheet); border:1px solid var(--border); border-radius:4px; padding:34px 38px 30px; position:relative;}
+  @media (max-width:600px){ .sheet{padding:26px 20px 24px;} }
+  .pagemark{position:absolute; top:12px; right:16px; font-family:var(--font-mono); font-size:10px; color:var(--mono-ink); letter-spacing:.06em;}
+
+  /* cover */
+  .cover-eyebrow{font-family:var(--font-mono); font-size:11px; letter-spacing:.13em; text-transform:uppercase; color:var(--correction); margin:0 0 10px;}
+  .cover h1{font-family:var(--font-display); font-weight:700; font-size:clamp(1.9rem,5vw,2.5rem); line-height:1.2; margin:0 0 5px;}
+  .cover .h1-en{font-family:var(--font-mono); font-size:12px; letter-spacing:.09em; text-transform:uppercase; color:var(--accent); margin:0 0 16px;}
+  .cover p.blurb{font-family:var(--font-read); color:var(--ink-soft); max-width:54ch; margin:0 0 18px; font-size:.97rem;}
+  .bigidea{border:2px solid var(--accent); border-radius:5px; padding:14px 18px; margin:0 0 18px; text-align:center;}
+  .bigidea .ko{font-family:var(--font-display); font-weight:700; font-size:1.24rem; margin:0 0 3px;}
+  .bigidea .en{font-family:var(--font-read); font-size:1rem; color:var(--accent); margin:0;}
+
+  .toc{border:1px solid var(--border); border-radius:5px; padding:12px 16px; margin:0 0 18px;}
+  .toc p.toc-label{font-family:var(--font-mono); font-size:10px; letter-spacing:.09em; color:var(--mono-ink); font-weight:600; margin:0 0 8px;}
+  .toc ol{list-style:none; margin:0; padding:0; counter-reset:tocc;}
+  .toc li{counter-increment:tocc; display:flex; align-items:baseline; gap:10px; padding:4px 0; font-size:.88rem; border-bottom:1px dashed var(--border);}
+  .toc li:last-child{border-bottom:none;}
+  .toc li::before{content:"CH " counter(tocc); font-family:var(--font-mono); font-size:9.5px; font-weight:600; color:var(--accent-ink); background:var(--accent); padding:2px 6px; border-radius:3px; flex:none;}
+  .toc li .t{flex:1; font-weight:600;}
+  .toc li .pp{font-family:var(--font-mono); font-size:10px; color:var(--mono-ink); white-space:nowrap;}
+
+  .namebar{display:flex; gap:22px; flex-wrap:wrap; padding:14px 0 0; border-top:1px solid var(--border);}
+  .namefield{display:flex; align-items:baseline; gap:9px; flex:1 1 170px;}
+  .namefield span{font-family:var(--font-mono); font-size:11px; color:var(--mono-ink); white-space:nowrap;}
+  .namefield i{flex:1; border-bottom:1.5px solid var(--line); height:24px; display:block;}
+  .howto{margin:18px 0 0; padding:14px 16px; background:var(--accent-soft); border-radius:4px; font-size:.87rem; color:var(--ink-soft);}
+  .howto b{color:var(--ink);}
+  .howto ol{margin:7px 0 0; padding-left:19px;} .howto li{margin:0 0 4px;}
+
+  /* chapter bar */
+  .chapbar{display:flex; align-items:center; gap:12px; flex-wrap:wrap; background:var(--accent-soft); border-radius:5px; padding:9px 14px; margin:0 0 16px;}
+  .chapnum{font-family:var(--font-mono); font-size:10px; font-weight:600; letter-spacing:.08em; color:var(--accent-ink); background:var(--accent); padding:3px 8px; border-radius:3px; flex:none;}
+  .chaptitle{font-weight:700; font-size:.95rem; flex:1; min-width:0;}
+  .chaptopic{font-family:var(--font-mono); font-size:10px; color:var(--mono-ink); white-space:nowrap;}
+  .scaffold{display:flex; align-items:center; gap:4px; flex:none;}
+  .scaffold b{font-family:var(--font-mono); font-size:9px; letter-spacing:.05em; color:var(--mono-ink); font-weight:600;}
+  .scaffold i{width:7px; height:7px; border-radius:50%; border:1.5px solid var(--accent); display:block;}
+  .scaffold i.on{background:var(--accent);}
+
+  /* header */
+  .step-head{display:flex; gap:14px; align-items:flex-start; padding:0 0 13px; border-bottom:2px solid var(--accent); margin:0 0 18px;}
+  .step-num{flex:none; padding:0 11px; height:36px; border-radius:18px; background:var(--accent); color:var(--accent-ink); font-family:var(--font-mono); font-size:12px; font-weight:600; letter-spacing:.05em; display:flex; align-items:center; white-space:nowrap;}
+  .step-titles{flex:1; min-width:0;}
+  .step-titles h2{font-family:var(--font-display); font-weight:700; font-size:1.35rem; line-height:1.25; margin:0 0 2px;}
+  .step-titles .h2-en{font-family:var(--font-read); font-size:.9rem; color:var(--accent); margin:0;}
+
+  /* activity */
+  .act{margin:0 0 19px;} .act:last-of-type{margin-bottom:0;}
+  .act-label{font-family:var(--font-mono); font-size:11px; letter-spacing:.08em; color:var(--correction); font-weight:600; margin:0 0 4px;}
+  .act-prompt{font-weight:700; font-size:.99rem; margin:0 0 9px;}
+  .act-hint{font-size:.84rem; color:var(--ink-soft); margin:-4px 0 9px;}
+
+  .rule{border-left:3px solid var(--correction); background:var(--correction-soft); border-radius:0 4px 4px 0; padding:10px 14px; margin:0 0 14px; font-size:.9rem;}
+  .rule b{color:var(--correction);}
+
+  .passage{font-family:var(--font-read); background:var(--page); border-left:3px solid var(--accent); border-radius:0 4px 4px 0; padding:12px 15px; margin:0 0 11px; font-size:.98rem; line-height:1.95;}
+  .passage h5{font-family:var(--font-mono); font-size:10px; font-weight:600; letter-spacing:.08em; margin:0 0 6px; color:var(--accent);}
+  .passage h5 span{font-family:var(--font-ui); color:var(--ink-soft); letter-spacing:0; font-weight:400;}
+  .passage p{margin:0;}
+  .passage ol{margin:0; padding-left:20px;} .passage ol li{margin:0 0 3px;}
+  .passage .ptitle{font-weight:700; margin:0 0 6px;}
+  .passage.spaced{line-height:2.35;}
+  .compare{display:grid; grid-template-columns:1fr 1fr; gap:11px; margin:0 0 11px;}
+  @media (max-width:640px){ .compare{grid-template-columns:1fr;} }
+  .compare .passage{margin:0;}
+
+  .lines{background-image:repeating-linear-gradient(to bottom,transparent 0 31px,var(--line) 31px 32px); min-height:96px;}
+  .lines.l1{min-height:32px;} .lines.l2{min-height:64px;} .lines.l3{min-height:96px;} .lines.l4{min-height:128px;} .lines.l5{min-height:160px;}
+
+  .blank{display:inline-block; min-width:126px; border-bottom:1.5px solid var(--line); margin:0 4px; vertical-align:-3px;}
+  .blank.short{min-width:70px;} .blank.long{min-width:185px;}
+
+  ul.frames{list-style:none; margin:0; padding:0;}
+  ul.frames li{font-family:var(--font-read); font-size:1rem; line-height:2.4; margin:0 0 3px;}
+
+  .bank{border:1px solid var(--accent); border-radius:5px; padding:14px 16px; margin:0 0 15px;}
+  .bank-row{display:grid; grid-template-columns:158px 1fr; gap:9px 14px; padding:9px 0; border-bottom:1px dashed var(--border); align-items:baseline;}
+  .bank-row:last-child{border-bottom:none; padding-bottom:0;}
+  @media (max-width:600px){ .bank-row{grid-template-columns:1fr; gap:4px;} }
+  .bank-key{font-size:.83rem; font-weight:700; color:var(--accent);}
+  .bank-key small{display:block; font-weight:400; color:var(--ink-soft); font-size:.9em;}
+  .chips{display:flex; flex-wrap:wrap; gap:5px;}
+  .chip{font-family:var(--font-read); font-size:.94rem; background:var(--accent-soft); border-radius:3px; padding:2px 9px; white-space:nowrap;}
+
+  /* page-level word helper */
+  .wordhelp{border:1px dashed var(--accent); border-radius:5px; padding:11px 14px; margin:0 0 13px; background:var(--accent-soft);}
+  .wordhelp p.wh-label{font-family:var(--font-mono); font-size:10px; letter-spacing:.08em; color:var(--accent); font-weight:600; margin:0 0 7px;}
+
+  ol.qrows{margin:0; padding:0 0 0 21px;}
+  ol.qrows li{margin:0 0 8px; font-family:var(--font-read); font-size:.98rem; display:flex; justify-content:space-between; gap:14px; align-items:baseline; border-bottom:1px dotted var(--border); padding-bottom:4px;}
+  ol.qrows li span.ans{flex:none; width:54px; border-bottom:1.5px solid var(--line); height:19px;}
+
+  ol.cards{list-style:none; margin:0; padding:0;}
+  ol.cards li{display:flex; align-items:center; gap:11px; border:1px solid var(--border); border-radius:5px; padding:7px 12px; margin:0 0 7px; font-family:var(--font-read); font-size:.99rem;}
+  .cardnum{flex:none; width:27px; height:27px; border:1.5px solid var(--ink-soft); border-radius:4px;}
+
+  ol.fill{margin:0; padding:0 0 0 21px;}
+  ol.fill li{margin:0 0 11px; font-size:.98rem; font-family:var(--font-read);}
+  ol.fill li:last-child{margin-bottom:0;}
+  ol.fill .lines{margin-top:4px;}
+
+  .boxrow{display:grid; gap:11px; margin:0 0 11px;}
+  .boxrow.two{grid-template-columns:1fr 1fr;}
+  @media (max-width:600px){ .boxrow.two{grid-template-columns:1fr;} }
+  .abox{border:1px solid var(--border); border-radius:4px; padding:9px 11px 5px;}
+  .abox h6{font-family:var(--font-mono); font-size:10px; letter-spacing:.06em; color:var(--accent); font-weight:600; margin:0 0 5px;}
+  .abox h6 span{font-family:var(--font-ui); color:var(--ink-soft); letter-spacing:0; font-weight:400;}
+  .abox .lines{background-image:repeating-linear-gradient(to bottom,transparent 0 27px,var(--line) 27px 28px);}
+
+  .plan{display:grid; border:1px solid var(--border); border-radius:4px; overflow:hidden;}
+  .plan-row{display:grid; grid-template-columns:146px 1fr; border-bottom:1px solid var(--border);}
+  .plan-row:last-child{border-bottom:none;}
+  @media (max-width:600px){ .plan-row{grid-template-columns:98px 1fr;} }
+  .plan-key{background:var(--accent-soft); padding:9px 11px; font-size:.82rem; font-weight:700; border-right:1px solid var(--border); line-height:1.4;}
+  .plan-key small{display:block; font-weight:400; color:var(--ink-soft);}
+  .plan-val{padding:5px 11px;}
+  .plan-val .lines{background-image:repeating-linear-gradient(to bottom,transparent 0 29px,var(--line) 29px 30px); min-height:30px;}
+
+  ul.checks{list-style:none; margin:0; padding:0;}
+  ul.checks li{position:relative; padding-left:27px; margin:0 0 8px; font-size:.94rem; line-height:1.45;}
+  ul.checks li::before{content:""; position:absolute; left:0; top:3px; width:15px; height:15px; border:1.5px solid var(--ink-soft); border-radius:3px;}
+  ul.checks li .cen{display:block; font-family:var(--font-read); font-size:.88rem; color:var(--accent);}
+
+  .chapclose{border:2px solid var(--accent); border-radius:5px; padding:12px 15px; margin:18px 0 0;}
+  .chapclose p.cc-label{font-family:var(--font-mono); font-size:10px; letter-spacing:.09em; color:var(--accent); font-weight:600; margin:0 0 8px;}
+
+  .colophon{font-family:var(--font-mono); font-size:10.5px; color:var(--mono-ink); line-height:1.7; text-align:center; padding:6px 0 0;}
+
+  @media print{
+    body{background:#fff; font-size:11pt;}
+    .stack{max-width:none; padding:0; gap:0;}
+    .sheet{border:none; border-radius:0; padding:0 0 8mm; page-break-after:always; break-after:page; page-break-inside:avoid;}
+    .sheet:last-of-type{page-break-after:auto; break-after:auto;}
+    .colophon{display:none;}
+    .passage{background:#fff; border-left:3px solid #1E6B49;}
+    .rule{background:#fff;}
+    .chip, .wordhelp, .chapbar{background:#fff;}
+    .chapbar{border:1px solid #D5CDB6;}
+    .pagemark{top:0; right:0;}
+    @page{size:A4; margin:16mm 14mm;}
+  }
+</style>
+
+<div class="stack">
+
+<!-- ===== 1 · COVER ===== -->
+<section class="sheet cover">
+  <span class="pagemark">2단계 · 1/17</span>
+  <p class="cover-eyebrow">구조적 글쓰기 · 2단계 · 학생용</p>
+  <h1>목적을 가진 글</h1>
+  <p class="h1-en">Stage 2 · Writing with a Purpose</p>
+
+  <p class="blurb">
+    1단계에서는 어떤 이야기든 <b>First · Then · Finally</b> 하나로 썼습니다.
+    그런데 글에는 저마다 <b>쓰는 까닭</b>이 있습니다. 지난 일을 알려 주려고 쓸 수도 있고,
+    하는 법을 가르쳐 주려고 쓸 수도 있습니다. 까닭이 달라지면 <b>글의 모양도 달라집니다.</b>
+  </p>
+
+  <div class="bigidea">
+    <p class="ko">왜 쓰는지에 따라 글이 달라진다</p>
+    <p class="en">Why you write changes how you write.</p>
+  </div>
+
+  <div class="toc">
+    <p class="toc-label">차례 · 네 챕터를 지나며 도움이 조금씩 줄어듭니다</p>
+    <ol>
+      <li><span class="t">두 가지 모양</span><span class="pp">샌드위치 · 3–5쪽</span></li>
+      <li><span class="t">순서대로</span><span class="pp">강아지 Kongi · 6–8쪽</span></li>
+      <li><span class="t">“I”를 넣고 빼기</span><span class="pp">가방 싸기 · 9–12쪽</span></li>
+      <li><span class="t">두 모양으로 쓰기</span><span class="pp">내가 만드는 음식 · 13–15쪽</span></li>
+    </ol>
+  </div>
+
+  <div class="namebar">
+    <label class="namefield"><span>이름</span><i></i></label>
+    <label class="namefield"><span>학년 / 반</span><i></i></label>
+    <label class="namefield"><span>날짜</span><i></i></label>
+  </div>
+
+  <div class="howto">
+    <b>챕터마다 같은 것을 배웁니다. 소재만 바뀝니다.</b>
+    <ol>
+      <li><b>보기</b> — 두 모양으로 쓴 글을 견줍니다.</li>
+      <li><b>나누기</b> — 어느 글에 들어갈 문장인지 가릅니다. 영어를 쓰지 않습니다.</li>
+      <li><b>채우기 · 짓기</b> — 틀을 채우고, 스스로 씁니다.</li>
+    </ol>
+  </div>
+</section>
+
+<!-- ===== 2 · WORD BANK ===== -->
+<section class="sheet">
+  <span class="pagemark">2단계 · 2/17</span>
+  <div class="step-head">
+    <div class="step-num">WORD BANK</div>
+    <div class="step-titles"><h2>두 가지 글에 쓰는 말</h2><p class="h2-en">Keep this page open — every chapter.</p></div>
+  </div>
+
+  <div class="bank">
+    <div class="bank-row">
+      <div class="bank-key">순서 말하기<small>1단계보다 하나 늘었습니다</small></div>
+      <div class="chips"><span class="chip">First,</span><span class="chip">Next,</span><span class="chip">After that,</span><span class="chip">Finally,</span></div>
+    </div>
+    <div class="bank-row">
+      <div class="bank-key">지난 일 쓰기<small>내가 한 일 · A글</small></div>
+      <div class="chips"><span class="chip">I took</span><span class="chip">I put</span><span class="chip">I gave</span><span class="chip">I made</span><span class="chip">I ate</span><span class="chip">I added</span><span class="chip">I cut</span><span class="chip">I brushed</span><span class="chip">I walked</span><span class="chip">I checked</span><span class="chip">I closed</span><span class="chip">I went</span></div>
+    </div>
+    <div class="bank-row">
+      <div class="bank-key">하는 법 쓰기<small>네가 할 일 · B글</small></div>
+      <div class="chips"><span class="chip">Take</span><span class="chip">Put</span><span class="chip">Give</span><span class="chip">Make</span><span class="chip">Add</span><span class="chip">Cut</span><span class="chip">Brush</span><span class="chip">Walk</span><span class="chip">Check</span><span class="chip">Close</span><span class="chip">Eat</span></div>
+    </div>
+    <div class="bank-row">
+      <div class="bank-key">마무리하기<small>지난 일에만 붙입니다</small></div>
+      <div class="chips"><span class="chip">It was fun.</span><span class="chip">It was delicious.</span><span class="chip">He was happy.</span><span class="chip">I was ready.</span><span class="chip">Now you can eat it.</span></div>
+    </div>
+  </div>
+
+  <div class="wordhelp">
+    <p class="wh-label">이 워크시트에서 쓰는 소재 · 챕터마다 하나씩</p>
+    <div class="chips">
+      <span class="chip">CH1 · a sandwich</span><span class="chip">CH2 · my dog Kongi</span>
+      <span class="chip">CH3 · my school bag</span><span class="chip">CH4 · my favourite food</span>
+    </div>
+  </div>
+
+  <div class="act">
+    <p class="act-label">연습</p>
+    <p class="act-prompt">빈칸에 알맞은 말을 워드뱅크에서 골라 쓰세요.</p>
+    <ol class="fill">
+      <li>Last Saturday, I <span class="blank short"></span> to the park.</li>
+      <li><span class="blank short"></span> the bread on the plate.</li>
+      <li><span class="blank"></span>, I ate my sandwich.</li>
+      <li><span class="blank"></span> delicious.</li>
+    </ol>
+  </div>
+</section>
+
+<!-- ===== 3 · CH1 SEE ===== -->
+<section class="sheet">
+  <span class="pagemark">2단계 · 3/17</span>
+  <div class="chapbar"><span class="chapnum">CHAPTER 1</span><span class="chaptitle">두 가지 모양</span><span class="chaptopic">a sandwich</span><span class="scaffold"><b>도움</b><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i></span></div>
+  <div class="step-head"><div class="step-num">보기 SEE</div><div class="step-titles"><h2>같은 일, 두 가지 모양</h2><p class="h2-en">One event, two shapes</p></div></div>
+
+  <p class="act-hint">지호는 샌드위치를 만들었습니다. 그리고 그 일을 <b>두 번</b> 썼습니다.</p>
+
+  <div class="compare">
+    <div class="passage">
+      <h5>A <span>· 지난 일 알려 주기</span></h5>
+      <p>Last Saturday, I made a sandwich. First, I took two slices of bread. Next, I put cheese on the bread. After that, I cut the sandwich. Finally, I ate it with my sister. It was delicious.</p>
+    </div>
+    <div class="passage">
+      <h5>B <span>· 하는 법 가르쳐 주기</span></h5>
+      <p class="ptitle">How to Make a Sandwich</p>
+      <ol><li>Take two slices of bread.</li><li>Put cheese on the bread.</li><li>Cut the sandwich.</li><li>Eat it with a friend.</li></ol>
+    </div>
+  </div>
+
+  <div class="act">
+    <p class="act-label">활동 1</p>
+    <p class="act-prompt">두 글은 같은 일을 말하고 있나요? 하나에 ○ 하세요.</p>
+    <ol class="fill"><li>같은 일이다 &nbsp;/&nbsp; 다른 일이다</li></ol>
+  </div>
+
+  <div class="act">
+    <p class="act-label">활동 2</p>
+    <p class="act-prompt">A 글에만 있고 B 글에는 없는 낱말을 찾아 동그라미 하세요.</p>
+    <p class="act-hint">가장 많이 나오는 낱말 하나가 B에는 하나도 없습니다.</p>
+  </div>
+
+  <div class="rule">
+    <b>알아 둘 것 ·</b> 지난 일을 쓸 때는 <b>“I”</b>가 나옵니다. 내가 한 일이니까요.<br>
+    하는 법을 쓸 때는 <b>“I”가 없습니다.</b> 읽는 사람이 할 일이니까요.
+  </div>
+
+  <div class="act">
+    <p class="act-label">활동 3</p>
+    <p class="act-prompt">어느 글을 어디에 쓸까요? <b>A</b> 또는 <b>B</b>를 쓰세요.</p>
+    <ol class="qrows">
+      <li><span>일기장에 쓴다</span><span class="ans"></span></li>
+      <li><span>요리책에 쓴다</span><span class="ans"></span></li>
+      <li><span>친구에게 주말에 뭘 했는지 말한다</span><span class="ans"></span></li>
+    </ol>
+  </div>
+</section>
+
+<!-- ===== 4 · CH1 SORT ===== -->
+<section class="sheet">
+  <span class="pagemark">2단계 · 4/17</span>
+  <div class="chapbar"><span class="chapnum">CHAPTER 1</span><span class="chaptitle">두 가지 모양</span><span class="chaptopic">a sandwich</span><span class="scaffold"><b>도움</b><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i></span></div>
+  <div class="step-head"><div class="step-num">나누기 SORT</div><div class="step-titles"><h2>어느 글에 들어갈까</h2><p class="h2-en">Which text does it belong to?</p></div></div>
+
+  <p class="act-hint">이 장에서는 영어를 쓰지 않습니다. 글자 하나만 쓰면 됩니다.</p>
+
+  <div class="act">
+    <p class="act-label">활동 1</p>
+    <p class="act-prompt">각 문장 옆에 <b>A</b>(지난 일) 또는 <b>B</b>(하는 법)를 쓰세요.</p>
+    <ol class="qrows">
+      <li><span>First, I took two slices of bread.</span><span class="ans"></span></li>
+      <li><span>Take two slices of bread.</span><span class="ans"></span></li>
+      <li><span>It was delicious.</span><span class="ans"></span></li>
+      <li><span>Add some cheese.</span><span class="ans"></span></li>
+      <li><span>Last Saturday, I made a sandwich.</span><span class="ans"></span></li>
+      <li><span>Now you can eat it.</span><span class="ans"></span></li>
+    </ol>
+  </div>
+
+  <div class="act">
+    <p class="act-label">활동 2</p>
+    <p class="act-prompt">어떻게 알았나요? 힌트가 된 낱말에 동그라미 하세요.</p>
+    <p class="act-hint">“I”, “was”, “Last Saturday” 같은 낱말을 찾아보세요.</p>
+  </div>
+
+  <div class="act">
+    <p class="act-label">활동 3</p>
+    <p class="act-prompt">1번과 2번을 나란히 보세요. 무엇이 달라졌나요?</p>
+    <div class="lines l2"></div>
+  </div>
+</section>
+
+<!-- ===== 5 · CH1 FRAME ===== -->
+<section class="sheet">
+  <span class="pagemark">2단계 · 5/17</span>
+  <div class="chapbar"><span class="chapnum">CHAPTER 1</span><span class="chaptitle">두 가지 모양</span><span class="chaptopic">a sandwich</span><span class="scaffold"><b>도움</b><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i></span></div>
+  <div class="step-head"><div class="step-num">채우기 FRAME</div><div class="step-titles"><h2>빈칸만 채우기</h2><p class="h2-en">Just fill in the blanks</p></div></div>
+
+  <p class="act-hint">1챕터에서는 <b>빈칸만</b> 채우면 됩니다. 3쪽의 글을 그대로 보고 써도 좋습니다.</p>
+
+  <div class="act">
+    <p class="act-label">활동 1</p>
+    <p class="act-prompt">A글(지난 일)의 빈칸을 채우세요.</p>
+    <div class="passage">
+      <p>Last Saturday, I <span class="blank short"></span> a sandwich. <span class="blank short"></span>, I took two slices of bread. <span class="blank short"></span>, I put cheese on the bread. <span class="blank"></span>, I ate it. It <span class="blank short"></span> delicious.</p>
+    </div>
+  </div>
+
+  <div class="act">
+    <p class="act-label">활동 2</p>
+    <p class="act-prompt">B글(하는 법)의 빈칸을 채우세요.</p>
+    <div class="passage">
+      <p class="ptitle">How to Make a Sandwich</p>
+      <ol>
+        <li><span class="blank"></span> two slices of bread.</li>
+        <li><span class="blank"></span> cheese on the bread.</li>
+        <li><span class="blank"></span> the sandwich.</li>
+      </ol>
+    </div>
+  </div>
+
+  <div class="act">
+    <p class="act-label">활동 3</p>
+    <p class="act-prompt">두 글을 소리 내어 읽어 보세요.</p>
+    <ul class="checks">
+      <li>A글을 소리 내어 읽었다<span class="cen">I read Text A out loud.</span></li>
+      <li>B글을 소리 내어 읽었다<span class="cen">I read Text B out loud.</span></li>
+    </ul>
+  </div>
+
+  <div class="chapclose">
+    <p class="cc-label">CHAPTER 1 · 다 했으면 표시하세요</p>
+    <ul class="checks">
+      <li>A글에는 “I”가 있고 B글에는 없다는 것을 안다<span class="cen">I know Text A has “I” and Text B does not.</span></li>
+    </ul>
+  </div>
+</section>
+
+<!-- ===== 6 · CH2 SEE ===== -->
+<section class="sheet">
+  <span class="pagemark">2단계 · 6/17</span>
+  <div class="chapbar"><span class="chapnum">CHAPTER 2</span><span class="chaptitle">순서대로</span><span class="chaptopic">my dog Kongi</span><span class="scaffold"><b>도움</b><i class="on"></i><i class="on"></i><i class="on"></i><i></i></span></div>
+  <div class="step-head"><div class="step-num">보기 SEE</div><div class="step-titles"><h2>순서를 알려 주는 네 낱말</h2><p class="h2-en">Four words that show order</p></div></div>
+
+  <p class="act-hint">이번 소재는 <b>강아지 돌보기</b>입니다. 지호의 강아지 이름은 Kongi입니다.</p>
+
+  <div class="compare">
+    <div class="passage">
+      <h5>A <span>· 지난 일</span></h5>
+      <p>Yesterday, I took care of my dog Kongi. First, I gave him water. Next, I gave him food. After that, I brushed his fur. Finally, I walked him in the park. He was happy.</p>
+    </div>
+    <div class="passage">
+      <h5>B <span>· 하는 법</span></h5>
+      <p class="ptitle">How to Take Care of a Dog</p>
+      <ol><li>Give your dog water.</li><li>Give your dog food.</li><li>Brush his fur.</li><li>Walk him in the park.</li></ol>
+    </div>
+  </div>
+
+  <div class="act">
+    <p class="act-label">활동 1</p>
+    <p class="act-prompt">A글에서 순서를 알려 주는 낱말 <b>네 개</b>를 찾아 동그라미 하고, 여기에 옮겨 쓰세요.</p>
+    <ol class="fill"><li><span class="blank short"></span> &nbsp; <span class="blank short"></span> &nbsp; <span class="blank short"></span> &nbsp; <span class="blank short"></span></li></ol>
+  </div>
+
+  <div class="act">
+    <p class="act-label">활동 2</p>
+    <p class="act-prompt">B글에는 순서를 알려 주는 낱말이 없습니다. 대신 무엇이 순서를 알려 주나요?</p>
+    <div class="lines l1"></div>
+  </div>
+
+  <div class="act">
+    <p class="act-label">활동 3</p>
+    <p class="act-prompt">1챕터에서 배운 것을 확인합니다. B글에 <b>없는</b> 낱말은 무엇인가요?</p>
+    <ol class="fill"><li><span class="blank short"></span></li></ol>
+  </div>
+</section>
+
+<!-- ===== 7 · CH2 SORT ===== -->
+<section class="sheet">
+  <span class="pagemark">2단계 · 7/17</span>
+  <div class="chapbar"><span class="chapnum">CHAPTER 2</span><span class="chaptitle">순서대로</span><span class="chaptopic">my dog Kongi</span><span class="scaffold"><b>도움</b><i class="on"></i><i class="on"></i><i class="on"></i><i></i></span></div>
+  <div class="step-head"><div class="step-num">나누기 SORT</div><div class="step-titles"><h2>순서 맞추기</h2><p class="h2-en">Put them in order</p></div></div>
+
+  <div class="act">
+    <p class="act-label">활동 1</p>
+    <p class="act-prompt">하는 법이 뒤섞였습니다. 순서대로 <b>1 · 2 · 3 · 4</b>를 쓰세요.</p>
+    <ol class="cards">
+      <li><span class="cardnum"></span><span>Walk him in the park.</span></li>
+      <li><span class="cardnum"></span><span>Give your dog water.</span></li>
+      <li><span class="cardnum"></span><span>Brush his fur.</span></li>
+      <li><span class="cardnum"></span><span>Give your dog food.</span></li>
+    </ol>
+    <p class="act-hint">순서 낱말이 없습니다. <b>내용</b>을 보고 정하세요.</p>
+  </div>
+
+  <div class="act">
+    <p class="act-label">활동 2</p>
+    <p class="act-prompt">이번에는 지난 일입니다. 순서대로 <b>1 · 2 · 3 · 4</b>를 쓰세요.</p>
+    <ol class="cards">
+      <li><span class="cardnum"></span><span>After that, I brushed his fur.</span></li>
+      <li><span class="cardnum"></span><span>Finally, I walked him in the park.</span></li>
+      <li><span class="cardnum"></span><span>First, I gave him water.</span></li>
+      <li><span class="cardnum"></span><span>Next, I gave him food.</span></li>
+    </ol>
+  </div>
+
+  <div class="act">
+    <p class="act-label">활동 3</p>
+    <p class="act-prompt">활동 1과 2 중 어느 쪽이 더 쉬웠나요? 하나에 ○ 하고 까닭을 쓰세요.</p>
+    <ol class="fill"><li>활동 1이 쉬웠다 &nbsp;/&nbsp; 활동 2가 쉬웠다<div class="lines l1"></div></li></ol>
+  </div>
+</section>
+
+<!-- ===== 8 · CH2 FRAME ===== -->
+<section class="sheet">
+  <span class="pagemark">2단계 · 8/17</span>
+  <div class="chapbar"><span class="chapnum">CHAPTER 2</span><span class="chaptitle">순서대로</span><span class="chaptopic">my dog Kongi</span><span class="scaffold"><b>도움</b><i class="on"></i><i class="on"></i><i class="on"></i><i></i></span></div>
+  <div class="step-head"><div class="step-num">채우기 FRAME</div><div class="step-titles"><h2>순서 낱말 넣기</h2><p class="h2-en">Add the order words</p></div></div>
+
+  <div class="act">
+    <p class="act-label">활동 1</p>
+    <p class="act-prompt">순서 낱말이 빠졌습니다. 네 개를 넣으세요.</p>
+    <div class="passage">
+      <p>Yesterday, I took care of Kongi. <span class="blank short"></span> I gave him water. <span class="blank short"></span> I gave him food. <span class="blank"></span> I brushed his fur. <span class="blank short"></span> I walked him in the park. He was happy.</p>
+    </div>
+  </div>
+
+  <div class="act">
+    <p class="act-label">활동 2</p>
+    <p class="act-prompt">이번에는 <b>문장 끝</b>도 채웁니다.</p>
+    <ul class="frames">
+      <li>Yesterday, I took care of <span class="blank"></span>.</li>
+      <li>First, I gave him <span class="blank short"></span>.</li>
+      <li>Next, I <span class="blank"></span>.</li>
+      <li>Finally, I <span class="blank"></span>.</li>
+      <li>He was <span class="blank short"></span>.</li>
+    </ul>
+  </div>
+
+  <div class="act">
+    <p class="act-label">활동 3</p>
+    <p class="act-prompt">위의 다섯 문장을 이어서 한 덩이로 옮겨 쓰세요.</p>
+    <div class="lines l3"></div>
+  </div>
+
+  <div class="chapclose">
+    <p class="cc-label">CHAPTER 2 · 다 했으면 표시하세요</p>
+    <ul class="checks">
+      <li>순서 낱말 네 개를 안다<span class="cen">I know the four order words.</span></li>
+      <li>순서 낱말이 없어도 내용으로 순서를 알 수 있다<span class="cen">I can find the order without the order words.</span></li>
+    </ul>
+  </div>
+</section>
+
+<!-- ===== 9 · CH3 SEE ===== -->
+<section class="sheet">
+  <span class="pagemark">2단계 · 9/17</span>
+  <div class="chapbar"><span class="chapnum">CHAPTER 3</span><span class="chaptitle">“I”를 넣고 빼기</span><span class="chaptopic">my school bag</span><span class="scaffold"><b>도움</b><i class="on"></i><i class="on"></i><i></i><i></i></span></div>
+  <div class="step-head"><div class="step-num">보기 SEE</div><div class="step-titles"><h2>가방 싸기</h2><p class="h2-en">Packing my school bag</p></div></div>
+
+  <div class="compare">
+    <div class="passage">
+      <h5>A <span>· 지난 일</span></h5>
+      <p>Last night, I packed my school bag. First, I put my books in the bag. Next, I added my pencil case. After that, I checked my homework. Finally, I closed the bag. I was ready for school.</p>
+    </div>
+    <div class="passage">
+      <h5>B <span>· 하는 법</span></h5>
+      <p class="ptitle">How to Pack Your School Bag</p>
+      <ol><li>Put your books in the bag.</li><li>Add your pencil case.</li><li>Check your homework.</li><li>Close the bag.</li></ol>
+    </div>
+  </div>
+
+  <div class="act">
+    <p class="act-label">활동 1</p>
+    <p class="act-prompt">A글과 B글에서 <b>서로 짝이 되는 문장</b>을 찾아 줄로 이으세요.</p>
+    <p class="act-hint">네 쌍입니다.</p>
+  </div>
+
+  <div class="act">
+    <p class="act-label">활동 2</p>
+    <p class="act-prompt">짝이 되는 두 문장에서 무엇이 달라졌나요? 세 가지를 찾아보세요.</p>
+    <ol class="fill">
+      <li>A에는 있고 B에는 없는 것: <span class="blank"></span></li>
+      <li>A에는 있고 B에는 없는 것: <span class="blank"></span></li>
+      <li>A의 “my”가 B에서는 <span class="blank short"></span> 로 바뀌었다</li>
+    </ol>
+  </div>
+
+  <div class="act">
+    <p class="act-label">활동 3</p>
+    <p class="act-prompt">A글에만 있고 B글에는 없는 문장이 <b>둘</b> 있습니다. A글에 밑줄을 그으세요.</p>
+    <p class="act-hint">하나는 맨 처음, 하나는 맨 끝에 있습니다.</p>
+  </div>
+</section>
+
+<!-- ===== 10 · CH3 FRAME ===== -->
+<section class="sheet">
+  <span class="pagemark">2단계 · 10/17</span>
+  <div class="chapbar"><span class="chapnum">CHAPTER 3</span><span class="chaptitle">“I”를 넣고 빼기</span><span class="chaptopic">my school bag</span><span class="scaffold"><b>도움</b><i class="on"></i><i class="on"></i><i></i><i></i></span></div>
+  <div class="step-head"><div class="step-num">채우기 FRAME</div><div class="step-titles"><h2>모양 바꾸기</h2><p class="h2-en">Change the shape</p></div></div>
+
+  <div class="rule">
+    <b>바꾸는 법 ·</b> 지난 일 → 하는 법 : <b>“First, I”를 지우고</b> 낱말을 시키는 모양으로 바꿉니다.<br>
+    <span style="font-size:.93em;">First, I put my books. &nbsp;→&nbsp; Put your books.</span>
+  </div>
+
+  <div class="act">
+    <p class="act-label">활동 1</p>
+    <p class="act-prompt">지난 일을 하는 법으로 바꿔 쓰세요.</p>
+    <ol class="fill">
+      <li>First, I put my books in the bag. → <span class="blank long"></span></li>
+      <li>Next, I added my pencil case. → <span class="blank long"></span></li>
+      <li>After that, I checked my homework. → <span class="blank long"></span></li>
+      <li>Finally, I closed the bag. → <span class="blank long"></span></li>
+    </ol>
+  </div>
+
+  <div class="act">
+    <p class="act-label">활동 2</p>
+    <p class="act-prompt">이번에는 거꾸로입니다. 하는 법을 지난 일로 바꿔 쓰세요.</p>
+    <p class="act-hint">앞에 순서 낱말과 “I”를 넣으면 됩니다. 워드뱅크 2행을 보세요.</p>
+    <ol class="fill">
+      <li>Take two slices of bread. → <span class="blank long"></span></li>
+      <li>Give your dog water. → <span class="blank long"></span></li>
+    </ol>
+  </div>
+
+  <div class="act">
+    <p class="act-label">활동 3</p>
+    <p class="act-prompt">지난 일에만 붙이는 두 문장을 만들어 보세요.</p>
+    <ul class="frames">
+      <li>맨 앞에 · Last <span class="blank short"></span>, I <span class="blank"></span>.</li>
+      <li>맨 끝에 · I was <span class="blank short"></span>.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ===== 11 · CH3 BUILD ===== -->
+<section class="sheet">
+  <span class="pagemark">2단계 · 11/17</span>
+  <div class="chapbar"><span class="chapnum">CHAPTER 3</span><span class="chaptitle">“I”를 넣고 빼기</span><span class="chaptopic">my school bag</span><span class="scaffold"><b>도움</b><i class="on"></i><i class="on"></i><i></i><i></i></span></div>
+  <div class="step-head"><div class="step-num">짓기 BUILD</div><div class="step-titles"><h2>아침에 학교 갈 준비</h2><p class="h2-en">Getting ready for school</p></div></div>
+
+  <p class="act-hint">이번에는 <b>아침에 학교 갈 준비</b>를 씁니다. 반 전체가 같은 것을 씁니다.</p>
+
+  <div class="wordhelp">
+    <p class="wh-label">이 쪽에서 쓰는 낱말</p>
+    <div class="chips">
+      <span class="chip">wake up</span><span class="chip">wash my face</span><span class="chip">eat breakfast</span>
+      <span class="chip">brush my teeth</span><span class="chip">put on my clothes</span><span class="chip">take my bag</span>
+    </div>
+  </div>
+
+  <div class="act">
+    <p class="act-label">활동 1</p>
+    <p class="act-prompt">짝에게 <b>소리 내어</b> 말해 보세요. 아침에 하는 일 네 가지입니다.</p>
+    <ul class="checks"><li>짝에게 순서대로 말했다<span class="cen">I told my partner, step by step.</span></li></ul>
+  </div>
+
+  <div class="act">
+    <p class="act-label">활동 2</p>
+    <p class="act-prompt">A글(지난 일)을 틀에 맞춰 쓰세요.</p>
+    <ul class="frames">
+      <li>This morning, I <span class="blank"></span>.</li>
+      <li>First, I <span class="blank"></span>.</li>
+      <li>Next, I <span class="blank"></span>.</li>
+      <li>Finally, I <span class="blank"></span>.</li>
+      <li>I was <span class="blank short"></span>.</li>
+    </ul>
+  </div>
+
+</section>
+
+<!-- ===== CH3 BUILD ② ===== -->
+<section class="sheet">
+  <span class="pagemark">2단계 · 12/17</span>
+  <div class="chapbar"><span class="chapnum">CHAPTER 3</span><span class="chaptitle">“I”를 넣고 빼기</span><span class="chaptopic">아침 준비</span><span class="scaffold"><b>도움</b><i class="on"></i><i class="on"></i><i></i><i></i></span></div>
+  <div class="step-head"><div class="step-num">짓기 BUILD ②</div><div class="step-titles"><h2>같은 일을 하는 법으로</h2><p class="h2-en">Now change it into Text B</p></div></div>
+
+  <p class="act-hint">앞 쪽의 A글을 보면서 씁니다. <b>“First, I”를 지우고</b> 시키는 말로 바꾸면 됩니다.</p>
+
+  <div class="act">
+    <p class="act-label">활동 1</p>
+    <p class="act-prompt">B글(하는 법)로 바꿔 쓰세요.</p>
+    <div class="plan">
+      <div class="plan-row"><div class="plan-key">How to<small>제목</small></div><div class="plan-val"><div class="lines"></div></div></div>
+      <div class="plan-row"><div class="plan-key">1.</div><div class="plan-val"><div class="lines"></div></div></div>
+      <div class="plan-row"><div class="plan-key">2.</div><div class="plan-val"><div class="lines"></div></div></div>
+      <div class="plan-row"><div class="plan-key">3.</div><div class="plan-val"><div class="lines"></div></div></div>
+      <div class="plan-row"><div class="plan-key">4.</div><div class="plan-val"><div class="lines"></div></div></div>
+    </div>
+  </div>
+
+  <div class="act">
+    <p class="act-label">활동 2</p>
+    <p class="act-prompt">두 글을 나란히 놓고 확인하세요.</p>
+    <ul class="checks">
+      <li>A글에는 “I”가 있다<span class="cen">Text A has “I”.</span></li>
+      <li>B글에는 “I”가 하나도 없다<span class="cen">Text B has no “I”.</span></li>
+    </ul>
+  </div>
+
+  <div class="chapclose">
+    <p class="cc-label">CHAPTER 3 · 다 했으면 표시하세요</p>
+    <ul class="checks">
+      <li>지난 일을 하는 법으로 바꿀 수 있다<span class="cen">I can change Text A into Text B.</span></li>
+      <li>하는 법을 지난 일로도 바꿀 수 있다<span class="cen">I can change Text B into Text A.</span></li>
+    </ul>
+  </div>
+</section>
+
+<!-- ===== 12 · CH4 PLAN ===== -->
+<section class="sheet">
+  <span class="pagemark">2단계 · 13/17</span>
+  <div class="chapbar"><span class="chapnum">CHAPTER 4</span><span class="chaptitle">두 모양으로 쓰기</span><span class="chaptopic">my favourite food</span><span class="scaffold"><b>도움</b><i class="on"></i><i></i><i></i><i></i></span></div>
+  <div class="step-head"><div class="step-num">계획 PLAN</div><div class="step-titles"><h2>내가 만들 줄 아는 음식</h2><p class="h2-en">A food I can make</p></div></div>
+
+  <p class="act-hint">1챕터의 샌드위치처럼, 이번에는 <b>내가 만들 줄 아는 음식</b>을 씁니다. 라면·김밥·주먹밥·계란프라이 — 무엇이든 좋습니다.</p>
+
+  <div class="wordhelp">
+    <p class="wh-label">이 챕터에서 쓰는 낱말 · 요리</p>
+    <div class="chips">
+      <span class="chip">wash</span><span class="chip">cut</span><span class="chip">put</span><span class="chip">add</span>
+      <span class="chip">mix</span><span class="chip">boil</span><span class="chip">fry</span><span class="chip">pour</span>
+      <span class="chip">water</span><span class="chip">rice</span><span class="chip">egg</span><span class="chip">a pan</span>
+    </div>
+  </div>
+
+  <div class="act">
+    <p class="act-label">활동 1</p>
+    <p class="act-prompt">무엇을 만들지 정하세요.</p>
+    <div class="plan">
+      <div class="plan-row"><div class="plan-key">내가 만들 음식</div><div class="plan-val"><div class="lines"></div></div></div>
+    </div>
+  </div>
+
+  <div class="act">
+    <p class="act-label">활동 2</p>
+    <p class="act-prompt">만드는 순서를 네 단계로 나누세요. 한국어로 적어도 좋습니다.</p>
+    <div class="plan">
+      <div class="plan-row"><div class="plan-key">First</div><div class="plan-val"><div class="lines"></div></div></div>
+      <div class="plan-row"><div class="plan-key">Next</div><div class="plan-val"><div class="lines"></div></div></div>
+      <div class="plan-row"><div class="plan-key">After that</div><div class="plan-val"><div class="lines"></div></div></div>
+      <div class="plan-row"><div class="plan-key">Finally</div><div class="plan-val"><div class="lines"></div></div></div>
+    </div>
+  </div>
+
+  <div class="act">
+    <p class="act-label">활동 3</p>
+    <p class="act-prompt">계획한 것을 짝에게 <b>영어로</b> 말해 보세요. 막히면 위의 낱말 상자를 보세요.</p>
+    <ul class="checks">
+      <li>짝에게 영어로 네 단계를 말했다<span class="cen">I said all four steps in English.</span></li>
+    </ul>
+  </div>
+</section>
+
+<!-- ===== 13 · CH4 BUILD A ===== -->
+<section class="sheet">
+  <span class="pagemark">2단계 · 14/17</span>
+  <div class="chapbar"><span class="chapnum">CHAPTER 4</span><span class="chaptitle">두 모양으로 쓰기</span><span class="chaptopic">my favourite food</span><span class="scaffold"><b>도움</b><i class="on"></i><i></i><i></i><i></i></span></div>
+  <div class="step-head"><div class="step-num">짓기 BUILD ①</div><div class="step-titles"><h2>지난 일 쓰기</h2><p class="h2-en">Write Text A</p></div></div>
+
+  <p class="act-hint">12쪽 계획을 보고 씁니다. 이번에는 빈칸이 아니라 <b>줄만</b> 있습니다.<br>맨 앞에 “언제”, 맨 끝에 “어땠는지”를 꼭 넣으세요.</p>
+
+  <div class="act">
+    <p class="act-label">활동 1</p>
+    <p class="act-prompt">A글을 여섯 문장으로 쓰세요.</p>
+    <div class="lines l5"></div>
+  </div>
+
+  <div class="act">
+    <p class="act-label">활동 2 · 스스로 점검</p>
+    <ul class="checks">
+      <li>맨 앞에 “언제”가 있다<span class="cen">It starts with when it happened.</span></li>
+      <li>순서 낱말을 세 개 이상 썼다<span class="cen">I used three or more order words.</span></li>
+      <li>맨 끝에 “어땠는지”가 있다<span class="cen">It ends with how it was.</span></li>
+      <li>“I”가 들어 있다<span class="cen">It has “I”.</span></li>
+    </ul>
+  </div>
+
+  <div class="act">
+    <p class="act-label">활동 3</p>
+    <p class="act-prompt">소리 내어 읽고, 이상한 곳을 <b>한 군데</b> 고치세요.</p>
+    <ol class="fill"><li>내가 고친 곳: <span class="blank"></span></li></ol>
+  </div>
+</section>
+
+<!-- ===== 14 · CH4 BUILD B ===== -->
+<section class="sheet">
+  <span class="pagemark">2단계 · 15/17</span>
+  <div class="chapbar"><span class="chapnum">CHAPTER 4</span><span class="chaptitle">두 모양으로 쓰기</span><span class="chaptopic">my favourite food</span><span class="scaffold"><b>도움</b><i class="on"></i><i></i><i></i><i></i></span></div>
+  <div class="step-head"><div class="step-num">짓기 BUILD ②</div><div class="step-titles"><h2>하는 법 쓰기</h2><p class="h2-en">Write Text B</p></div></div>
+
+  <p class="act-hint">13쪽의 A글을 보면서 씁니다. 새로 짓는 것이 아니라 <b>모양을 바꾸는 것</b>입니다.</p>
+
+  <div class="act">
+    <p class="act-label">활동 1</p>
+    <p class="act-prompt">B글을 쓰세요. 제목과 번호를 잊지 마세요.</p>
+    <div class="abox"><h6>HOW TO … <span>· 제목부터 쓰세요</span></h6><div class="lines l4"></div></div>
+  </div>
+
+  <div class="act">
+    <p class="act-label">활동 2 · 스스로 점검</p>
+    <ul class="checks">
+      <li>제목이 “How to …”로 시작한다<span class="cen">My title starts with “How to”.</span></li>
+      <li>번호를 매겼다<span class="cen">I used numbers.</span></li>
+      <li>“I”가 <b>하나도</b> 없다<span class="cen">There is no “I” at all.</span></li>
+      <li>“언제”와 “어땠는지”를 넣지 않았다<span class="cen">I did not write when it happened or how it was.</span></li>
+    </ul>
+  </div>
+
+  <div class="chapclose">
+    <p class="cc-label">CHAPTER 4 · 2단계를 마쳤습니다</p>
+    <ul class="checks">
+      <li>같은 일을 두 가지 모양으로 쓸 수 있다<span class="cen">I can write the same event in two shapes.</span></li>
+      <li>왜 두 글이 다른지 설명할 수 있다<span class="cen">I can explain why the two texts are different.</span></li>
+    </ul>
+  </div>
+</section>
+
+<!-- ===== 15 · CAPSTONE ===== -->
+<section class="sheet">
+  <span class="pagemark">2단계 · 16/17</span>
+  <div class="step-head"><div class="step-num">완성 과제</div><div class="step-titles"><h2>읽은 이야기 다시 쓰기</h2><p class="h2-en">Retell a story you read</p></div></div>
+
+  <p class="act-hint">읽은 책 한 권을 골라 그 이야기를 <b>내 말로</b> 다시 씁니다. 그리고 소리 내어 읽으며 고칩니다.</p>
+
+  <div class="wordhelp">
+    <p class="wh-label">이야기를 쓸 때 쓰는 낱말</p>
+    <div class="chips">
+      <span class="chip">went</span><span class="chip">saw</span><span class="chip">found</span><span class="chip">helped</span>
+      <span class="chip">lost</span><span class="chip">met</span><span class="chip">came back</span>
+      <span class="chip">was happy</span><span class="chip">was sad</span><span class="chip">was scared</span>
+    </div>
+  </div>
+
+  <div class="act">
+    <p class="act-label">활동 1</p>
+    <p class="act-prompt">읽은 책의 처음 · 중간 · 끝을 한국어로 짧게 정리하세요.</p>
+    <div class="plan">
+      <div class="plan-row"><div class="plan-key">책 제목</div><div class="plan-val"><div class="lines"></div></div></div>
+      <div class="plan-row"><div class="plan-key">처음</div><div class="plan-val"><div class="lines"></div></div></div>
+      <div class="plan-row"><div class="plan-key">중간</div><div class="plan-val"><div class="lines"></div></div></div>
+      <div class="plan-row"><div class="plan-key">끝</div><div class="plan-val"><div class="lines"></div></div></div>
+    </div>
+  </div>
+
+  <div class="act">
+    <p class="act-label">활동 2</p>
+    <p class="act-prompt">정리한 것을 짝에게 <b>소리 내어</b> 말해 보세요. 한국어로 해도 됩니다.</p>
+    <ul class="checks">
+      <li>짝에게 처음 · 중간 · 끝을 말했다<span class="cen">I told my partner the beginning, middle, and end.</span></li>
+    </ul>
+  </div>
+</section>
+
+<!-- ===== CAPSTONE ② ===== -->
+<section class="sheet">
+  <span class="pagemark">2단계 · 17/17</span>
+  <div class="step-head"><div class="step-num">완성 과제 ②</div><div class="step-titles"><h2>영어로 옮기고 고치기</h2><p class="h2-en">Write it in English, then fix it</p></div></div>
+
+  <p class="act-hint">앞 쪽에 한국어로 정리한 것을 이제 영어로 옮깁니다. 앞 쪽의 낱말 상자를 보세요.</p>
+
+  <div class="act">
+    <p class="act-label">활동 1</p>
+    <p class="act-prompt">영어로 네 문장을 쓰세요.</p>
+    <ul class="frames">
+      <li>First, <span class="blank"></span>.</li>
+      <li>Next, <span class="blank"></span>.</li>
+      <li>Finally, <span class="blank"></span>.</li>
+      <li>It was <span class="blank short"></span>.</li>
+    </ul>
+  </div>
+
+  <div class="act">
+    <p class="act-label">활동 2</p>
+    <p class="act-prompt">네 문장을 이어서 한 덩이로 옮겨 쓰세요.</p>
+    <div class="lines l3"></div>
+  </div>
+
+  <div class="act">
+    <p class="act-label">활동 3 · 소리 내어 고치기</p>
+    <p class="act-prompt">소리 내어 읽고 이상한 곳을 <b>한 군데</b> 고치세요.</p>
+    <ol class="fill"><li>내가 고친 곳: <span class="blank"></span></li></ol>
+  </div>
+
+  <div class="chapclose">
+    <p class="cc-label">2단계를 모두 마쳤습니다</p>
+    <ul class="checks">
+      <li>처음 · 중간 · 끝이 있다<span class="cen">It has a beginning, a middle, and an end.</span></li>
+      <li>책에 있는 문장을 그대로 베끼지 않았다<span class="cen">I did not copy sentences from the book.</span></li>
+    </ul>
+  </div>
+</section>
+
+<p class="colophon">
+  구조적 글쓰기 6단계 · 2단계 학생 워크시트 (4개 챕터 · 15장)<br>
+  Marble Skill Taxonomy (v1) · © Generative Spark, Inc. (Marble) · ODbL 1.0 / CC BY-SA 4.0
+</p>
+
+</div>
