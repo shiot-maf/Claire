@@ -16,7 +16,7 @@
 아티팩트를 올릴 때는 **같은 주소에 다시 올린다.** 새 주소를 만들면 설계도와
 이 문서의 링크가 모두 끊긴다.
 
-## 쓰는 것 · 11
+## 쓰는 것 · 12
 
 | 학습지 | 쪽 | 주소 |
 |---|---|---|
@@ -31,6 +31,7 @@
 | 수업 운영 노트 | 9 | https://claude.ai/code/artifact/8b5fed0a-c57a-47d9-b6e3-a4c90868b544 |
 | 글쓰기 설계도 | 한 폭 | https://claude.ai/code/artifact/df440418-f0b8-4e79-b747-c0238f413cdf |
 | 커리큘럼 색 팔레트 | 한 폭 | https://claude.ai/code/artifact/210134c3-f8a6-4b2e-a823-b9ce1152622a |
+| 문장의 다섯 형식 (교사용) | 15 | https://claude.ai/code/artifact/d4c8ff6f-4495-4f91-a44d-e3b24504fe56 |
 
 ## 폐기 · 1
 
