@@ -327,3 +327,34 @@ body:not(.hide-notes) .ulset.wide.roomy .sub2 i{min-height:24px;}
 .rx .if{font-weight:700;font-size:13px;margin:0 0 4px;}
 .rx .then{margin:0;font-size:12.5px;line-height:1.65;color:var(--ink-soft);}
 .rx .then b{color:var(--ink);}
+
+/* ================= 문장 성분 표시 =================
+   낱말 바로 아래에 S · V · O · C 를 붙인다. 칠판에 그대로 옮겨 적을 수
+   있도록 낱말 사이를 넉넉히 벌리고, 배지는 낱말 폭보다 좁게 두었다.
+
+   성분이 아닌 것(부사구처럼 빼도 문장이 서는 말)은 <em class="x"> 로
+   테두리만 남긴다 — 1형식에서 "뒤에 뭐가 붙어도 1형식"을 눈으로 보여 주는
+   장치이므로, 색이 채워진 배지와 확실히 달라야 한다. */
+.parse{background:var(--cream);border-radius:9px;padding:11px 15px;
+  border-left:5px solid var(--ch);}
+.parse + .parse{margin-top:7px;}
+.pline{display:flex;flex-wrap:wrap;align-items:flex-end;gap:6px 13px;}
+.pline > span{display:flex;flex-direction:column;align-items:center;gap:3px;}
+.pline b{font-family:var(--f-en);font-weight:500;font-size:17px;line-height:1.25;}
+.pline em{font-style:normal;font-family:var(--f-en);font-weight:600;font-size:10px;
+  letter-spacing:.05em;color:var(--ch-on);background:var(--ch);border-radius:4px;
+  padding:1px 7px;min-width:21px;text-align:center;}
+.pline em.x{background:none;color:var(--ink-soft);border:1px dashed var(--rule);
+  font-family:var(--f-body);font-weight:500;letter-spacing:0;}
+.parse .ko{margin:7px 0 0;font-size:12.5px;color:var(--ink-soft);line-height:1.5;}
+.parse .ko b{color:var(--ch-deep);}
+
+/* 형식 이름표 — 예문 위에 붙는 작은 머리. 「4형식 · S V O O」 */
+.parse .pt{display:flex;align-items:baseline;gap:8px;margin:0 0 7px;}
+.parse .pt b{font-family:var(--f-body);font-weight:700;font-size:12px;color:var(--ch-deep);}
+.parse .pt span{font-family:var(--f-en);font-weight:600;font-size:10.5px;
+  letter-spacing:.12em;color:var(--ink-soft);}
+
+/* 이름 칸이 96px보다 긴 표 — 칸 이름이 서너 줄로 접히면 표가 아니라 벽이 된다.
+   .vtable 의 기본 96px 을 내용 폭에 맞춰 풀어 준다. */
+.vtable.knap td.k{width:auto;white-space:nowrap;}

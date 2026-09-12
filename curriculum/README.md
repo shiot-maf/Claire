@@ -31,6 +31,7 @@ Writing Composition 도메인(38개 주제)과 선수학습 관계 3,221개에�
 | [`stage-5-reader-and-reason.html`](worksheets/stage-5-reader-and-reason.html) | 5단계 | 12 | 점심시간을 늘리자 |
 | [`stage-6-long-texts.html`](worksheets/stage-6-long-texts.html) | 6단계 | 12 | 내가 아는 동물 |
 | [`teacher-notebook.html`](worksheets/teacher-notebook.html) | 교사 | 9 | 차시 계획·진단·처방 |
+| [`grammar-five-patterns.html`](worksheets/grammar-five-patterns.html) | 교사 | 15 | 1~5형식 강의 자료 (중1~2) |
 
 ★ **3단계가 전환점.** 여기서 문장이 문단으로 묶이지 않으면 이후가 모두 무너진다.
 

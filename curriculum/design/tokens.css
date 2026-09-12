@@ -76,6 +76,17 @@
 [data-ch="3"]{--ch:#228038; --ch-on:#FFFFFF; --ch-soft:#D9F5E0; --ch-deep:#175826;}  /* 초록 */
 [data-ch="4"]{--ch:#104F85; --ch-on:#FFFFFF; --ch-soft:#DCEDFB; --ch-deep:#104F85;}  /* 파랑 */
 
+/* 다섯 칸짜리 문서(문장의 다섯 형식)는 무지개의 앞 다섯 색을 순서대로 빌린다.
+   위의 네 색으로는 모자라고, 단계 색을 그대로 쓰면 이미 재어 둔 회색값과
+   대비를 다시 재지 않아도 된다 — 111 · 162 · 185 · 88 · 67 로 서로 20 이상 벌어져 있다.
+   쪽 전체에 걸면 그 쪽의 색이 되고, 줄 하나에 걸면 그 줄만 물든다.
+   그래서 다섯이 한 쪽에 모이는 「한 장 요약」에서도 같은 이름을 쓴다. */
+[data-p="1"]{--ch:#D33120; --ch-on:#FFFFFF; --ch-soft:#FDF2F0; --ch-deep:#912216;}  /* 빨강 */
+[data-p="2"]{--ch:#F3881C; --ch-on:#2A2622; --ch-soft:#FDF2E8; --ch-deep:#763E06;}  /* 주황 */
+[data-p="3"]{--ch:#E4B439; --ch-on:#2A2622; --ch-soft:#FBF3E1; --ch-deep:#60480D;}  /* 겨자 */
+[data-p="4"]{--ch:#1B652C; --ch-on:#FFFFFF; --ch-soft:#E7F8EB; --ch-deep:#175826;}  /* 초록 */
+[data-p="5"]{--ch:#0E4371; --ch-on:#FFFFFF; --ch-soft:#ECF5FD; --ch-deep:#0E4371;}  /* 파랑 */
+
 *{box-sizing:border-box;}
 html,body{margin:0;padding:0;}
 body{background:#DAD3C6;font-family:var(--f-body);color:var(--ink);

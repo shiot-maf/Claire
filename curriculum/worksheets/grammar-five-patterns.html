@@ -1,0 +1,1209 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<title>문장의 다섯 형식</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Jua&family=Fredoka:wght@400;500;600&family=Noto+Sans+KR:wght@400;500;700&display=swap">
+<style>
+/* ================================================================
+   색 = 무지개.  1단계 빨강 · 2 주황 · 3 겨자 · 4 초록 · 5 파랑 · 6 남색.
+   일곱 칸이 아니라 여섯이므로 보라는 쓰지 않는다.
+   3단계의 노랑은 종이 위에서 너무 떠서 겨자색 쪽으로 눌렀다.
+
+   흑백으로 복사해도 구분되도록 두 가지를 지켰다.
+   ① 여섯 단계의 회색값을 서로 20 이상 벌렸다 — 색상은 흑백에서 사라지고
+      밝기만 남으므로, 밝기가 곧 구분 표시가 된다.
+   ② 한 단계 안의 네 챕터도 회색값을 33씩 벌려 옅은 색에서 짙은 색으로 간다.
+      챕터가 올라갈수록 도움이 줄고 색이 짙어지므로 순서까지 읽힌다.
+
+   색 위에 얹는 글자색은 --ch-on / --st-on 이 정한다. 밝은 색에는 먹색,
+   어두운 색에는 흰색이 붙는다 — 직접 #fff 를 쓰지 말 것.
+   색을 고쳤으면 design/make-palette.py 를 돌려 팔레트 문서를 맞춰 둔다.
+   ================================================================ */
+
+:root{
+  --paper:#FFFFFF; --cream:#FFFBF2; --note-bg:#FEFCF6; --note-line:#DCCFB4;
+  --ink:#2A2622; --ink-soft:#6B6157; --rule:#C9BFAA;
+  --a-line:#8C2F14;   /* A글 · 지난 일 — 흑백에서 진한 쪽 */
+  --b-line:#6E9C34;   /* B글 · 하는 법 — 흑백에서 옅은 쪽 */
+  --ans:#B23B32;      /* 「선생님께」의 정답 */
+  --ch:#5A6470; --ch-on:#FFFFFF; --ch-soft:#EEF1F4; --ch-deep:#3D4550;
+  --st:#5A6470; --st-on:#FFFFFF; --st-soft:#EEF1F4; --st-deep:#3D4550;
+  --f-title:'Jua',system-ui,sans-serif;
+  --f-en:'Fredoka',system-ui,sans-serif;
+  --f-body:'Noto Sans KR',system-ui,sans-serif;
+}
+
+/* 단계 — 설계도의 여섯 색 */
+[data-st="1"]{--st:#D33120; --st-on:#FFFFFF; --st-soft:#FDF2F0; --st-deep:#912216;}  /* 빨강 · 회색 111 · 대비 5.0 */
+[data-st="2"]{--st:#F3881C; --st-on:#2A2622; --st-soft:#FDF2E8; --st-deep:#763E06;}  /* 주황 · 회색 162 · 대비 6.0 */
+[data-st="3"]{--st:#E4B439; --st-on:#2A2622; --st-soft:#FBF3E1; --st-deep:#60480D;}  /* 겨자 · 회색 185 · 대비 7.8 */
+[data-st="4"]{--st:#1B652C; --st-on:#FFFFFF; --st-soft:#E7F8EB; --st-deep:#175826;}  /* 초록 · 회색 88 · 대비 7.1 */
+[data-st="5"]{--st:#0E4371; --st-on:#FFFFFF; --st-soft:#ECF5FD; --st-deep:#0E4371;}  /* 파랑 · 회색 67 · 대비 10.2 */
+[data-st="6"]{--st:#222158; --st-on:#FFFFFF; --st-soft:#F4F4FB; --st-deep:#222158;}  /* 남색 · 회색 44 · 대비 14.7 */
+[data-st="0"]{--st:#5A6470; --st-on:#FFFFFF; --st-soft:#EEF1F4; --st-deep:#3D4550;}  /* 중성 */
+
+/* 챕터 — 한 단계 안에서 같은 색이 네 단계로 짙어진다 */
+[data-st="1"] [data-ch="1"]{--ch:#EF9E96; --ch-on:#2A2622; --ch-soft:#FDF3F2; --ch-deep:#912216;}
+[data-st="1"] [data-ch="2"]{--ch:#E76D5F; --ch-on:#2A2622; --ch-soft:#FCEFEE; --ch-deep:#912216;}
+[data-st="1"] [data-ch="3"]{--ch:#D33120; --ch-on:#FFFFFF; --ch-soft:#FCEAE9; --ch-deep:#912216;}
+[data-st="1"] [data-ch="4"]{--ch:#912216; --ch-on:#FFFFFF; --ch-soft:#FBE6E3; --ch-deep:#912216;}
+
+[data-st="2"] [data-ch="1"]{--ch:#F5A04B; --ch-on:#2A2622; --ch-soft:#FDF5EC; --ch-deep:#763E06;}
+[data-st="2"] [data-ch="2"]{--ch:#DF760C; --ch-on:#2A2622; --ch-soft:#FDF0E3; --ch-deep:#763E06;}
+[data-st="2"] [data-ch="3"]{--ch:#AC5B09; --ch-on:#FFFFFF; --ch-soft:#FCECDB; --ch-deep:#763E06;}
+[data-st="2"] [data-ch="4"]{--ch:#763E06; --ch-on:#FFFFFF; --ch-soft:#FBE7D3; --ch-deep:#763E06;}
+
+[data-st="3"] [data-ch="1"]{--ch:#E1AA21; --ch-on:#2A2622; --ch-soft:#FCF6E6; --ch-deep:#60480D;}
+[data-st="3"] [data-ch="2"]{--ch:#B78B19; --ch-on:#2A2622; --ch-soft:#FAF2DC; --ch-deep:#60480D;}
+[data-st="3"] [data-ch="3"]{--ch:#8D6B13; --ch-on:#FFFFFF; --ch-soft:#F9EDD1; --ch-deep:#60480D;}
+[data-st="3"] [data-ch="4"]{--ch:#60480D; --ch-on:#FFFFFF; --ch-soft:#F7EAC7; --ch-deep:#60480D;}
+
+[data-st="4"] [data-ch="1"]{--ch:#3FCC5F; --ch-on:#2A2622; --ch-soft:#EAF9EE; --ch-deep:#175826;}
+[data-st="4"] [data-ch="2"]{--ch:#2DA749; --ch-on:#2A2622; --ch-soft:#E3F7E8; --ch-deep:#175826;}
+[data-st="4"] [data-ch="3"]{--ch:#228038; --ch-on:#FFFFFF; --ch-soft:#D9F5E0; --ch-deep:#175826;}
+[data-st="4"] [data-ch="4"]{--ch:#175826; --ch-on:#FFFFFF; --ch-soft:#D0F3D8; --ch-deep:#175826;}
+
+[data-st="5"] [data-ch="1"]{--ch:#7BB8EF; --ch-on:#2A2622; --ch-soft:#EFF7FD; --ch-deep:#104F85;}
+[data-st="5"] [data-ch="2"]{--ch:#3B97E7; --ch-on:#2A2622; --ch-soft:#E9F4FC; --ch-deep:#104F85;}
+[data-st="5"] [data-ch="3"]{--ch:#1873C2; --ch-on:#FFFFFF; --ch-soft:#E2F0FB; --ch-deep:#104F85;}
+[data-st="5"] [data-ch="4"]{--ch:#104F85; --ch-on:#FFFFFF; --ch-soft:#DCEDFB; --ch-deep:#104F85;}
+
+[data-st="6"] [data-ch="1"]{--ch:#B0AFE1; --ch-on:#2A2622; --ch-soft:#F6F6FB; --ch-deep:#413DA6;}
+[data-st="6"] [data-ch="2"]{--ch:#8D8BD4; --ch-on:#2A2622; --ch-soft:#F2F1FA; --ch-deep:#413DA6;}
+[data-st="6"] [data-ch="3"]{--ch:#6865C6; --ch-on:#FFFFFF; --ch-soft:#EEEDF8; --ch-deep:#413DA6;}
+[data-st="6"] [data-ch="4"]{--ch:#413DA6; --ch-on:#FFFFFF; --ch-soft:#EAE9F7; --ch-deep:#413DA6;}
+
+/* 챕터가 아닌 쪽(표지·워드뱅크·완성 과제)은 중성. 강조는 --st 를 쓴다. */
+[data-ch="0"]{--ch:#5A6470; --ch-on:#FFFFFF; --ch-soft:#EEF1F4; --ch-deep:#3D4550;}
+
+/* 단계를 지정하지 않은 문서(입문 트랙·교사 노트)는 무지개의 네 색을 빌려 온다. */
+[data-ch="1"]{--ch:#EF9E96; --ch-on:#2A2622; --ch-soft:#FDF3F2; --ch-deep:#912216;}  /* 빨강 */
+[data-ch="2"]{--ch:#DF760C; --ch-on:#2A2622; --ch-soft:#FDF0E3; --ch-deep:#763E06;}  /* 주황 */
+[data-ch="3"]{--ch:#228038; --ch-on:#FFFFFF; --ch-soft:#D9F5E0; --ch-deep:#175826;}  /* 초록 */
+[data-ch="4"]{--ch:#104F85; --ch-on:#FFFFFF; --ch-soft:#DCEDFB; --ch-deep:#104F85;}  /* 파랑 */
+
+/* 다섯 칸짜리 문서(문장의 다섯 형식)는 무지개의 앞 다섯 색을 순서대로 빌린다.
+   위의 네 색으로는 모자라고, 단계 색을 그대로 쓰면 이미 재어 둔 회색값과
+   대비를 다시 재지 않아도 된다 — 111 · 162 · 185 · 88 · 67 로 서로 20 이상 벌어져 있다.
+   쪽 전체에 걸면 그 쪽의 색이 되고, 줄 하나에 걸면 그 줄만 물든다.
+   그래서 다섯이 한 쪽에 모이는 「한 장 요약」에서도 같은 이름을 쓴다. */
+[data-p="1"]{--ch:#D33120; --ch-on:#FFFFFF; --ch-soft:#FDF2F0; --ch-deep:#912216;}  /* 빨강 */
+[data-p="2"]{--ch:#F3881C; --ch-on:#2A2622; --ch-soft:#FDF2E8; --ch-deep:#763E06;}  /* 주황 */
+[data-p="3"]{--ch:#E4B439; --ch-on:#2A2622; --ch-soft:#FBF3E1; --ch-deep:#60480D;}  /* 겨자 */
+[data-p="4"]{--ch:#1B652C; --ch-on:#FFFFFF; --ch-soft:#E7F8EB; --ch-deep:#175826;}  /* 초록 */
+[data-p="5"]{--ch:#0E4371; --ch-on:#FFFFFF; --ch-soft:#ECF5FD; --ch-deep:#0E4371;}  /* 파랑 */
+
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{background:#DAD3C6;font-family:var(--f-body);color:var(--ink);
+  -webkit-font-smoothing:antialiased;
+  word-break:keep-all;   /* 한국어는 어절 안에서 끊지 않는다 */
+  overflow-wrap:break-word;}
+
+/* toolbar (screen only) */
+.toolbar{position:fixed;top:0;left:0;right:0;z-index:50;display:flex;gap:14px;align-items:center;
+  padding:9px 16px;background:#2A2622;color:#fff;font-size:13px;font-family:var(--f-body);}
+.toolbar label{display:flex;align-items:center;gap:7px;cursor:pointer;}
+.toolbar input{width:15px;height:15px;cursor:pointer;}
+.toolbar .hint{color:#B7AFA4;font-size:12px;}
+.deck{padding:56px 0 40px;display:flex;flex-direction:column;align-items:center;gap:22px;}
+
+/* ---- A4 page ---- */
+.page{
+  width:794px;height:1123px;padding:44px;background:var(--paper);
+  display:flex;flex-direction:column;justify-content:space-between;
+  overflow:hidden;position:relative;box-shadow:0 2px 14px rgba(0,0,0,.16);
+}
+.stack-mid{flex:1;display:flex;flex-direction:column;min-height:0;}
+
+/* ---- chapter bar ---- */
+.chapbar{display:flex;align-items:center;gap:12px;background:var(--cream);
+  border-radius:9px;padding:9px 14px;flex:none;}
+/* 이름표 상자의 너비는 한 학습지 안에서 같아야 한다 — 그래야 그 뒤에 오는
+   챕터 이름이 쪽마다 같은 자리에서 시작한다. 쪽이 저마다 다른 상자라
+   자동으로 맞출 수 없으므로, 그 학습지에서 가장 긴 이름에 맞춘 값을
+   .deck 에 --badge-w / --pill-w 로 적어 둔다. 값을 안 적으면 예전처럼
+   글자 길이만큼만 넓어진다(1단계·입문 트랙은 이름이 고르므로 그대로 둔다).
+   이름을 고쳤으면 폭을 다시 재서 값을 맞출 것. */
+.chbadge{font-family:var(--f-en);font-weight:600;font-size:11px;letter-spacing:.06em;
+  background:var(--ch);color:var(--ch-on);padding:4px 9px;border-radius:5px;flex:none;
+  min-width:var(--badge-w,auto);text-align:center;}
+.chname{font-family:var(--f-title);font-size:16px;color:var(--ch-deep);flex:none;}
+.chtopic{font-size:12.5px;color:var(--ink-soft);flex:1;min-width:0;}
+.help{display:flex;align-items:center;gap:5px;flex:none;}
+.help span{font-size:11px;color:var(--ink-soft);}
+.help i{width:9px;height:9px;border-radius:50%;border:1.6px solid var(--ch);display:block;}
+.help i.on{background:var(--ch);}
+
+/* ---- step header ---- */
+.stephead{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;
+  padding:0 0 13px;border-bottom:3px solid var(--ch);margin:30px 0 0;flex:none;}
+.pill{font-family:var(--f-en);font-weight:600;font-size:11.5px;letter-spacing:.05em;
+  background:var(--ch);color:var(--ch-on);padding:5px 12px;border-radius:999px;flex:none;
+  min-width:var(--pill-w,auto);text-align:center;}
+.stephead h2{font-family:var(--f-title);font-size:24px;margin:0;color:var(--ink);font-weight:400;}
+.stephead .sub{font-family:var(--f-en);font-size:13px;color:var(--ch-deep);font-weight:500;}
+
+/* ---- activity ---- */
+.acts{flex:1;display:flex;flex-direction:column;gap:21px;padding:24px 0 0;min-height:0;}
+.act{display:flex;flex-direction:column;gap:7px;}
+.act.grow{flex:1;min-height:0;}
+.alab{font-family:var(--f-en);font-weight:600;font-size:11px;letter-spacing:.07em;color:var(--ch-deep);}
+.aq{font-weight:700;font-size:15px;line-height:1.5;margin:0;}
+.asub{font-size:13px;color:var(--ink-soft);line-height:1.55;margin:0;}
+
+/* ---- text samples ---- */
+.sample{background:var(--cream);border-radius:9px;padding:12px 15px;
+  border-left:5px solid var(--ch);}
+.sample.a{border-left-color:var(--a-line);}
+.sample.b{border-left-color:var(--b-line);}
+.sample h5{font-family:var(--f-en);font-weight:600;font-size:11px;letter-spacing:.06em;
+  margin:0 0 6px;color:var(--ch-deep);}
+.sample.a h5{color:var(--a-line);} .sample.b h5{color:var(--b-line);}
+.sample h5 em{font-style:normal;font-family:var(--f-body);font-weight:500;color:var(--ink-soft);letter-spacing:0;}
+.sample p{margin:0;font-family:var(--f-en);font-weight:400;font-size:16px;line-height:1.95;color:var(--ink);}
+.sample ol{margin:0;padding-left:20px;font-family:var(--f-en);font-size:16px;line-height:1.85;}
+.sample .ti{font-family:var(--f-en);font-weight:600;font-size:16px;margin:0 0 5px;}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:11px;}
+.two.rows{grid-template-columns:1fr;gap:12px;}
+
+/* ---- writing areas (all underline) ---- */
+.lines{flex:1;min-height:52px;
+  background-image:repeating-linear-gradient(to bottom,transparent 0 30px,var(--rule) 30px 32px);}
+.lines.n1{flex:none;height:32px;} .lines.n2{flex:none;height:64px;}
+.lines.n3{flex:none;height:96px;} .lines.n4{flex:none;height:128px;}
+.ul{display:inline-block;min-width:120px;border-bottom:2px solid var(--rule);
+  vertical-align:-4px;margin:0 4px;height:20px;}
+.ul.s{min-width:64px;} .ul.l{min-width:190px;} .ul.xl{min-width:100%;margin:0;}
+
+/* rows */
+.frames{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px;}
+.frames li{font-family:var(--f-en);font-size:16px;line-height:2.1;}
+.qrow{display:flex;flex-direction:column;gap:5px;margin:0;padding:0;list-style:none;}
+.qrow li{display:flex;align-items:baseline;gap:12px;font-family:var(--f-en);font-size:15.5px;
+  border-bottom:1px dotted var(--rule);padding-bottom:4px;}
+.qrow li span:first-child{flex:1;}
+.qrow li i{flex:none;width:52px;height:19px;border-bottom:2px solid var(--rule);display:block;}
+.numrow{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px;counter-reset:nr;}
+.numrow li{counter-increment:nr;display:flex;align-items:baseline;gap:10px;font-family:var(--f-en);font-size:15.5px;}
+/* 번호는 16px 칸에 넣는데, 어떤 서체에서는 "1." 이 그보다 넓어 마침표가
+   다음 줄로 떨어졌다. 번호는 어떤 경우에도 한 줄이어야 한다. */
+.numrow li::before{content:counter(nr)".";font-weight:600;color:var(--ch-deep);flex:none;width:16px;
+  white-space:nowrap;}
+.cards{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:7px;}
+.cards li{display:flex;align-items:center;gap:11px;background:var(--cream);border-radius:7px;
+  padding:7px 12px;font-family:var(--f-en);font-size:15.5px;}
+.cards li b{flex:none;width:26px;height:26px;border:2px solid var(--rule);border-radius:5px;background:#fff;}
+
+/* word bank */
+.bank{display:flex;flex-direction:column;gap:0;background:var(--cream);border-radius:9px;padding:4px 15px;}
+.brow{display:grid;grid-template-columns:150px 1fr;gap:12px;align-items:baseline;
+  padding:9px 0;border-bottom:1px solid #EFE7D8;}
+.brow:last-child{border-bottom:none;}
+.bkey{font-size:12.5px;font-weight:700;color:var(--ch-deep);}
+.bkey em{display:block;font-style:normal;font-weight:400;font-size:11.5px;color:var(--ink-soft);}
+.chips{display:flex;flex-wrap:wrap;gap:5px;}
+.chip{font-family:var(--f-en);font-size:14.5px;background:var(--ch-soft);border-radius:5px;padding:2px 9px;}
+
+/* topic strip */
+.topic{background:var(--ch-soft);border-radius:9px;padding:11px 15px;display:flex;
+  flex-direction:column;gap:7px;}
+.topic .tl{font-family:var(--f-en);font-weight:600;font-size:11px;letter-spacing:.06em;color:var(--ch-deep);}
+
+/* rule callout */
+.callout{background:var(--cream);border-radius:9px;padding:11px 15px;border-left:5px solid var(--ch);
+  font-size:13.5px;line-height:1.65;}
+.callout b{color:var(--ch-deep);}
+
+/* checks */
+.checks{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:7px;}
+.checks li{display:flex;align-items:flex-start;gap:9px;font-size:13.5px;line-height:1.45;}
+.checks li::before{content:"";flex:none;width:16px;height:16px;border:2px solid var(--rule);
+  border-radius:3px;margin-top:1px;}
+.checks li em{display:block;font-style:normal;font-family:var(--f-en);font-size:13px;color:var(--ch-deep);}
+
+/* teacher note */
+.tnote{border:2px dashed var(--note-line);background:var(--note-bg);border-radius:9px;
+  padding:11px 14px;font-size:12.5px;line-height:1.6;color:var(--ink-soft);flex:none;}
+.tnote .tl{font-family:var(--f-en);font-weight:600;font-size:10.5px;letter-spacing:.08em;
+  color:#9A8C74;display:block;margin:0 0 5px;}
+.tnote p{margin:0 0 5px;} .tnote p:last-child{margin:0;}
+.tnote b.a{color:var(--ans);}
+body.hide-notes .tnote{display:none;}
+body:not(.hide-notes) .act.grow .lines{min-height:40px;}
+
+/* foot */
+.foot{display:flex;justify-content:space-between;align-items:baseline;flex:none;
+  margin-top:20px;padding-top:14px;border-top:1px solid #EAE3D6;font-size:11px;color:var(--ink-soft);}
+.foot .r{font-family:var(--f-en);font-weight:500;}
+
+/* cover */
+.cover .big{font-family:var(--f-title);font-size:46px;line-height:1.15;margin:0 0 4px;}
+.cover .bigen{font-family:var(--f-en);font-weight:500;font-size:15px;color:var(--ch-deep);margin:0 0 20px;}
+.cover .lead{font-size:14.5px;line-height:1.75;color:var(--ink-soft);margin:0;}
+.idea{background:var(--ch-soft);border-radius:11px;padding:18px;text-align:center;}
+.idea .k{font-family:var(--f-title);font-size:25px;margin:0 0 4px;color:var(--ch-deep);}
+.idea .e{font-family:var(--f-en);font-weight:500;font-size:15px;color:var(--ch);margin:0;}
+/* 차례. 이름표 칸의 너비는 그 목록에서 가장 긴 이름(WORDS · FRAME 같은)에 맞춘다.
+   줄마다 이름표 너비가 달라지면 그 뒤에서 시작하는 제목들이 들쭉날쭉해진다.
+   바깥 격자가 세 칸을 정하고 각 줄이 subgrid 로 그 칸을 그대로 받는다 —
+   줄 하나하나가 여전히 제 상자라서 아래 실선은 그대로 그어진다. */
+.toc{display:grid;grid-template-columns:max-content 1fr max-content;row-gap:0;column-gap:11px;}
+.toc div{display:grid;grid-template-columns:subgrid;grid-column:1 / -1;
+  align-items:baseline;padding:8px 0;border-bottom:1px solid #EFE7D8;font-size:13.5px;}
+.toc div:last-child{border-bottom:none;}
+.toc b{font-family:var(--f-en);font-weight:600;font-size:10.5px;color:var(--ch-on);padding:3px 7px;
+  border-radius:4px;background:var(--ch);text-align:center;}
+.toc span.t{font-weight:700;min-width:0;}
+.toc span.p{font-family:var(--f-en);font-size:12px;color:var(--ink-soft);justify-self:end;}
+.namebar{display:flex;gap:20px;}
+.namebar label{flex:1;display:flex;align-items:baseline;gap:8px;}
+.namebar label span{font-size:11.5px;color:var(--ink-soft);white-space:nowrap;}
+.namebar label i{flex:1;border-bottom:2px solid var(--rule);height:22px;display:block;}
+
+@media print{
+  body{background:#fff;}
+  .toolbar{display:none;}
+  .deck{padding:0;gap:0;}
+  .page{box-shadow:none;page-break-after:always;break-after:page;}
+  .page:last-child{page-break-after:auto;break-after:auto;}
+  @page{size:A4;margin:0;}
+}
+
+/* full-width underline rows */
+.ulrow{display:flex;align-items:baseline;gap:9px;font-family:var(--f-en);font-size:15.5px;line-height:2.1;}
+.ulrow .lab{flex:none;}
+.ulrow .fill{flex:1;border-bottom:2px solid var(--rule);height:24px;display:block;}
+.ulrow.tall{padding-top:14px;gap:14px;}
+.ulrow.tall .fill{height:40px;}
+.ulset{display:flex;flex-direction:column;gap:9px;}
+.ulset.wide{gap:12px;}
+.ulset .sub2{display:flex;flex-direction:column;gap:7px;padding-left:22px;}
+.ulset .sub2 i{border-bottom:2px solid var(--rule);height:22px;display:block;}
+.ulset.wide{flex:1;min-height:0;}
+.ulset.wide > div{flex:1;display:flex;flex-direction:column;min-height:0;}
+.ulset.wide .sub2{flex:1;min-height:0;gap:6px;}
+.ulset.wide .sub2 i{flex:1;min-height:18px;max-height:26px;height:auto;}
+body:not(.hide-notes) .ulset.wide .sub2 i{min-height:13px;}
+/* .roomy — 손글씨가 큰 학년용. 줄 간격과 줄 높이를 키운다. */
+.ulset.wide.roomy .sub2{gap:11px;}
+.ulset.wide.roomy .sub2 i{min-height:28px;max-height:33px;}
+/* 마지막 줄이 「선생님께」에 닿지 않도록 아래를 조금 비운다 */
+.ulset.wide{padding-bottom:6px;}
+body:not(.hide-notes) .ulset.wide.roomy .sub2 i{min-height:24px;}
+
+/* student tip */
+.tip{background:var(--ch-soft);border-radius:9px;padding:11px 15px;font-size:13px;
+  line-height:1.65;color:var(--ch-deep);flex:none;}
+.tip b.tl{font-family:var(--f-en);font-weight:600;font-size:10.5px;letter-spacing:.07em;
+  display:block;margin:0 0 4px;opacity:.75;}
+
+/* cover tweaks */
+.cover .lead{max-width:none;}
+.toc div{align-items:flex-start;}
+.toc .t{display:flex;flex-direction:column;gap:2px;}
+.toc .t em{font-style:normal;font-weight:400;font-size:12px;color:var(--ink-soft);line-height:1.5;}
+
+/* 그림 · 그리기 칸 */
+.picrow{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;}
+.picrow.grow{flex:1;min-height:0;}
+.piccard{display:flex;flex-direction:column;gap:7px;min-height:0;}
+.picbox{border:2px solid var(--rule);border-radius:9px;background:var(--cream);
+  flex:1;min-height:96px;display:flex;align-items:flex-end;justify-content:center;padding:7px;}
+.picbox span{font-size:11px;color:#B5AB99;}
+.piccap{font-family:var(--f-en);font-size:14.5px;line-height:1.4;text-align:center;}
+.numbox{width:30px;height:30px;border:2px solid var(--rule);border-radius:6px;background:#fff;
+  margin:0 auto;flex:none;}
+
+/* 줄로 잇기 */
+/* 왼쪽은 낱말 한 개, 오른쪽은 짧은 뜻풀이. 가운데가 선을 긋는 자리라 가장 넓다. */
+.match{display:grid;grid-template-columns:0.58fr 1fr 0.71fr;gap:9px 6px;align-items:stretch;}
+.match .ml,.match .mr{background:var(--cream);border-radius:7px;padding:8px 11px;font-size:13.5px;
+  line-height:1.5;display:flex;align-items:center;}
+.match .ml{font-family:var(--f-en);}
+/* 가운데는 학생이 선을 긋는 자리다. 양 끝의 점이 시작과 끝을 알려 준다. */
+.match .md{display:flex;align-items:center;justify-content:space-between;}
+.match .md::before,.match .md::after{content:"";width:7px;height:7px;border-radius:50%;
+  background:var(--rule);flex:none;}
+
+/* 낱말 표 */
+.vtable{width:100%;border-collapse:collapse;font-size:13.5px;background:var(--cream);
+  border-radius:9px;overflow:hidden;}
+.vtable th{background:var(--ch-soft);color:var(--ch-deep);font-size:11px;letter-spacing:.05em;
+  font-family:var(--f-en);font-weight:600;text-align:left;padding:7px 13px;}
+.vtable td{padding:6px 13px;border-top:1px solid #EFE7D8;font-family:var(--f-en);}
+.vtable td.k{font-weight:600;color:var(--ch-deep);width:96px;}
+
+/* 영어 주 · 한국어 부 (5·6단계) */
+.checks.en li{font-family:var(--f-en);font-size:14.5px;}
+.checks.en li em{font-family:var(--f-body);font-size:12px;color:var(--ink-soft);}
+
+/* 줄로 잇기 · 두 칸 */
+.mcol{background:var(--cream);border-radius:9px;padding:10px 13px;}
+.mcol h6{font-family:var(--f-en);font-weight:600;font-size:11px;letter-spacing:.06em;
+  color:var(--ch-deep);margin:0 0 8px;}
+.mcol ol{margin:0;padding-left:19px;font-family:var(--f-en);font-size:14.5px;line-height:1.5;
+  display:flex;flex-direction:column;gap:7px;}
+.mcol ol.alpha{list-style:lower-alpha;}
+
+/* 낱말 수 세기 칸 */
+.counts{display:grid;grid-template-columns:repeat(3,1fr);gap:11px;}
+.counts.two{grid-template-columns:repeat(2,1fr);}
+.cbox{background:var(--cream);border-radius:9px;padding:9px 12px;display:flex;
+  flex-direction:column;gap:5px;}
+.cbox h6{font-family:var(--f-en);font-weight:600;font-size:10.5px;letter-spacing:.06em;
+  color:var(--ch-deep);margin:0;}
+.cbox .cl{font-size:11px;color:var(--ink-soft);}
+.cbox i{border-bottom:2px solid var(--rule);height:24px;display:block;}
+
+/* 글머리 기호 빈칸 */
+.bullets{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:9px;}
+.bullets li{display:flex;align-items:baseline;gap:9px;}
+.bullets li::before{content:"•";color:var(--ch);font-size:17px;flex:none;}
+.bullets li i{flex:1;border-bottom:2px solid var(--rule);height:22px;display:block;}
+.vtable td.blank{height:28px;}
+
+/* 표 자체가 쓰기 칸일 때 — 손글씨가 들어갈 높이를 주고, 날짜처럼 끊기면
+   안 되는 칸은 한 줄로 붙든다. .pick 은 학생이 고르는 네모 칸이다. */
+.vtable.write td.blank{height:62px;vertical-align:top;padding-top:7px;}
+.vtable.write td.when{white-space:nowrap;}
+.vtable.write .cue{font-family:var(--f-en);font-size:11px;font-weight:600;color:var(--ch-deep);}
+.vtable.write th.pick,.vtable.write td.pick{width:44px;text-align:center;}
+.vtable.write td.pick i{display:inline-block;width:20px;height:20px;border:2px solid var(--rule);
+  border-radius:4px;background:#fff;}
+
+/* 한국어 전용 쪽 (입문 트랙 1권) — 영문 서체를 본문 서체로 되돌린다 */
+.page.ko .ulrow,.page.ko .qrow,.page.ko .cards,.page.ko .frames,.page.ko .numrow,
+.page.ko .sample p,.page.ko .sample h5,.page.ko .mcol ol,.page.ko .match .ml,
+.page.ko .chip,.page.ko .vtable td{font-family:var(--f-body);}
+.page.ko .sample p{font-size:14.5px;line-height:1.85;}
+
+/* ================= 교사용 노트 =================
+   워크시트와 같은 A4 판형 위에, 교사가 기록하며 쓰는 표와 카드. */
+
+/* 차시 블록 */
+.period{border:2px solid var(--ch-soft);border-radius:10px;overflow:hidden;}
+.phead{display:flex;align-items:baseline;gap:12px;background:var(--ch-soft);padding:8px 14px;}
+.phead .pn{font-family:var(--f-en);font-weight:600;font-size:11px;letter-spacing:.05em;
+  background:var(--ch);color:var(--ch-on);border-radius:5px;padding:3px 9px;flex:none;}
+.phead .pt{font-weight:700;font-size:14px;color:var(--ch-deep);flex:1;}
+.phead .pp{font-family:var(--f-en);font-size:12px;color:var(--ch-deep);flex:none;}
+.plan{width:100%;border-collapse:collapse;}
+.plan td{padding:7px 14px;font-size:12.5px;line-height:1.6;border-top:1px solid #EFE7D8;
+  vertical-align:top;}
+.plan tr:first-child td{border-top:none;}
+.plan td.k{width:76px;font-family:var(--f-en);font-size:11.5px;color:var(--ink-soft);
+  white-space:nowrap;}
+.watch{background:var(--cream);border-top:1px solid #EFE7D8;padding:8px 14px;
+  font-size:12.5px;line-height:1.6;color:var(--ink-soft);}
+.watch b{color:var(--ink);}
+.watch b:first-child{color:var(--ch-deep);}
+
+/* 진단표 */
+.keybox{background:var(--ch-soft);border-radius:8px;padding:9px 14px;
+  font-size:12.5px;color:var(--ch-deep);text-align:center;}
+.crit{width:100%;border-collapse:collapse;font-size:12.5px;}
+.crit th{background:var(--ch-soft);color:var(--ch-deep);font-size:11px;letter-spacing:.04em;
+  font-family:var(--f-en);font-weight:600;padding:7px 10px;text-align:left;}
+.crit td{padding:7px 10px;border-top:1px solid #EFE7D8;line-height:1.5;}
+.crit td.c{width:46px;font-family:var(--f-en);font-weight:600;color:var(--ch-deep);}
+.crit td.p{width:60px;white-space:nowrap;font-family:var(--f-en);font-size:11.5px;color:var(--ink-soft);}
+.crit th.m,.crit td.m{width:34px;text-align:center;}
+.crit td.m{border-left:1px solid #EFE7D8;}
+.crit tr:nth-child(even) td{background:#FDFBF6;}
+.verdict td:first-child{line-height:1.55;}
+.verdict td.m{width:96px;}
+
+/* 반 전체 */
+.roster{width:100%;border-collapse:collapse;font-size:12px;}
+.roster th{background:var(--ch-soft);color:var(--ch-deep);font-family:var(--f-en);
+  font-weight:600;font-size:10.5px;padding:7px 6px;text-align:center;}
+.roster th:first-child{text-align:left;padding-left:11px;}
+.roster td{border-top:1px solid #EFE7D8;height:29px;}
+.roster td:first-child{border-right:1px solid #EFE7D8;}
+.roster td+td{border-left:1px solid #EFE7D8;}
+
+/* 처방 카드 */
+.rx{border-left:5px solid var(--ch);background:var(--cream);border-radius:0 9px 9px 0;
+  padding:9px 14px;}
+.rx .if{font-weight:700;font-size:13px;margin:0 0 4px;}
+.rx .then{margin:0;font-size:12.5px;line-height:1.65;color:var(--ink-soft);}
+.rx .then b{color:var(--ink);}
+
+/* ================= 문장 성분 표시 =================
+   낱말 바로 아래에 S · V · O · C 를 붙인다. 칠판에 그대로 옮겨 적을 수
+   있도록 낱말 사이를 넉넉히 벌리고, 배지는 낱말 폭보다 좁게 두었다.
+
+   성분이 아닌 것(부사구처럼 빼도 문장이 서는 말)은 <em class="x"> 로
+   테두리만 남긴다 — 1형식에서 "뒤에 뭐가 붙어도 1형식"을 눈으로 보여 주는
+   장치이므로, 색이 채워진 배지와 확실히 달라야 한다. */
+.parse{background:var(--cream);border-radius:9px;padding:11px 15px;
+  border-left:5px solid var(--ch);}
+.parse + .parse{margin-top:7px;}
+.pline{display:flex;flex-wrap:wrap;align-items:flex-end;gap:6px 13px;}
+.pline > span{display:flex;flex-direction:column;align-items:center;gap:3px;}
+.pline b{font-family:var(--f-en);font-weight:500;font-size:17px;line-height:1.25;}
+.pline em{font-style:normal;font-family:var(--f-en);font-weight:600;font-size:10px;
+  letter-spacing:.05em;color:var(--ch-on);background:var(--ch);border-radius:4px;
+  padding:1px 7px;min-width:21px;text-align:center;}
+.pline em.x{background:none;color:var(--ink-soft);border:1px dashed var(--rule);
+  font-family:var(--f-body);font-weight:500;letter-spacing:0;}
+.parse .ko{margin:7px 0 0;font-size:12.5px;color:var(--ink-soft);line-height:1.5;}
+.parse .ko b{color:var(--ch-deep);}
+
+/* 형식 이름표 — 예문 위에 붙는 작은 머리. 「4형식 · S V O O」 */
+.parse .pt{display:flex;align-items:baseline;gap:8px;margin:0 0 7px;}
+.parse .pt b{font-family:var(--f-body);font-weight:700;font-size:12px;color:var(--ch-deep);}
+.parse .pt span{font-family:var(--f-en);font-weight:600;font-size:10.5px;
+  letter-spacing:.12em;color:var(--ink-soft);}
+
+/* 이름 칸이 96px보다 긴 표 — 칸 이름이 서너 줄로 접히면 표가 아니라 벽이 된다.
+   .vtable 의 기본 96px 을 내용 폭에 맞춰 풀어 준다. */
+.vtable.knap td.k{width:auto;white-space:nowrap;}
+</style>
+</head>
+<body>
+<div class="deck">
+
+<!-- 1 · 표지 -->
+<section class="page cover" data-ch="0" style="justify-content:flex-start;gap:22px;">
+  <div class="namebar">
+    <label><span>학교 / 학년</span><i></i></label>
+    <label><span>담당 교사</span><i></i></label>
+    <label><span>수업 기간</span><i></i></label>
+  </div>
+
+  <div>
+    <p style="font-family:var(--f-en);font-weight:600;font-size:11.5px;letter-spacing:.1em;color:var(--ink-soft);margin:0 0 10px;">THE FIVE SENTENCE PATTERNS · FOR TEACHERS</p>
+    <h1 class="big">문장의 다섯 형식</h1>
+    <p class="bigen">Teaching the five patterns, boundary by boundary</p>
+    <p class="lead">중1~중2에게 1형식부터 5형식까지를 가르치기 위한 자료입니다. 칠판에 그대로 옮겨 쓸 예문, 형식을 가르는 판별 질문, 한국어 화자가 반드시 틀리는 자리와 그때 던질 말을 담았습니다.</p>
+  </div>
+
+  <div class="idea">
+    <p class="k">형식은 문장이 아니라 동사의 성질이다</p>
+    <p class="e">The verb decides the pattern, not the sentence.</p>
+  </div>
+
+  <div class="toc">
+    <div data-p="1"><b>기초</b>
+      <span class="t">한 장 요약 · 가르치기 전에<em>다섯 형식을 한 쪽에 모은 장과, 들어가기 전에 30초로 확인할 선수 지식.</em></span>
+      <span class="p">2–3</span></div>
+    <div data-p="2"><b>1·2형식</b>
+      <span class="t">주어와 동사 · 보어<em>1형식과 2형식, 그리고 둘을 가르는 경계 — 부사인가 보어인가.</em></span>
+      <span class="p">4–6</span></div>
+    <div data-p="3"><b>3형식</b>
+      <span class="t">목적어, 그리고 전치사<em>타동사와 자동사. 한국어 간섭 오류가 가장 많이 나오는 구간입니다.</em></span>
+      <span class="p">7–8</span></div>
+    <div data-p="4"><b>4·5형식</b>
+      <span class="t">목적어가 둘일 때<em>4형식과 5형식, 그리고 둘을 가르는 경계 — 목적어와 보어가 같은 것인가.</em></span>
+      <span class="p">9–11</span></div>
+    <div data-p="5"><b>정리</b>
+      <span class="t">동사가 형식을 정한다 · 차시 계획 · 진단<em>동사 하나가 다섯 형식에 모두 쓰이는 것을 보여 주고 마무리합니다.</em></span>
+      <span class="p">12–15</span></div>
+  </div>
+
+  <div class="tnote">
+    <span class="tl">가르치기 전에 · 이 단원의 목표</span>
+    <p><b>형식을 분류하는 것 자체는 목표가 아닙니다.</b> 목표는 셋입니다. ① 동사마다 뒤에 무엇이 반드시 와야 하는지 안다. ② 수동태를 만들 수 있는 문장과 없는 문장을 가른다. ③ <b>discuss about</b>, <b>listen the music</b> 같은 한국어 간섭 오류가 왜 틀렸는지 스스로 설명한다.</p>
+    <p>“이 문장은 몇 형식입니까”만 묻는 수업은 이 셋 가운데 어느 것도 주지 못합니다. 번호는 <b>말하기 위한 이름</b>일 뿐이고, 실제로 가르치는 것은 <b>동사 뒤에 오는 자리</b>입니다.</p>
+  </div>
+</section>
+
+<!-- 2 · 한 장 요약 -->
+<section class="page" data-ch="0">
+  <div class="chapbar">
+    <span class="chbadge">SUMMARY</span><span class="chname">한 장 요약</span>
+    <span class="chtopic">교실 벽에 붙여 두고 단원 내내 가리킵니다</span>
+  </div>
+
+  <div class="stack-mid">
+    <div class="acts" style="gap:19px;padding-top:18px;">
+      <div class="parse" data-p="1">
+        <div class="pt"><b>1형식</b><span>S + V</span></div>
+        <div class="pline">
+          <span><b>Birds</b><em>S</em></span><span><b>fly</b><em>V</em></span>
+        </div>
+        <p class="ko">새가 난다. &nbsp;·&nbsp; 동사 뒤에 <b>아무것도 필요 없다.</b></p>
+      </div>
+
+      <div class="parse" data-p="2">
+        <div class="pt"><b>2형식</b><span>S + V + C</span></div>
+        <div class="pline">
+          <span><b>She</b><em>S</em></span><span><b>is</b><em>V</em></span><span><b>happy</b><em>C</em></span>
+        </div>
+        <p class="ko">그녀는 행복하다. &nbsp;·&nbsp; 보어가 <b>주어를 설명한다.</b> <b>She = happy</b></p>
+      </div>
+
+      <div class="parse" data-p="3">
+        <div class="pt"><b>3형식</b><span>S + V + O</span></div>
+        <div class="pline">
+          <span><b>I</b><em>S</em></span><span><b>like</b><em>V</em></span><span><b>music</b><em>O</em></span>
+        </div>
+        <p class="ko">나는 음악을 좋아한다. &nbsp;·&nbsp; 목적어가 <b>하나.</b></p>
+      </div>
+
+      <div class="parse" data-p="4">
+        <div class="pt"><b>4형식</b><span>S + V + O + O</span></div>
+        <div class="pline">
+          <span><b>He</b><em>S</em></span><span><b>gave</b><em>V</em></span><span><b>me</b><em>O</em></span><span><b>a book</b><em>O</em></span>
+        </div>
+        <p class="ko">그는 나에게 책을 주었다. &nbsp;·&nbsp; 목적어가 둘이고 <b>서로 다른 것.</b> <b>me ≠ a book</b></p>
+      </div>
+
+      <div class="parse" data-p="5">
+        <div class="pt"><b>5형식</b><span>S + V + O + C</span></div>
+        <div class="pline">
+          <span><b>They</b><em>S</em></span><span><b>call</b><em>V</em></span><span><b>him</b><em>O</em></span><span><b>Tom</b><em>C</em></span>
+        </div>
+        <p class="ko">그들은 그를 Tom이라고 부른다. &nbsp;·&nbsp; 보어가 <b>목적어를 설명한다.</b> <b>him = Tom</b></p>
+      </div>
+
+      <div class="callout"><b>네 가지 질문으로 다 갈립니다 ·</b>
+        ① 동사 뒤에 <b>꼭 있어야 할 말</b>이 있는가 &rarr; 없으면 <b>1형식</b>
+        ② 그 말이 <b>주어</b>를 설명하는가 &rarr; 그렇다면 <b>2형식</b>
+        ③ 목적어가 <b>하나</b>인가 &rarr; 그렇다면 <b>3형식</b>
+        ④ 뒤의 말이 <b>앞 목적어</b>를 설명하는가 &rarr; 그렇다면 <b>5형식</b>, 아니면 <b>4형식</b></div>
+
+      <div class="tip">
+        <b class="tl">쓰는 법</b>
+        이 쪽만 따로 뽑아 <b>교실 벽에 붙입니다.</b> 첫 시간에 설명하지 말고 <b>보여 주기만</b> 하세요 —
+        다섯을 한꺼번에 들으면 아무것도 남지 않습니다. 새 형식을 배울 때마다 그 줄을 손으로 가리키면,
+        학생은 자기가 배우는 것이 <b>전체의 어디쯤인지</b>를 매번 확인하게 됩니다.
+      </div>
+    </div>
+  </div>
+
+  <div class="foot"><span>한 장 요약</span><span class="r">다섯 형식 · 2/15</span></div>
+</section>
+
+<!-- 3 · 가르치기 전에 -->
+<section class="page" data-ch="0">
+  <div class="chapbar">
+    <span class="chbadge">BEFORE</span><span class="chname">가르치기 전에</span>
+    <span class="chtopic">세 가지가 없으면 형식은 절대 갈리지 않습니다</span>
+  </div>
+
+  <div class="stack-mid">
+    <div class="acts" style="gap:13px;padding-top:20px;">
+      <p class="asub">형식을 가르치기 전에 갖춰져 있어야 하는 것이 셋입니다. <b>첫 시간 10분</b>이면 확인됩니다. 여기서 빈 것이 나오면 그것부터 메우고 들어가야 합니다. 메우지 않고 진도를 나가면 4형식쯤에서 반 전체가 멈춥니다.</p>
+
+      <table class="crit">
+        <tr><th>확인할 것</th><th>칠판에 이렇게 묻습니다</th><th class="m">30초</th></tr>
+        <tr><td><b>① 명사와 동사를 가른다</b><br><span style="font-size:11.5px;color:var(--ink-soft);">이것이 없으면 주어·목적어라는 말 자체가 통하지 않습니다</span></td>
+          <td><b>The dog runs fast.</b><br>여기서 <b>사람·물건</b>은 어느 것? <b>움직임</b>은 어느 것?</td><td class="m"></td></tr>
+        <tr><td><b>② 주어를 찾는다</b><br><span style="font-size:11.5px;color:var(--ink-soft);">동사의 짝을 찾는 일이며, 수 일치로 확인됩니다</span></td>
+          <td><b>The children ( play / plays ) outside.</b><br>왜 그쪽인가?</td><td class="m"></td></tr>
+        <tr><td><b>③ 형용사와 부사를 가른다</b><br><span style="font-size:11.5px;color:var(--ink-soft);">1형식과 2형식은 <b>오직 이것으로만</b> 갈립니다</span></td>
+          <td><b>The dog is ( slow / slowly ).</b><br><b>The dog walks ( slow / slowly ).</b></td><td class="m"></td></tr>
+      </table>
+
+      <div class="callout"><b>③번이 이 단원의 급소입니다 ·</b> 위 두 문장은 한국 학생이 가장 자주 섞는 짝이고,
+        동시에 <b>1형식과 2형식을 가르는 문제 그 자체</b>입니다.
+        <b>is</b> 뒤에는 주어를 설명하는 <b>형용사</b>가 오고(2형식), <b>walks</b> 뒤에는 동사를 꾸미는 <b>부사</b>가 옵니다(1형식).
+        형용사와 부사를 못 가르는 학생에게 2형식을 가르치면 규칙이 아니라 암기가 됩니다.</div>
+
+      <div class="act">
+        <span class="alab">빈 것이 나오면</span>
+        <div class="rx">
+          <p class="if">① 명사와 동사를 못 가른다</p>
+          <p class="then"><b>형식으로 들어가지 마세요.</b> 주어·목적어·보어가 모두 “어떤 종류의 말인가”로 정의되므로, 이것이 없으면 다섯 형식 전부가 암기가 됩니다. 쉬운 문장 열 개에서 <b>사람·물건에 동그라미, 움직임에 밑줄</b>을 긋는 것으로 한 시간이면 됩니다.</p>
+        </div>
+        <div class="rx">
+          <p class="if">② 주어를 못 찾는다</p>
+          <p class="then">수 일치 문제(<b>The children play</b>)를 열 개쯤 풀리세요. 주어를 찾는 일은 곧 <b>동사의 짝</b>을 찾는 일이므로, <b>동사를 먼저 찾고 그 앞을 보라</b>고 순서를 정해 주면 대부분 풀립니다.</p>
+        </div>
+        <div class="rx">
+          <p class="if">③ 형용사와 부사를 못 가른다</p>
+          <p class="then"><b>여기에 한 시간을 쓰는 편이 결국 빠릅니다.</b> 이것만 잡히면 1형식과 2형식은 저절로 갈리고, 잡히지 않으면 6쪽에서 반 전체가 멈춥니다. <b>-ly</b>가 붙은 말은 대개 부사라는 것부터 시작하세요.</p>
+        </div>
+      </div>
+
+      <div class="tnote">
+        <span class="tl">근거 · 이 순서는 어디서 나왔나</span>
+        <p>Marble Skill Taxonomy의 선수 관계를 따랐습니다. <b>Basic Nouns &amp; Verbs</b>(만 5~6세)가 뿌리이고, 여기서 <b>Pronouns</b>와 <b>Subject-verb agreement</b>가 각각 <b>hard</b> 간선으로 갈라집니다 — 데이터의 표현으로는 “명사가 무엇인지 알아야 그것을 대명사로 바꿀 수 있다”입니다. 그래서 ①이 ②보다 먼저입니다.</p>
+        <p>③은 <b>Adjectives vs adverbs</b>(만 7~8세) 항목이며, 위 두 예문은 이 자료가 지어낸 것이 아니라 <b>그 항목의 평가 문항을 그대로 가져온 것</b>입니다. 데이터에 「형식」이라는 개념은 없지만, 형식을 가르는 판별력은 이렇게 이미 들어 있습니다.</p>
+        <p><b>나이는 영어 모어 화자 기준입니다.</b> 한국 중1이 국어로는 형용사와 부사를 알아도 영어로는 모를 수 있으므로, 나이를 믿지 말고 위 표로 직접 확인하세요.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="foot"><span>가르치기 전에</span><span class="r">다섯 형식 · 3/15</span></div>
+</section>
+
+<!-- 4 · 1형식 -->
+<section class="page" data-p="1">
+  <div class="chapbar">
+    <span class="chbadge">1형식</span><span class="chname">주어 + 동사</span>
+    <span class="chtopic">S + V &nbsp;·&nbsp; 동사 뒤에 아무것도 필요 없다</span>
+  </div>
+
+  <div class="stack-mid">
+    <div class="stephead"><span class="pill">1형식</span><h2>주어와 동사만으로 선다</h2><span class="sub">Subject + Verb</span></div>
+    <div class="acts" style="gap:13px;">
+      <p class="asub">칠판에 이 세 문장을 <b>위에서 아래로</b> 씁니다. 아래로 갈수록 길어지지만 <b>형식은 그대로</b>라는 것이 이 장의 전부입니다.</p>
+
+      <div class="parse">
+        <div class="pline"><span><b>Birds</b><em>S</em></span><span><b>fly</b><em>V</em></span></div>
+        <p class="ko">새가 난다.</p>
+      </div>
+      <div class="parse">
+        <div class="pline"><span><b>The sun</b><em>S</em></span><span><b>rises</b><em>V</em></span><span><b>in the east</b><em class="x">부사구</em></span></div>
+        <p class="ko">해는 동쪽에서 뜬다. &nbsp;·&nbsp; <b>빼도 문장이 선다</b> &rarr; 성분이 아니다 &rarr; 여전히 1형식</p>
+      </div>
+      <div class="parse">
+        <div class="pline"><span><b>There</b><em class="x">유도부사</em></span><span><b>is</b><em>V</em></span><span><b>a book</b><em>S</em></span><span><b>on the desk</b><em class="x">부사구</em></span></div>
+        <p class="ko">책상 위에 책이 한 권 있다. &nbsp;·&nbsp; <b>There는 주어가 아니다.</b> 진짜 주어는 동사 뒤의 <b>a book</b>.</p>
+      </div>
+
+      <div class="topic">
+        <span class="tl">대표 동사 · 뒤에 목적어를 데리고 오지 않는 동사</span>
+        <div class="chips"><span class="chip">go</span><span class="chip">come</span><span class="chip">run</span><span class="chip">walk</span><span class="chip">sleep</span><span class="chip">cry</span><span class="chip">smile</span><span class="chip">rise</span><span class="chip">live</span><span class="chip">work</span><span class="chip">arrive</span><span class="chip">happen</span><span class="chip">appear</span><span class="chip">exist</span></div>
+      </div>
+
+      <div class="callout"><b>이 장의 한 문장 ·</b> 뒤에 무엇이 얼마나 길게 붙어도, 그것이 <b>빼도 되는 말</b>이면 1형식입니다.
+        문장의 길이와 형식은 아무 상관이 없습니다.</div>
+    </div>
+
+    <div class="tnote"><span class="tl">볼 것</span>
+      <p>학생들은 <b>긴 문장은 높은 형식</b>일 것이라고 짐작합니다. 두 번째 예문에서 <b>in the east</b>를 손으로 가리고 읽어 주세요 — 문장이 그대로 선다는 것을 귀로 확인시키는 것이 설명보다 빠릅니다.</p>
+      <p><b>There is / There are</b>는 여기서 한 번 짚고 넘어가야 합니다. 나중에 수 일치(There <b>are</b> many books)를 물을 때 주어가 뒤에 있다는 것을 모르면 손댈 수 없습니다.</p>
+    </div>
+  </div>
+
+  <div class="foot"><span>1형식 · S V</span><span class="r">다섯 형식 · 4/15</span></div>
+</section>
+
+<!-- 5 · 2형식 -->
+<section class="page" data-p="2">
+  <div class="chapbar">
+    <span class="chbadge">2형식</span><span class="chname">주어 + 동사 + 보어</span>
+    <span class="chtopic">S + V + C &nbsp;·&nbsp; 보어가 주어를 설명한다</span>
+  </div>
+
+  <div class="stack-mid">
+    <div class="stephead"><span class="pill">2형식</span><h2>주어를 설명하는 자리</h2><span class="sub">Subject + Verb + Complement</span></div>
+    <div class="acts" style="gap:13px;">
+      <div class="parse">
+        <div class="pline"><span><b>She</b><em>S</em></span><span><b>is</b><em>V</em></span><span><b>a teacher</b><em>C</em></span></div>
+        <p class="ko">그녀는 교사다. &nbsp;·&nbsp; <b>She = a teacher</b></p>
+      </div>
+      <div class="parse">
+        <div class="pline"><span><b>He</b><em>S</em></span><span><b>became</b><em>V</em></span><span><b>famous</b><em>C</em></span></div>
+        <p class="ko">그는 유명해졌다. &nbsp;·&nbsp; <b>He = famous</b></p>
+      </div>
+      <div class="parse">
+        <div class="pline"><span><b>The soup</b><em>S</em></span><span><b>tastes</b><em>V</em></span><span><b>good</b><em>C</em></span></div>
+        <p class="ko">그 수프는 맛이 좋다. &nbsp;·&nbsp; <b>The soup = good</b> &nbsp;(<b>well</b>이 아니라 <b>good</b>)</p>
+      </div>
+
+      <table class="vtable">
+        <tr><th>무리</th><th>동사</th><th>보어 자리에 오는 것</th></tr>
+        <tr><td class="k">~이다 · ~되다</td><td>be, become, get, turn, grow, go, come</td><td>명사 · 형용사</td></tr>
+        <tr><td class="k">감각</td><td>look, sound, taste, smell, feel</td><td><b>형용사</b> (부사 아님)</td></tr>
+        <tr><td class="k">~인 것 같다</td><td>seem, appear</td><td>형용사 · to부정사</td></tr>
+        <tr><td class="k">~인 채로</td><td>remain, stay, keep</td><td>형용사</td></tr>
+      </table>
+
+      <div class="callout"><b>감각동사 다섯이 이 장의 시험 문제입니다 ·</b>
+        <b>She looks beautiful.</b> (○) &nbsp;/&nbsp; <s>She looks beautifully.</s> (✗)
+        한국어 “아름답<b>게</b> 보인다”의 “~게”가 부사처럼 느껴져 <b>-ly</b>를 붙이는 것입니다.
+        보어는 <b>주어를 설명</b>하므로 형용사여야 합니다.</div>
+    </div>
+
+    <div class="tnote"><span class="tl">볼 것</span>
+      <p><b>“= 를 칠판에 그려 주세요.”</b> She <b>=</b> a teacher, He <b>=</b> famous. 2형식을 설명하는 가장 짧은 방법이고, 나중에 5형식에서 <b>O = C</b>를 말할 때 같은 기호를 다시 씁니다.</p>
+      <p><b>look·sound·taste·smell·feel 뒤에 -ly를 붙이는 오류는 반드시 나옵니다.</b> 나올 때 고쳐 주지 말고 “그럼 <b>She is beautifully</b>라고 말할 수 있나요?”라고 되물으세요. 학생이 스스로 웃으면서 고칩니다.</p>
+    </div>
+  </div>
+
+  <div class="foot"><span>2형식 · S V C</span><span class="r">다섯 형식 · 5/15</span></div>
+</section>
+
+<!-- 6 · 경계 ① -->
+<section class="page" data-p="2">
+  <div class="chapbar">
+    <span class="chbadge">경계 ①</span><span class="chname">1형식과 2형식 사이</span>
+    <span class="chtopic">뒤의 말이 부사인가 보어인가</span>
+  </div>
+
+  <div class="stack-mid">
+    <div class="stephead"><span class="pill">경계 ①</span><h2>부사냐 보어냐</h2><span class="sub">Adverb or complement?</span></div>
+    <div class="acts" style="gap:13px;">
+      <p class="asub">같은 동사가 뒤에 무엇을 데리고 오느냐에 따라 형식이 바뀝니다. <b>동사를 외우는 것으로는 갈리지 않습니다.</b></p>
+
+      <div class="two rows">
+        <div class="parse" data-p="2">
+          <div class="pt"><b>2형식</b><span>보어 · 주어를 설명</span></div>
+          <div class="pline"><span><b>She</b><em>S</em></span><span><b>looks</b><em>V</em></span><span><b>happy</b><em>C</em></span></div>
+          <p class="ko">그녀는 행복해 <b>보인다</b>. &nbsp;·&nbsp; happy가 <b>She</b>를 설명한다.</p>
+        </div>
+        <div class="parse" data-p="1">
+          <div class="pt"><b>1형식</b><span>부사 · 동사를 꾸밈</span></div>
+          <div class="pline"><span><b>She</b><em>S</em></span><span><b>looks</b><em>V</em></span><span><b>carefully</b><em class="x">부사</em></span></div>
+          <p class="ko">그녀는 <b>주의 깊게</b> 본다. &nbsp;·&nbsp; carefully가 <b>looks</b>를 꾸민다.</p>
+        </div>
+      </div>
+
+      <div class="callout"><b>판별법 · 주어 뒤에 is를 넣어 봅니다</b>
+        말이 되면 <b>보어(2형식)</b>, 안 되면 <b>부사(1형식)</b>입니다.
+        <b>She is happy.</b> (○ &rarr; 2형식) &nbsp;/&nbsp; <s>She is carefully.</s> (✗ &rarr; 1형식)</div>
+
+      <table class="vtable">
+        <tr><th>문장</th><th>is를 넣으면</th><th>형식</th></tr>
+        <tr><td>He grew <b>tall</b>.</td><td>He is tall. ○</td><td class="k">2형식</td></tr>
+        <tr><td>He grew <b>quickly</b>.</td><td>He is quickly. ✗</td><td class="k">1형식</td></tr>
+        <tr><td>The flower smells <b>sweet</b>.</td><td>The flower is sweet. ○</td><td class="k">2형식</td></tr>
+        <tr><td>The dog ran <b>fast</b>.</td><td>The dog is fast. — 뜻이 달라짐 ✗</td><td class="k">1형식</td></tr>
+      </table>
+
+      <div class="tip">
+        <b class="tl">칠판에 이렇게</b>
+        문장을 쓰고 뒤의 낱말에 동그라미를 친 뒤, <b>주어와 그 낱말만 남기고 손으로 가립니다.</b>
+        “She … happy”가 남으면 학생이 스스로 “She is happy”라고 읽습니다. 그때 “그러면 보어”라고 이름을 붙여 주세요.
+      </div>
+    </div>
+
+    <div class="tnote"><span class="tl">볼 것</span>
+      <p>마지막 줄(<b>ran fast</b>)이 어렵습니다. <b>fast</b>는 형용사와 부사의 꼴이 같아서 “is를 넣으면 되네?”라고 답하는 학생이 나옵니다. 이때는 <b>뜻이 바뀌었는지</b>를 묻습니다 — “개가 빠르다”와 “개가 빠르게 달렸다”는 다른 말입니다.</p>
+      <p>이 쪽이 <b>3쪽 ③번 확인의 회수 지점</b>입니다. 여기서 반의 절반이 막히면 형용사·부사 구분이 덜 된 것이므로, 4형식으로 넘어가기 전에 그것부터 메우세요.</p>
+    </div>
+  </div>
+
+  <div class="foot"><span>경계 ① · 부사와 보어</span><span class="r">다섯 형식 · 6/15</span></div>
+</section>
+
+<!-- 7 · 3형식 -->
+<section class="page" data-p="3">
+  <div class="chapbar">
+    <span class="chbadge">3형식</span><span class="chname">주어 + 동사 + 목적어</span>
+    <span class="chtopic">S + V + O &nbsp;·&nbsp; 동사의 대상이 하나</span>
+  </div>
+
+  <div class="stack-mid">
+    <div class="stephead"><span class="pill">3형식</span><h2>동사가 대상을 데려온다</h2><span class="sub">Subject + Verb + Object</span></div>
+    <div class="acts" style="gap:13px;">
+      <div class="parse">
+        <div class="pline"><span><b>I</b><em>S</em></span><span><b>like</b><em>V</em></span><span><b>music</b><em>O</em></span></div>
+        <p class="ko">나는 음악을 좋아한다. &nbsp;·&nbsp; <b>무엇을</b> 좋아하는가에 답이 있다.</p>
+      </div>
+      <div class="parse">
+        <div class="pline"><span><b>She</b><em>S</em></span><span><b>met</b><em>V</em></span><span><b>him</b><em>O</em></span></div>
+        <p class="ko">그녀는 그를 만났다. &nbsp;·&nbsp; 대명사가 목적어 자리에 오면 <b>목적격</b>이다. <b>he</b>가 아니라 <b>him</b>.</p>
+      </div>
+      <div class="parse">
+        <div class="pline"><span><b>We</b><em>S</em></span><span><b>enjoyed</b><em>V</em></span><span><b>watching the game</b><em>O</em></span></div>
+        <p class="ko">우리는 경기 보는 것을 즐겼다. &nbsp;·&nbsp; 목적어가 낱말 하나일 필요는 없다.</p>
+      </div>
+
+      <div class="topic">
+        <span class="tl">목적어 자리에 올 수 있는 것</span>
+        <div class="chips"><span class="chip">명사 · music</span><span class="chip">대명사(목적격) · him</span><span class="chip">동명사 · watching</span><span class="chip">to부정사 · to go</span><span class="chip">that절 · that he is right</span></div>
+      </div>
+
+      <div class="callout"><b>1형식과 3형식을 가르는 질문 ·</b> 동사 뒤에 <b>“무엇을?” “누구를?”</b>이라고 물어 답이 나오면 목적어입니다.
+        <b>She smiled.</b> — 무엇을 웃었나? 답이 없다 &rarr; 1형식.
+        <b>She met him.</b> — 누구를 만났나? him &rarr; 3형식.</div>
+    </div>
+
+    <div class="tnote"><span class="tl">볼 것</span>
+      <p>목적격 대명사(<b>me · him · her · them · us</b>)를 주격으로 쓰는 오류가 여기서 드러납니다. <b>She met he.</b> 같은 문장이 나오면 그 학생은 목적어라는 자리 자체가 아직 없는 것입니다. 3형식은 대명사 격을 점검하기에 가장 좋은 자리입니다.</p>
+      <p>다음 쪽이 <b>이 단원에서 가장 실용적인 장</b>입니다. 3형식을 마치자마자 바로 이어 가세요 — 하루 건너뛰면 효과가 줄어듭니다.</p>
+    </div>
+  </div>
+
+  <div class="foot"><span>3형식 · S V O</span><span class="r">다섯 형식 · 7/15</span></div>
+</section>
+
+<!-- 8 · 경계 ② -->
+<section class="page" data-p="3">
+  <div class="chapbar">
+    <span class="chbadge">경계 ②</span><span class="chname">전치사를 넣을 자리, 넣지 말 자리</span>
+    <span class="chtopic">한국어 뜻으로는 절대 갈리지 않습니다</span>
+  </div>
+
+  <div class="stack-mid">
+    <div class="stephead"><span class="pill">경계 ②</span><h2>타동사와 자동사</h2><span class="sub">The preposition trap</span></div>
+    <div class="acts" style="gap:9px;">
+      <p class="asub">한국 학생의 영작 오류가 가장 많이 몰리는 자리입니다. 원인은 하나, <b>한국어 해석의 조사</b>(~에 · ~와 · ~에 대해)를 영어 전치사로 옮기기 때문입니다.</p>
+
+      <table class="vtable knap">
+        <tr><th>타동사</th><th>한국어 뜻</th><th>전치사를 <b>넣으면</b> 틀린다</th></tr>
+        <tr><td class="k">discuss</td><td>~<b>에 대해</b> 논의하다</td><td><s>discuss about</s></td></tr>
+        <tr><td class="k">marry</td><td>~<b>와</b> 결혼하다</td><td><s>marry with</s></td></tr>
+        <tr><td class="k">attend</td><td>~<b>에</b> 참석하다</td><td><s>attend to</s></td></tr>
+        <tr><td class="k">reach</td><td>~<b>에</b> 도착하다</td><td><s>reach to</s></td></tr>
+        <tr><td class="k">answer</td><td>~<b>에</b> 답하다</td><td><s>answer to</s></td></tr>
+        <tr><td class="k">resemble</td><td>~<b>를</b> 닮다</td><td><s>resemble with</s></td></tr>
+      </table>
+
+      <table class="vtable knap">
+        <tr><th>자동사</th><th>한국어 뜻</th><th>전치사를 <b>빼면</b> 틀린다</th></tr>
+        <tr><td class="k">listen <b>to</b></td><td>~<b>를</b> 듣다</td><td><s>listen the music</s></td></tr>
+        <tr><td class="k">wait <b>for</b></td><td>~<b>를</b> 기다리다</td><td><s>wait you</s></td></tr>
+        <tr><td class="k">arrive <b>at / in</b></td><td>~<b>에</b> 도착하다</td><td><s>arrive Seoul</s></td></tr>
+        <tr><td class="k">graduate <b>from</b></td><td>~<b>를</b> 졸업하다</td><td><s>graduate university</s></td></tr>
+        <tr><td class="k">reply <b>to</b></td><td>~<b>에</b> 답하다</td><td><s>reply me</s></td></tr>
+        <tr><td class="k">apologize <b>to</b></td><td>~<b>에게</b> 사과하다</td><td><s>apologize her</s></td></tr>
+      </table>
+
+      <div class="callout"><b>두 표를 나란히 놓는 것이 핵심입니다 ·</b>
+        <b>reach</b>는 “~<b>에</b> 도착하다”인데 전치사가 없고, <b>arrive</b>는 같은 뜻인데 전치사가 있습니다.
+        <b>discuss</b>는 “~<b>를</b>”가 아닌데 전치사가 없고, <b>listen to</b>는 “~<b>를</b>”인데 전치사가 있습니다.
+        <b>한국어 조사로는 예측할 수 없다</b>는 것을 학생이 눈으로 확인해야 합니다.</div>
+    </div>
+
+    <div class="tnote"><span class="tl">볼 것 · 이 장이 형식을 배우는 진짜 이유입니다</span>
+      <p>학생이 “그럼 어떻게 아느냐”고 물으면 <b>정답은 “동사마다 외운다”입니다.</b> 얼버무리지 마세요. 형식이란 <b>동사가 뒤에 무엇을 데려오는지에 붙인 이름</b>이므로, 단어를 외울 때 <b>그 뒤 모양까지 같이</b> 외워야 한다는 결론으로 이어집니다.</p>
+      <p>사전에서 <b>vt</b>(타동사)와 <b>vi</b>(자동사) 표시를 찾아보게 하세요. 형식을 배운 학생만 이 표시를 읽을 수 있고, 읽을 수 있게 되는 순간 이 단원의 값이 회수됩니다.</p>
+    </div>
+  </div>
+
+  <div class="foot"><span>경계 ② · 전치사</span><span class="r">다섯 형식 · 8/15</span></div>
+</section>
+
+<!-- 9 · 4형식 -->
+<section class="page" data-p="4">
+  <div class="chapbar">
+    <span class="chbadge">4형식</span><span class="chname">주어 + 동사 + 목적어 + 목적어</span>
+    <span class="chtopic">S + V + O + O &nbsp;·&nbsp; ~에게 ~을 해 주다</span>
+  </div>
+
+  <div class="stack-mid">
+    <div class="stephead"><span class="pill">4형식</span><h2>주는 동사</h2><span class="sub">Subject + Verb + Indirect + Direct Object</span></div>
+    <div class="acts" style="gap:13px;">
+      <div class="parse">
+        <div class="pline"><span><b>He</b><em>S</em></span><span><b>gave</b><em>V</em></span><span><b>me</b><em>O</em></span><span><b>a book</b><em>O</em></span></div>
+        <p class="ko">그는 <b>나에게</b> <b>책을</b> 주었다. &nbsp;·&nbsp; 앞이 <b>간접목적어</b>(~에게), 뒤가 <b>직접목적어</b>(~을).</p>
+      </div>
+      <div class="parse">
+        <div class="pline"><span><b>He</b><em>S</em></span><span><b>gave</b><em>V</em></span><span><b>a book</b><em>O</em></span><span><b>to me</b><em class="x">부사구</em></span></div>
+        <p class="ko">같은 뜻을 <b>3형식</b>으로. 목적어가 하나로 줄고, <b>to me</b>는 성분이 아니게 된다.</p>
+      </div>
+
+      <table class="vtable">
+        <tr><th>바꿀 때 쓰는 전치사</th><th>동사</th><th>보기</th></tr>
+        <tr><td class="k">to</td><td>give, send, show, teach, tell, lend, offer, pass, bring</td><td>She told <b>me</b> a story. &rarr; She told a story <b>to me</b>.</td></tr>
+        <tr><td class="k">for</td><td>buy, make, cook, get, find, choose, build</td><td>He bought <b>her</b> a ring. &rarr; He bought a ring <b>for her</b>.</td></tr>
+        <tr><td class="k">of</td><td>ask</td><td>I asked <b>him</b> a favor. &rarr; I asked a favor <b>of him</b>.</td></tr>
+      </table>
+
+      <div class="callout"><b>to와 for를 가르는 법 ·</b> 받는 사람이 <b>없으면 행위 자체가 성립하지 않으면 to</b>,
+        <b>혼자서도 할 수 있으면 for</b>입니다. 줄 사람이 없으면 “주다”가 안 되지만(<b>to</b>),
+        사 줄 사람이 없어도 “사다”는 됩니다(<b>for</b>).</div>
+    </div>
+
+    <div class="tnote"><span class="tl">볼 것</span>
+      <p><b>전치사를 외우게 하지 마세요.</b> 위 판별법을 한 번 설명한 뒤 동사마다 물어보는 편이 빠르고, 틀려도 뜻이 통하므로 급하지 않습니다. <b>of는 ask 하나뿐</b>이니 그것만 따로 짚어 두면 됩니다.</p>
+      <p>여기서 <b>4형식이 3형식으로 바뀐다</b>는 것을 확실히 해 두어야 다음 쪽(5형식과의 구분)이 풀립니다. <b>5형식은 이 변환이 되지 않는다</b>는 것이 가장 확실한 판별법이기 때문입니다.</p>
+    </div>
+  </div>
+
+  <div class="foot"><span>4형식 · S V O O</span><span class="r">다섯 형식 · 9/15</span></div>
+</section>
+
+<!-- 10 · 5형식 -->
+<section class="page" data-p="5">
+  <div class="chapbar">
+    <span class="chbadge">5형식</span><span class="chname">주어 + 동사 + 목적어 + 목적격보어</span>
+    <span class="chtopic">S + V + O + C &nbsp;·&nbsp; 보어가 목적어를 설명한다</span>
+  </div>
+
+  <div class="stack-mid">
+    <div class="stephead"><span class="pill">5형식</span><h2>목적어를 설명하는 자리</h2><span class="sub">Subject + Verb + Object + Complement</span></div>
+    <div class="acts" style="gap:12px;">
+      <div class="parse">
+        <div class="pline"><span><b>They</b><em>S</em></span><span><b>call</b><em>V</em></span><span><b>him</b><em>O</em></span><span><b>Tom</b><em>C</em></span></div>
+        <p class="ko">그들은 그를 Tom이라고 부른다. &nbsp;·&nbsp; <b>him = Tom</b></p>
+      </div>
+      <div class="parse">
+        <div class="pline"><span><b>She</b><em>S</em></span><span><b>made</b><em>V</em></span><span><b>me</b><em>O</em></span><span><b>happy</b><em>C</em></span></div>
+        <p class="ko">그녀는 나를 행복하게 만들었다. &nbsp;·&nbsp; <b>me = happy</b></p>
+      </div>
+      <div class="parse">
+        <div class="pline"><span><b>I</b><em>S</em></span><span><b>saw</b><em>V</em></span><span><b>him</b><em>O</em></span><span><b>run</b><em>C</em></span></div>
+        <p class="ko">나는 그가 달리는 것을 보았다. &nbsp;·&nbsp; <b>him이 run 한다</b> — 목적어와 보어 사이에 주어·동사 관계가 있다.</p>
+      </div>
+
+      <table class="vtable">
+        <tr><th>무리</th><th>동사</th><th>보어 자리</th></tr>
+        <tr><td class="k">부르다 · 여기다</td><td>call, name, think, consider, find</td><td>명사 · 형용사</td></tr>
+        <tr><td class="k">~인 채로 두다</td><td>keep, leave</td><td>형용사 · 분사</td></tr>
+        <tr><td class="k">시키다(사역)</td><td>make, have, let</td><td><b>동사원형</b></td></tr>
+        <tr><td class="k">시키다(사역)</td><td>get</td><td><b>to부정사</b></td></tr>
+        <tr><td class="k">보다 · 듣다(지각)</td><td>see, hear, watch, feel, notice</td><td><b>동사원형</b> 또는 <b>-ing</b></td></tr>
+      </table>
+
+      <div class="callout"><b>사역·지각동사 뒤에 to를 붙이는 오류가 가장 많습니다 ·</b>
+        <b>She made me go.</b> (○) &nbsp;/&nbsp; <s>She made me to go.</s> (✗)
+        다만 <b>get</b>만은 <b>to</b>가 붙습니다 — <b>She got me to go.</b> (○)</div>
+    </div>
+
+    <div class="tnote"><span class="tl">볼 것</span>
+      <p>2형식에서 썼던 <b>=</b> 기호를 그대로 다시 씁니다. 2형식은 <b>S = C</b>, 5형식은 <b>O = C</b>. 같은 기호를 쓰면 두 형식이 <b>보어라는 같은 것</b>을 다른 자리에 놓았을 뿐임이 보입니다.</p>
+      <p>세 번째 예문(<b>saw him run</b>)의 <b>=</b>는 “him과 run이 같다”가 아니라 <b>“him이 run 한다”</b>입니다. 명사·형용사 보어와 동사 보어는 관계의 종류가 다르므로, <b>=</b> 대신 <b>화살표</b>를 그려 구분해 주면 혼동이 줄어듭니다.</p>
+    </div>
+  </div>
+
+  <div class="foot"><span>5형식 · S V O C</span><span class="r">다섯 형식 · 10/15</span></div>
+</section>
+
+<!-- 11 · 경계 ③ -->
+<section class="page" data-p="5">
+  <div class="chapbar">
+    <span class="chbadge">경계 ③</span><span class="chname">4형식과 5형식 사이</span>
+    <span class="chtopic">이 단원에서 가장 어렵고, 시험에 반드시 나옵니다</span>
+  </div>
+
+  <div class="stack-mid">
+    <div class="stephead"><span class="pill">경계 ③</span><h2>목적어가 둘인가, 목적어와 보어인가</h2><span class="sub">Two objects, or object and complement?</span></div>
+    <div class="acts" style="gap:12px;">
+      <p class="asub">같은 동사 <b>made</b>, 같은 꼴 <b>S + V + 명사 + 명사</b>입니다. <b>겉모습으로는 갈리지 않고 뜻으로만 갈립니다.</b></p>
+
+      <div class="two rows">
+        <div class="parse" data-p="4">
+          <div class="pt"><b>4형식</b><span>me ≠ a cake</span></div>
+          <div class="pline"><span><b>She</b><em>S</em></span><span><b>made</b><em>V</em></span><span><b>me</b><em>O</em></span><span><b>a cake</b><em>O</em></span></div>
+          <p class="ko">그녀는 <b>나에게 케이크를</b> 만들어 주었다. &nbsp;·&nbsp; 나와 케이크는 <b>다른 것</b>.</p>
+        </div>
+        <div class="parse" data-p="5">
+          <div class="pt"><b>5형식</b><span>me = a teacher</span></div>
+          <div class="pline"><span><b>She</b><em>S</em></span><span><b>made</b><em>V</em></span><span><b>me</b><em>O</em></span><span><b>a teacher</b><em>C</em></span></div>
+          <p class="ko">그녀는 <b>나를 교사로</b> 만들었다. &nbsp;·&nbsp; 내가 <b>곧</b> 교사가 되었다.</p>
+        </div>
+      </div>
+
+      <table class="vtable knap">
+        <tr><th>판별법</th><th>4형식이면</th><th>5형식이면</th></tr>
+        <tr><td class="k">① 두 말이 같은가</td><td>me <b>≠</b> a cake</td><td>me <b>=</b> a teacher</td></tr>
+        <tr><td class="k">② 전치사를 넣어 3형식으로</td><td>made a cake <b>for me</b> ○</td><td><s>made a teacher for me</s> ✗</td></tr>
+        <tr><td class="k">③ 우리말로 옮기면</td><td>~<b>에게</b> ~<b>을</b></td><td>~<b>를</b> ~<b>로</b></td></tr>
+      </table>
+
+      <div class="tip">
+        <b class="tl">더 해 볼 짝</b>
+        <b>I found him a job.</b> (그에게 일자리를 찾아 주었다 · 4형식) &nbsp;/&nbsp; <b>I found him honest.</b> (그가 정직하다고 알게 되었다 · 5형식)<br>
+        <b>He got me a ticket.</b> (표를 구해 주었다 · 4형식) &nbsp;/&nbsp; <b>He got me angry.</b> (나를 화나게 했다 · 5형식)
+      </div>
+
+    </div>
+
+    <div class="tnote"><span class="tl">볼 것</span>
+      <p><b>②번이 가장 확실합니다.</b> ①번(같은가)은 학생마다 판단이 갈리지만, ②번(전치사를 넣어 보기)은 기계적으로 됩니다. 헷갈리는 학생에게는 ②번만 쥐여 주세요. 더 거친 감각으로는 <b>뒤의 말이 물건이면 대개 4형식, 앞사람의 신분이나 상태면 5형식</b>입니다.</p>
+      <p>여기가 이 단원의 <b>통과 기준</b>입니다. <b>made me a cake</b>와 <b>made me a teacher</b>를 스스로 가르고 까닭을 말할 수 있으면 통과입니다. <b>까닭은 한국어로 말해도 인정</b>하세요.</p>
+    </div>
+  </div>
+
+  <div class="foot"><span>경계 ③ · 4형식과 5형식</span><span class="r">다섯 형식 · 11/15</span></div>
+</section>
+
+<!-- 12 · 동사가 형식을 정한다 -->
+<section class="page" data-ch="0">
+  <div class="chapbar">
+    <span class="chbadge">정리</span><span class="chname">동사가 형식을 정한다</span>
+    <span class="chtopic">한 동사가 다섯 형식에 모두 쓰입니다</span>
+  </div>
+
+  <div class="stack-mid">
+    <div class="stephead"><span class="pill">정리</span><h2>get 하나로 다섯</h2><span class="sub">One verb, all five patterns</span></div>
+    <div class="acts" style="gap:11px;">
+      <p class="asub">단원을 닫는 장입니다. <b>형식은 문장에 붙는 이름이 아니라 동사가 뒤에 무엇을 데려오느냐</b>라는 것을 한 동사로 보여 줍니다.</p>
+
+      <div class="parse" data-p="1">
+        <div class="pt"><b>1형식</b><span>도착하다</span></div>
+        <div class="pline"><span><b>We</b><em>S</em></span><span><b>got</b><em>V</em></span><span><b>to the station</b><em class="x">부사구</em></span></div>
+        <p class="ko">우리는 역에 도착했다.</p>
+      </div>
+      <div class="parse" data-p="2">
+        <div class="pt"><b>2형식</b><span>~해지다</span></div>
+        <div class="pline"><span><b>It</b><em>S</em></span><span><b>got</b><em>V</em></span><span><b>dark</b><em>C</em></span></div>
+        <p class="ko">어두워졌다. &nbsp;·&nbsp; <b>It = dark</b></p>
+      </div>
+      <div class="parse" data-p="3">
+        <div class="pt"><b>3형식</b><span>받다 · 얻다</span></div>
+        <div class="pline"><span><b>I</b><em>S</em></span><span><b>got</b><em>V</em></span><span><b>a letter</b><em>O</em></span></div>
+        <p class="ko">나는 편지를 받았다.</p>
+      </div>
+      <div class="parse" data-p="4">
+        <div class="pt"><b>4형식</b><span>~에게 ~을 구해 주다</span></div>
+        <div class="pline"><span><b>He</b><em>S</em></span><span><b>got</b><em>V</em></span><span><b>me</b><em>O</em></span><span><b>a ticket</b><em>O</em></span></div>
+        <p class="ko">그는 나에게 표를 구해 주었다. &nbsp;·&nbsp; <b>me ≠ a ticket</b></p>
+      </div>
+      <div class="parse" data-p="5">
+        <div class="pt"><b>5형식</b><span>~가 ~하게 하다</span></div>
+        <div class="pline"><span><b>He</b><em>S</em></span><span><b>got</b><em>V</em></span><span><b>me</b><em>O</em></span><span><b>to help him</b><em>C</em></span></div>
+        <p class="ko">그는 내가 그를 돕게 했다. &nbsp;·&nbsp; <b>me가 to help 한다</b></p>
+      </div>
+
+      <div class="callout"><b>단원을 닫는 한 문장 ·</b> 그러므로 동사를 외울 때는 뜻만 외우지 말고
+        <b>뒤에 무엇이 오는지까지 같이</b> 외웁니다. <b>make</b>는 3·4·5형식, <b>leave</b>는 1·3·4·5형식,
+        <b>run</b>은 1·3형식에 쓰입니다. 사전의 <b>vi · vt</b> 표시가 그것을 알려 줍니다.</div>
+    </div>
+  </div>
+
+  <div class="foot"><span>동사가 형식을 정한다</span><span class="r">다섯 형식 · 12/15</span></div>
+</section>
+
+<!-- 13 · 차시 계획 -->
+<section class="page" data-ch="0">
+  <div class="chapbar">
+    <span class="chbadge">운영</span><span class="chname">차시 계획표</span>
+    <span class="chtopic">한 차시 45분 · 전체 4차시 · 쪽 번호는 이 자료의 쪽입니다</span>
+  </div>
+
+  <div class="stack-mid">
+    <div class="acts" style="gap:11px;padding-top:18px;">
+      <div class="period">
+        <div class="phead"><span class="pn">1차시</span><span class="pt">왜 형식인가 · 1형식 · 2형식</span><span class="pp">2–5쪽</span></div>
+        <table class="plan">
+          <tr><td class="k">도입 10분</td><td>3쪽 세 가지 확인. <b>여기서 빈 것이 나오면 그것부터 메웁니다.</b></td></tr>
+          <tr><td class="k">전개 25분</td><td>2쪽 한 장 요약을 <b>훑기만</b> 하고 벽에 붙임 → 1형식 → 2형식.</td></tr>
+          <tr><td class="k">정리 10분</td><td>2형식 문장 셋을 학생이 만들고 <b>= 기호</b>로 확인.</td></tr>
+        </table>
+        <div class="watch"><b>볼 것 ·</b> 2쪽을 첫 시간에 <b>설명하지 마세요.</b> 다섯을 한꺼번에 들으면 아무것도 남지 않습니다. 지도를 보여 주고 접는 정도로 충분합니다.</div>
+      </div>
+
+      <div class="period">
+        <div class="phead"><span class="pn">2차시</span><span class="pt">경계 ① · 3형식</span><span class="pp">6–7쪽</span></div>
+        <table class="plan">
+          <tr><td class="k">도입 10분</td><td>지난 시간 2형식 복습 → <b>She looks happy / carefully</b> 두 문장을 나란히.</td></tr>
+          <tr><td class="k">전개 25분</td><td><b>is 넣어 보기</b> 판별법 연습 → 3형식으로 넘어가 목적어 도입.</td></tr>
+          <tr><td class="k">정리 10분</td><td>“무엇을? 누구를?” 묻기로 1형식·3형식 가르기.</td></tr>
+        </table>
+        <div class="watch"><b>볼 것 ·</b> 여기서 반의 절반이 막히면 <b>형용사·부사 구분</b>이 덜 된 것입니다. 진도보다 이것이 먼저입니다.</div>
+      </div>
+
+      <div class="period">
+        <div class="phead"><span class="pn">3차시</span><span class="pt">경계 ② 전치사 · 4형식</span><span class="pp">8–9쪽</span></div>
+        <table class="plan">
+          <tr><td class="k">도입 5분</td><td>“<b>listen the music</b>은 왜 틀릴까?” 한 문장으로 열기.</td></tr>
+          <tr><td class="k">전개 25분</td><td>두 표를 <b>나란히</b> 보여 주기 → 사전에서 vi·vt 찾아보기.</td></tr>
+          <tr><td class="k">정리 15분</td><td>4형식 도입과 3형식 전환(to · for).</td></tr>
+        </table>
+        <div class="watch"><b>볼 것 ·</b> 8쪽은 <b>외우는 장</b>입니다. 이해시키려 하지 말고 소리 내어 읽고 공책에 옮기게 하세요.</div>
+      </div>
+
+      <div class="period">
+        <div class="phead"><span class="pn">4차시</span><span class="pt">5형식 · 경계 ③ · 마무리</span><span class="pp">10–12쪽</span></div>
+        <table class="plan">
+          <tr><td class="k">도입 5분</td><td>4형식 복습 → 전치사를 넣어 3형식으로 바꾸기.</td></tr>
+          <tr><td class="k">전개 25분</td><td>5형식 → <b>made me a cake / a teacher</b> 두 문장으로 경계 ③.</td></tr>
+          <tr><td class="k">정리 15분</td><td>12쪽 <b>get</b> 다섯 → 14쪽 진단표 기록.</td></tr>
+        </table>
+        <div class="watch"><b>볼 것 ·</b> 시간이 모자라면 <b>12쪽을 자르지 마세요.</b> 단원의 결론이 거기 있습니다. 줄일 곳은 5형식 동사 표입니다.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="foot"><span>차시 계획</span><span class="r">다섯 형식 · 13/15</span></div>
+</section>
+
+<!-- 14 · 진단표 -->
+<section class="page" data-ch="0">
+  <div class="chapbar">
+    <span class="chbadge">진단</span><span class="chname">학생 개인 진단표</span>
+    <span class="chtopic">1인 1장 · 단원을 마칠 때 한 번 기록합니다</span>
+  </div>
+
+  <div class="stack-mid">
+    <div class="acts" style="padding-top:18px;">
+      <div class="namebar">
+        <label><span>학생 이름</span><i></i></label>
+        <label><span>학년 / 반</span><i></i></label>
+        <label><span>기록한 날</span><i></i></label>
+      </div>
+
+      <div class="keybox">● 혼자 해냈다 &nbsp;·&nbsp; ◐ 도움을 받아 해냈다 &nbsp;·&nbsp; ○ 아직</div>
+
+      <table class="crit">
+        <tr><th>확인할 것</th><th>쪽</th><th class="m">●</th><th class="m">◐</th><th class="m">○</th></tr>
+        <tr><td>문장에서 주어와 동사를 찾는다</td><td class="p">3</td><td class="m"></td><td class="m"></td><td class="m"></td></tr>
+        <tr><td>뒤에 붙은 말이 <b>빼도 되는 말</b>임을 알고 1형식이라 답한다</td><td class="p">4</td><td class="m"></td><td class="m"></td><td class="m"></td></tr>
+        <tr><td>2형식에서 <b>S = C</b> 관계를 설명한다 <b>(한국어 인정)</b></td><td class="p">5</td><td class="m"></td><td class="m"></td><td class="m"></td></tr>
+        <tr><td>감각동사 뒤에 <b>형용사</b>를 쓴다 (looks beautiful)</td><td class="p">5</td><td class="m"></td><td class="m"></td><td class="m"></td></tr>
+        <tr><td><b>is를 넣어 보기</b>로 부사와 보어를 가른다</td><td class="p">6</td><td class="m"></td><td class="m"></td><td class="m"></td></tr>
+        <tr><td>타동사 뒤에 전치사를 넣지 않는다 (discuss ○)</td><td class="p">8</td><td class="m"></td><td class="m"></td><td class="m"></td></tr>
+        <tr><td>자동사 뒤에 전치사를 빠뜨리지 않는다 (listen to ○)</td><td class="p">8</td><td class="m"></td><td class="m"></td><td class="m"></td></tr>
+        <tr><td>4형식을 3형식으로 바꾸며 to·for를 고른다</td><td class="p">9</td><td class="m"></td><td class="m"></td><td class="m"></td></tr>
+        <tr><td>사역·지각동사 뒤에 <b>동사원형</b>을 쓴다 (made me go)</td><td class="p">10</td><td class="m"></td><td class="m"></td><td class="m"></td></tr>
+        <tr><td><b>made me a cake</b>와 <b>made me a teacher</b>를 가른다</td><td class="p">11</td><td class="m"></td><td class="m"></td><td class="m"></td></tr>
+        <tr><td>한 동사가 여러 형식에 쓰인다는 것을 안다</td><td class="p">12</td><td class="m"></td><td class="m"></td><td class="m"></td></tr>
+      </table>
+
+      <table class="crit verdict">
+        <tr><th>이 단원을 통과했는가</th><th class="m">판단</th></tr>
+        <tr><td><b>11쪽 항목이 ● 또는 ◐</b> — 통과입니다. 번호를 못 외워도 상관없습니다</td><td class="m"></td></tr>
+        <tr><td><b>8쪽 두 항목이 ○</b> — 영작에서 계속 틀립니다. 8쪽만 따로 반복</td><td class="m"></td></tr>
+        <tr><td><b>6쪽이 ○</b> — <span style="color:var(--ans);font-weight:700;">형용사·부사부터 다시.</span> 5형식을 더 해도 소용없습니다</td><td class="m"></td></tr>
+      </table>
+
+      <div class="act grow">
+        <span class="alab">관찰 메모</span>
+        <div class="lines"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="foot"><span>학생 개인 진단표</span><span class="r">다섯 형식 · 14/15</span></div>
+</section>
+
+<!-- 15 · 처방 -->
+<section class="page" data-p="1">
+  <div class="chapbar">
+    <span class="chbadge">처방</span><span class="chname">막혔을 때 어디로 돌아가나</span>
+    <span class="chtopic">진단표에 ○가 나온 항목을 여기서 찾으세요</span>
+  </div>
+
+  <div class="stack-mid">
+    <div class="acts" style="gap:9px;padding-top:18px;">
+      <div class="rx">
+        <p class="if">주어를 못 찾는다</p>
+        <p class="then"><b>→ 3쪽 ②번으로.</b> 형식 이전의 문제입니다. 수 일치 문제(<b>The children play</b>)로 “동사의 짝”을 찾게 하면 주어 개념이 잡힙니다. 이것 없이는 어떤 형식도 갈리지 않습니다.</p>
+      </div>
+      <div class="rx">
+        <p class="if">1형식과 2형식을 못 가른다</p>
+        <p class="then"><b>→ 6쪽으로, 그전에 3쪽 ③번으로.</b> 대개 형식의 문제가 아니라 <b>형용사와 부사</b>의 문제입니다. <b>The dog is slow / The dog walks slowly</b> 두 문장으로 먼저 확인하세요.</p>
+      </div>
+      <div class="rx">
+        <p class="if">감각동사 뒤에 -ly를 붙인다</p>
+        <p class="then"><b>→ 5쪽으로.</b> 고쳐 주지 말고 <b>“She is beautifully라고 말할 수 있나요?”</b>라고 되물으세요. 보어가 주어를 설명한다는 것을 스스로 확인하면 다시 틀리지 않습니다.</p>
+      </div>
+      <div class="rx">
+        <p class="if">discuss about · listen the music 오류가 계속된다</p>
+        <p class="then"><b>→ 8쪽으로.</b> 이해의 문제가 아니라 <b>암기의 문제</b>입니다. 규칙을 더 설명하지 말고 동사 열둘을 소리 내어 읽고 공책에 옮기게 하세요. 한국어 조사로는 예측할 수 없다는 것만 확실히 해 두면 됩니다.</p>
+      </div>
+      <div class="rx">
+        <p class="if">4형식에서 to와 for를 못 고른다</p>
+        <p class="then"><b>→ 9쪽 판별법으로.</b> 급하지 않은 오류입니다. 틀려도 뜻이 통하므로 여기에 시간을 많이 쓰지 마세요. <b>of는 ask 하나뿐</b>이라는 것만 짚어 둡니다.</p>
+      </div>
+      <div class="rx">
+        <p class="if">사역·지각동사 뒤에 to를 붙인다</p>
+        <p class="then"><b>→ 10쪽으로.</b> <b>make · have · let</b>은 동사원형, <b>get</b>만 to입니다. 넷을 한 줄로 적어 두고 <b>get만 다르다</b>로 외우게 하는 편이 규칙 설명보다 빠릅니다.</p>
+      </div>
+      <div class="rx">
+        <p class="if">4형식과 5형식을 못 가른다</p>
+        <p class="then"><b>→ 11쪽 ②번만.</b> ①번(같은가)은 판단이 갈려 더 헷갈립니다. <b>전치사를 넣어 3형식으로 바꿔 보기</b> 하나만 쥐여 주세요. 되면 4형식, 안 되면 5형식입니다.</p>
+      </div>
+      <div class="rx">
+        <p class="if">형식 번호는 대는데 영작은 그대로 틀린다</p>
+        <p class="then"><b>→ 12쪽으로.</b> 번호를 <b>목표로 착각</b>한 경우입니다. 흔하고, 대개 수업이 분류 연습에 치우쳤을 때 생깁니다. <b>get</b> 다섯 문장을 직접 만들게 하면 형식이 도구라는 것이 돌아옵니다.</p>
+      </div>
+
+      <div class="tip">
+        <b class="tl">되돌아가는 것에 대하여</b>
+        형식은 <b>한 번에 잡히지 않습니다.</b> 4형식과 5형식을 가르다 보면 2형식 보어 개념이 다시 흔들리는 것이 정상입니다.
+        되돌아갈 때는 <b>예문을 바꿔 주세요</b> — 같은 문장을 두 번 물으면 답을 외워 버려 진단이 되지 않습니다.
+      </div>
+    </div>
+  </div>
+
+  <div class="foot"><span>처방표</span><span class="r">다섯 형식 · 15/15</span></div>
+</section>
+
+</div>
+</body>
+</html>
